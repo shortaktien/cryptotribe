@@ -42,6 +42,27 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     return null;
   };
 
+  const canUpgrade = (cost) => {
+    return Object.entries(cost).every(([resource, amount]) => resources[resource] >= amount);
+  };
+
+  const renderResourceCost = (cost) => {
+    return Object.entries(cost).map(([resource, amount], index, array) => {
+      const hasEnough = resources[resource] >= amount;
+      return (
+        <span
+          key={resource}
+          style={{
+            color: hasEnough ? 'green' : 'red',
+            fontWeight: hasEnough ? 'normal' : 'bold'
+          }}
+        >
+          {amount} {resource}{index < array.length - 1 ? ', ' : ''}
+        </span>
+      );
+    });
+  };
+
   return (
     <div className='main-content'>
       <div className="buildings">
@@ -52,7 +73,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
               <div className="building-info">
                 <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
                 <h3>Current Level Information:</h3>
-                <p>Cost: {Object.entries(getCurrentLevelData(selectedBuilding).cost).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
                 {getCurrentLevelData(selectedBuilding).production && (
                   <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
                 )}
@@ -67,7 +88,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                 {getNextLevelData(selectedBuilding) && (
                   <>
                     <h3>Next Level Information:</h3>
-                    <p>Cost: {Object.entries(getNextLevelData(selectedBuilding).cost).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                    <p>Cost: {renderResourceCost(getNextLevelData(selectedBuilding).cost)}</p>
                     {getNextLevelData(selectedBuilding).production && (
                       <p>Production: {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
                     )}
@@ -78,7 +99,9 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                       <p>Population: {getNextLevelData(selectedBuilding).population}</p>
                     )}
                     <p>{getNextLevelData(selectedBuilding).description}</p>
-                    <button onClick={handleUpgrade}>Upgrade to Level {selectedBuilding.currentLevel + 1}</button>
+                    <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost)}>
+                      Upgrade to Level {selectedBuilding.currentLevel + 1}
+                    </button>
                   </>
                 )}
               </div>

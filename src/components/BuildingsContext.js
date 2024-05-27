@@ -170,7 +170,7 @@ const initialBuildingsData = [
   },
   //Drawing well
   {
-    id: 5,
+    id: 6,
     name: 'Drawing well',
     image: 'green_building1.jpg',
     levels: [
