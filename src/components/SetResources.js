@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const useResources = () => {
   const [resources, setResources] = useState({
@@ -37,7 +37,7 @@ const useResources = () => {
     }));
   };
 
-  const calculateNetProduction = (baseProduction) => {
+  const calculateNetProduction = useCallback((baseProduction) => {
     const netProduction = { ...baseProduction };
 
     // Apply research effects
@@ -53,7 +53,7 @@ const useResources = () => {
     netProduction.water -= population * 0.1; // Population consumption of water
 
     return netProduction;
-  };
+  }, [researchEffects, resources.population]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,12 +71,12 @@ const useResources = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [productionRates, capacityRates, researchEffects, resources.population]);
+  }, [productionRates, capacityRates, researchEffects, resources.population, calculateNetProduction]);
 
   useEffect(() => {
     const netProduction = calculateNetProduction(productionRates);
     console.log("Current Net Production Rates:", netProduction);
-  }, [productionRates, researchEffects, resources.population]);
+  }, [productionRates, researchEffects, resources.population, calculateNetProduction]);
 
   const updateProductionRate = (resource, rate) => {
     setProductionRates(prevRates => ({
