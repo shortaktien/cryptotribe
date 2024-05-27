@@ -9,7 +9,7 @@ const defaultImage = {
   info: 'Select a building to see details.'
 };
 
-const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, updatePopulation }) => {
+const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, handleUpgradeBuilding }) => {
   const [selectedBuilding, setSelectedBuilding] = useState(defaultImage);
   const { buildings, upgradeBuilding } = useBuildings();
 
@@ -17,8 +17,20 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     setSelectedBuilding(building);
   };
 
-  const handleUpgrade = () => {
-    upgradeBuilding(selectedBuilding.id, spendResources, updateProductionRate, updateCapacityRates, updatePopulation);
+  const handleUpgrade = async () => {
+    const buildingId = selectedBuilding.id;
+    const nextLevelData = selectedBuilding.levels[selectedBuilding.currentLevel + 1];
+    const resourceNames = Object.keys(nextLevelData.cost);
+    const resourceCosts = Object.values(nextLevelData.cost);
+
+    const success = spendResources(nextLevelData.cost);
+    if (success) {
+      console.log('Resources spent successfully:', nextLevelData.cost);
+      await handleUpgradeBuilding(buildingId, resourceNames, resourceCosts);
+      upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
+    } else {
+      console.log('Not enough resources:', nextLevelData.cost);
+    }
   };
 
   useEffect(() => {
@@ -80,9 +92,6 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                 {getCurrentLevelData(selectedBuilding).capacity && (
                   <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                 )}
-                {getCurrentLevelData(selectedBuilding).population && (
-                  <p>Population: {getCurrentLevelData(selectedBuilding).population}</p>
-                )}
                 <p>{getCurrentLevelData(selectedBuilding).description}</p>
 
                 {getNextLevelData(selectedBuilding) && (
@@ -94,9 +103,6 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                     )}
                     {getNextLevelData(selectedBuilding).capacity && (
                       <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
-                    )}
-                    {getNextLevelData(selectedBuilding).population && (
-                      <p>Population: {getNextLevelData(selectedBuilding).population}</p>
                     )}
                     <p>{getNextLevelData(selectedBuilding).description}</p>
                     <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost)}>
