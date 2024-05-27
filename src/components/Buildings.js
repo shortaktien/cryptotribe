@@ -9,7 +9,7 @@ const defaultImage = {
   info: 'Select a building to see details.'
 };
 
-const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates }) => {
+const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, updatePopulation }) => {
   const [selectedBuilding, setSelectedBuilding] = useState(defaultImage);
   const { buildings, upgradeBuilding } = useBuildings();
 
@@ -18,7 +18,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
   };
 
   const handleUpgrade = () => {
-    upgradeBuilding(selectedBuilding.id, spendResources, updateProductionRate, updateCapacityRates);
+    upgradeBuilding(selectedBuilding.id, spendResources, updateProductionRate, updateCapacityRates, updatePopulation);
   };
 
   useEffect(() => {
@@ -59,6 +59,9 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                 {getCurrentLevelData(selectedBuilding).capacity && (
                   <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                 )}
+                {getCurrentLevelData(selectedBuilding).population && (
+                  <p>Population: {getCurrentLevelData(selectedBuilding).population}</p>
+                )}
                 <p>{getCurrentLevelData(selectedBuilding).description}</p>
 
                 {getNextLevelData(selectedBuilding) && (
@@ -70,6 +73,9 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                     )}
                     {getNextLevelData(selectedBuilding).capacity && (
                       <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                    )}
+                    {getNextLevelData(selectedBuilding).population && (
+                      <p>Population: {getNextLevelData(selectedBuilding).population}</p>
                     )}
                     <p>{getNextLevelData(selectedBuilding).description}</p>
                     <button onClick={handleUpgrade}>Upgrade to Level {selectedBuilding.currentLevel + 1}</button>

@@ -3,7 +3,7 @@ import { FaUserCircle } from 'react-icons/fa';
 //import useResources from './SetResources';
 import './App.css';
 
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) => {
+const Header = ({ userAddress, userAvatar, userName, userBalance, resources, population }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {

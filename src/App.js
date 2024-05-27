@@ -20,7 +20,7 @@ import './components/App.css';
 import { BuildingsProvider } from './components/BuildingsContext';
 
 function App() {
-  const { resources, updateProductionRate, spendResources, updateCapacityRates } = useResources();
+  const { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation } = useResources();
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
@@ -52,6 +52,7 @@ function App() {
                       spendResources={spendResources}
                       updateProductionRate={updateProductionRate}
                       updateCapacityRates={updateCapacityRates}
+                      updatePopulation={updatePopulation}
                     />
                   }
                 />

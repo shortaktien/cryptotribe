@@ -69,7 +69,7 @@ const initialBuildingsData = [
     ],
     currentLevel: 0
   },
-  //Stonemason
+  //Warehouse
   {
     id: 3,
     name: 'Warehouse',
@@ -102,13 +102,117 @@ const initialBuildingsData = [
     ],
     currentLevel: 0
   },
+  //House
+  {
+    id: 4,
+    name: 'House',
+    image: 'green_building1.jpg',
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        population: 10,
+        description: 'Every good Tribe need Population'
+      },
+      {
+        level: 1,
+        cost: { wood: 50 },
+        population: 20,
+        description: 'Every good Tribe need Population'
+      },
+      {
+        level: 2,
+        cost: { wood: 150, stone: 50 },
+        population: 30,
+        description: 'Every good Tribe need Population'
+      },
+      {
+        level: 3,
+        cost: { wood: 52, stone: 0, food: 0 },
+        population: 40,
+        description: 'Every good Tribe need Population'
+      }
+    ],
+    currentLevel: 0
+  },
+  //Farm
+  {
+    id: 5,
+    name: 'Farm',
+    image: 'green_building1.jpg',
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        production: { food: 0 },
+        description: 'Population need food, so build farms'
+      },
+      {
+        level: 1,
+        cost: { wood: 50 },
+        production: { food: 5 },
+        description: 'Population need food, so build farms'
+      },
+      {
+        level: 2,
+        cost: { wood: 150, stone: 50 },
+        production: { food: 5 },
+        description: 'Population need food, so build farms'
+      },
+      {
+        level: 3,
+        cost: { wood: 52, stone: 0, food: 0 },
+        production: { food: 5 },
+        description: 'Population need food, so build farms'
+      }
+    ],
+    currentLevel: 0
+  },
+  //Drawing well
+  {
+    id: 5,
+    name: 'Drawing well',
+    image: 'green_building1.jpg',
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        production: { water: 0 },
+        description: 'Population need food, so build farms'
+      },
+      {
+        level: 1,
+        cost: { wood: 50 },
+        production: { water: 5 },
+        description: 'Population need food, so build farms'
+      },
+      {
+        level: 2,
+        cost: { wood: 150, stone: 50 },
+        production: { water: 5 },
+        description: 'Population need food, so build farms'
+      },
+      {
+        level: 3,
+        cost: { wood: 52, stone: 0, food: 0 },
+        production: { water: 5 },
+        description: 'Population need food, so build farms'
+      }
+    ],
+    currentLevel: 0
+  },
   // Weitere Gebäude ...
 ];
 
 export const BuildingsProvider = ({ children }) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
-  const upgradeBuilding = (buildingId, spendResources, updateProductionRate, updateCapacityRates) => {
+  const upgradeBuilding = (
+      buildingId, 
+      spendResources, 
+      updateProductionRate, 
+      updateCapacityRates, 
+      updatePopulation) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
         if (building.id === buildingId) {
@@ -131,6 +235,10 @@ export const BuildingsProvider = ({ children }) => {
                 Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
                   updateCapacityRates(resource, capacity);
                 });
+              }
+              if (nextLevelData.population) {
+                updatePopulation(nextLevelData.population);
+                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Current water consumption: ${nextLevelData.population * 0.2}, Current food consumption: ${nextLevelData.population * 0.1}`);
               }
               return updatedBuilding;
             }
