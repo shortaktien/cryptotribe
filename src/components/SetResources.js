@@ -44,7 +44,7 @@ const useResources = () => {
   const updateProductionRate = (resource, rate) => {
     setProductionRates(prevRates => ({
       ...prevRates,
-      [resource]: prevRates[resource] + rate
+      [resource]: rate
     }));
   };
 
