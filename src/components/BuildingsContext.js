@@ -16,7 +16,7 @@ const initialBuildingsData = [
       },
       {
         level: 1,
-        cost: { wood: 100, stone: 50 },
+        cost: { wood: 100, stone: 0 },
         production: { wood: 5 },
         description: 'Wood is the resource Number 1.'
       },

@@ -28,7 +28,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate }) => {
         setSelectedBuilding(updatedBuilding);
       }
     }
-  }, [buildings]);
+  }, [buildings, selectedBuilding.id]);
 
   const getCurrentLevelData = (building) => {
     return building.levels[building.currentLevel - 1];
