@@ -53,14 +53,24 @@ const Buildings = ({ resources, spendResources, updateProductionRate }) => {
                 <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
                 <h3>Current Level Information:</h3>
                 <p>Cost: {Object.entries(getCurrentLevelData(selectedBuilding).cost).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
-                <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                {getCurrentLevelData(selectedBuilding).production && (
+                  <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                )}
+                {getCurrentLevelData(selectedBuilding).capacity && (
+                  <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                )}
                 <p>{getCurrentLevelData(selectedBuilding).description}</p>
 
                 {getNextLevelData(selectedBuilding) && (
                   <>
                     <h3>Next Level Information:</h3>
                     <p>Cost: {Object.entries(getNextLevelData(selectedBuilding).cost).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
-                    <p>Production: {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                    {getNextLevelData(selectedBuilding).production && (
+                      <p>Production: {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                    )}
+                    {getNextLevelData(selectedBuilding).capacity && (
+                      <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                    )}
                     <p>{getNextLevelData(selectedBuilding).description}</p>
                     <button onClick={handleUpgrade}>Upgrade to Level {selectedBuilding.currentLevel + 1}</button>
                   </>

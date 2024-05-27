@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useBuildings } from './BuildingsContext';
 
 const useResources = () => {
   const [resources, setResources] = useState({
@@ -15,18 +16,41 @@ const useResources = () => {
     stone: 0,
   });
 
+  const { buildings } = useBuildings();
+
+  const [capacities, setCapacities] = useState({
+    water: Infinity, // assuming no capacity limit for water
+    food: Infinity, // assuming no capacity limit for food
+    wood: 200, // initial capacity for wood
+    stone: 100, // initial capacity for stone
+  });
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setResources(prevResources => ({
-        water: prevResources.water + productionRates.water,
-        food: prevResources.food + productionRates.food,
-        wood: prevResources.wood + productionRates.wood,
-        stone: prevResources.stone + productionRates.stone,
-      }));
+      setResources(prevResources => {
+        let newResources = { ...prevResources };
+        Object.keys(productionRates).forEach(resource => {
+          const newAmount = prevResources[resource] + productionRates[resource];
+          newResources[resource] = Math.min(newAmount, capacities[resource]);
+        });
+        return newResources;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [productionRates]);
+  }, [productionRates, capacities]);
+
+  useEffect(() => {
+    const storageBuilding = buildings.find(building => building.name === 'Lager');
+    if (storageBuilding) {
+      const currentLevel = storageBuilding.currentLevel;
+      const newCapacities = storageBuilding.levels[currentLevel].capacity;
+      setCapacities(prevCapacities => ({
+        ...prevCapacities,
+        ...newCapacities
+      }));
+    }
+  }, [buildings]);
 
   const updateProductionRate = (resource, rate) => {
     setProductionRates(prevRates => ({
