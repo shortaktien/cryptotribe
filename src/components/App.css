@@ -1,0 +1,302 @@
+/* src/App.css */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  background-color: #eaeaea;
+  padding: 10px;
+  margin-top: 0px; /* Fügen Sie einen oberen Rand hinzu, um es vom Header zu trennen */
+}
+/* src/components/StartPage.css */
+.start-page {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.connect-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.connect-button:hover {
+  background-color: #45a049;
+}
+
+
+/* src/components/Header.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
+.header .logo {
+  font-size: 24px;
+  margin-left: 50px;
+}
+
+.resources {
+  display: flex;
+  gap: 20px; /* Abstand zwischen den Ressourcen */
+  margin-right: 90px;
+  margin-left: 80px;
+}
+
+.resources div {
+  margin: 0;
+  white-space: nowrap; /* Verhindert Zeilenumbruch innerhalb der Ressourcen */
+}
+
+.profile {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background-color: #fff;
+  color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+@media screen and (max-width: 768px) {
+  .header .logo {
+    font-size: 16px; /* Logo wird kleiner */
+    margin-left: 20px;
+  }
+  .resources {
+    display: none; /* Ressourcen werden ausgeblendet */
+  }
+  .dropdown-content {
+    top: 40px; /* Dropdown-Position anpassen */
+  }
+  .profile {
+    margin-right: 20px;
+  }
+}
+
+/* src/components/MainContent.css */
+.main-content {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin-left: 20px; /* Angepasst für gleichmäßige Abstände */
+  margin-top: 00px; /* Fügen Sie einen oberen Rand hinzu, um es vom Header zu trennen */
+}
+
+/* src/components/Sidebar.css */
+.sidebar {
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  height: 450; /* Adjust for header height */
+  border-radius: 20px; /* Rounded corners */
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px 0;
+}
+
+.sidebar-link {
+  text-decoration: none;
+  color: #fff;
+  background-color: #444;
+  padding: 10px;
+  border-radius: 15px;
+  display: block;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar-link:hover {
+  background-color: #555;
+  color: #f0f0f0;
+}
+
+.dropdown-menu {
+  display: none;
+}
+
+.dropdown-toggle {
+  display: none;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  margin: auto;
+  text-align: center;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-toggle:hover {
+  background-color: #494646;
+}
+
+.dropdown-content {
+  background-color: #333;
+  color: #fff;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  display: none;
+  border-radius: 20px;
+}
+
+.dropdown-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-content li {
+  padding: 10px 0;
+}
+
+.dropdown-content .sidebar-link {
+  text-decoration: none;
+  color: #fff;
+  display: block;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .dropdown-menu {
+    display: block;
+  }
+  .dropdown-toggle {
+    display: block;
+
+  }
+  .dropdown-content {
+    display: block;
+  }
+}
+
+
+/* src/components/ResourceCard.css */
+.resource-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  text-align: left;
+}
+
+
+
+/* src/components/Footer.css */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/*src/components/Buildings.css*/
+/* src/components/Buildings.css */
+.buildings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.blue-rectangle {
+  background-color: #0000FF; /* Blau */
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.blue-image {
+  width: 50%;
+  border-radius: 10px;
+}
+
+.building-info {
+  width: 45%;
+  color: white;
+}
+
+.green-rectangles {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.green-rectangle {
+  background-color: #00FF00; /* Grün */
+  border-radius: 10px;
+  padding: 10px;
+  margin: 0 10px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+}
+
+.green-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+}
+
+.level {
+  background-color: #FF0000; /* Rot */
+  border-radius: 5px;
+  color: white;
+  padding: 5px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
