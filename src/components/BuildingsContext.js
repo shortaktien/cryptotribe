@@ -5,26 +5,26 @@ const BuildingsContext = createContext();
 const initialBuildingsData = [
   {
     id: 1,
-    name: 'Building 1',
+    name: 'Lumberjack',
     image: 'green_building1.jpg',
     levels: [
       {
-        level: 0,
-        cost: { wood: 0 },
-        production: { wood: 0 },
-        description: 'Description of Building 1, Level 1'
+        level: 1,
+        cost: { wood: 50 },
+        production: { wood: 1 },
+        description: 'Wood is the resource Number 1.'
       },
       {
         level: 1,
-        cost: { wood: 50, stone: 0 },
-        production: { wood: 1 },
-        description: 'Description of Building 1, Level 2'
+        cost: { wood: 100, stone: 50 },
+        production: { wood: 5 },
+        description: 'Wood is the resource Number 1.'
       },
       {
         level: 2,
         cost: { wood: 52, stone: 0, food: 0 },
         production: { wood: 5 },
-        description: 'Description of Building 1, Level 3'
+        description: 'Wood is the resource Number 1.'
       }
     ],
     currentLevel: 1
