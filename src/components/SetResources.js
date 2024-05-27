@@ -6,6 +6,7 @@ const useResources = () => {
     food: 100,
     wood: 100,
     stone: 0,
+    science: 100, // Wissenschaftsressourcen
     population: 10,  // Anfangspopulation
   });
 
@@ -14,6 +15,7 @@ const useResources = () => {
     food: 0,
     wood: 0,
     stone: 0,
+    science: 0, // Wissenschaftsproduktion
   });
 
   const [capacityRates, setCapacityRates] = useState({
@@ -21,25 +23,60 @@ const useResources = () => {
     food: 100,
     wood: 100,
     stone: 50,
+    science: 100, // Wissenschaftskapazität
   });
+
+  const [researchEffects, setResearchEffects] = useState({
+    food: 0,
+  });
+
+  const updateResearchEffects = (newEffects) => {
+    setResearchEffects(prevEffects => ({
+      ...prevEffects,
+      ...newEffects,
+    }));
+  };
+
+  const calculateNetProduction = (baseProduction) => {
+    const netProduction = { ...baseProduction };
+
+    // Apply research effects
+    Object.entries(researchEffects).forEach(([resource, multiplier]) => {
+      if (netProduction[resource] !== undefined) {
+        netProduction[resource] += netProduction[resource] * multiplier;
+      }
+    });
+
+    // Subtract population consumption
+    const population = resources.population;
+    netProduction.food -= population * 0.2; // Population consumption of food
+    netProduction.water -= population * 0.1; // Population consumption of water
+
+    return netProduction;
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
+      const netProduction = calculateNetProduction(productionRates);
       setResources(prevResources => {
-        const waterConsumption = prevResources.population * 0.2;
-        const foodConsumption = prevResources.population * 0.1;
         return {
-          water: Math.min(Math.max(prevResources.water + productionRates.water - waterConsumption, 0), capacityRates.water),
-          food: Math.min(Math.max(prevResources.food + productionRates.food - foodConsumption, 0), capacityRates.food),
-          wood: Math.min(prevResources.wood + productionRates.wood, capacityRates.wood),
-          stone: Math.min(prevResources.stone + productionRates.stone, capacityRates.stone),
-          population: prevResources.population
+          water: Math.min(Math.max(prevResources.water + netProduction.water, 0), capacityRates.water),
+          food: Math.min(Math.max(prevResources.food + netProduction.food, 0), capacityRates.food),
+          wood: Math.min(prevResources.wood + netProduction.wood, capacityRates.wood),
+          stone: Math.min(prevResources.stone + netProduction.stone, capacityRates.stone),
+          science: Math.min(prevResources.science + netProduction.science, capacityRates.science),
+          population: prevResources.population,
         };
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [productionRates, capacityRates]);
+  }, [productionRates, capacityRates, researchEffects, resources.population]);
+
+  useEffect(() => {
+    const netProduction = calculateNetProduction(productionRates);
+    console.log("Current Net Production Rates:", netProduction);
+  }, [productionRates, researchEffects, resources.population]);
 
   const updateProductionRate = (resource, rate) => {
     setProductionRates(prevRates => ({
@@ -49,12 +86,10 @@ const useResources = () => {
   };
 
   const updateCapacityRates = (resource, capacity) => {
-    setCapacityRates(prevCapacity => {
-      return {
-        ...prevCapacity,
-        [resource]: capacity
-      };
-    });
+    setCapacityRates(prevCapacity => ({
+      ...prevCapacity,
+      [resource]: capacity
+    }));
   };
 
   const updatePopulation = (population) => {
@@ -76,7 +111,7 @@ const useResources = () => {
     return true;
   };
 
-  return { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation };
+  return { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects };
 };
 
 export default useResources;

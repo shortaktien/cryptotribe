@@ -150,7 +150,7 @@ const initialBuildingsData = [
       {
         level: 1,
         cost: { wood: 50 },
-        production: { food: 5 },
+        production: { food: 4 },
         description: 'Population need food, so build farms'
       },
       {
@@ -238,7 +238,7 @@ export const BuildingsProvider = ({ children }) => {
               }
               if (nextLevelData.population) {
                 updatePopulation(nextLevelData.population);
-                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Current water consumption: ${nextLevelData.population * 0.2}, Current food consumption: ${nextLevelData.population * 0.1}`);
+                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Current water consumption: ${nextLevelData.population * 0.2}, Current food consumption: ${nextLevelData.population * 0.2}`);
               }
               return updatedBuilding;
             }

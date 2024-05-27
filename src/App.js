@@ -18,9 +18,10 @@ import useResources from './components/SetResources';
 import { connectMetaMask } from './components/MetaMask';
 import './components/App.css';
 import { BuildingsProvider } from './components/BuildingsContext';
+import { ResearchProvider } from './components/ResearchContext';
 
 function App() {
-  const { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation } = useResources();
+  const { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects } = useResources();
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
@@ -32,41 +33,52 @@ function App() {
       <div className="app">
         {isConnected ? (
           <BuildingsProvider>
-            <Header
-              userAddress={userAddress}
-              userAvatar={userAvatar}
-              userName={userName}
-              userBalance={userBalance}
-              resources={resources}
-            />
-            <div className="content">
-              <Sidebar />
-              <Routes>
-                <Route path="/" element={<MainContent />} />
-                <Route path="/overview" element={<MainContent />} />
-                <Route
-                  path="/buildings"
-                  element={
-                    <Buildings
-                      resources={resources}
-                      spendResources={spendResources}
-                      updateProductionRate={updateProductionRate}
-                      updateCapacityRates={updateCapacityRates}
-                      updatePopulation={updatePopulation}
-                    />
-                  }
-                />
-                <Route path="/merchant" element={<Merchant />} />
-                <Route path="/research" element={<Research />} />
-                <Route path="/shipyard" element={<Shipyard />} />
-                <Route path="/defense" element={<Defense />} />
-                <Route path="/military" element={<Military />} />
-                <Route path="/world" element={<World />} />
-                <Route path="/alliance" element={<Alliance />} />
-                <Route path="/shop" element={<Shop />} />
-              </Routes>
-            </div>
-            <Footer />
+            <ResearchProvider>
+              <Header
+                userAddress={userAddress}
+                userAvatar={userAvatar}
+                userName={userName}
+                userBalance={userBalance}
+                resources={resources}
+              />
+              <div className="content">
+                <Sidebar />
+                <Routes>
+                  <Route path="/" element={<MainContent />} />
+                  <Route path="/overview" element={<MainContent />} />
+                  <Route
+                    path="/buildings"
+                    element={
+                      <Buildings
+                        resources={resources}
+                        spendResources={spendResources}
+                        updateProductionRate={updateProductionRate}
+                        updateCapacityRates={updateCapacityRates}
+                        updatePopulation={updatePopulation}
+                      />
+                    }
+                  />
+                  <Route path="/merchant" element={<Merchant />} />
+                  <Route
+                    path="/research"
+                    element={
+                      <Research
+                        resources={resources}
+                        spendResources={spendResources}
+                        updateResearchEffects={updateResearchEffects} // Stellen Sie sicher, dass updateResearchEffects hier übergeben wird
+                      />
+                    }
+                  />
+                  <Route path="/shipyard" element={<Shipyard />} />
+                  <Route path="/defense" element={<Defense />} />
+                  <Route path="/military" element={<Military />} />
+                  <Route path="/world" element={<World />} />
+                  <Route path="/alliance" element={<Alliance />} />
+                  <Route path="/shop" element={<Shop />} />
+                </Routes>
+              </div>
+              <Footer />
+            </ResearchProvider>
           </BuildingsProvider>
         ) : (
           <StartPage onConnect={() => connectMetaMask(setUserAddress, setUserAvatar, setIsConnected, setUserBalance, setUserName)} />
