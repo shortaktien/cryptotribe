@@ -15,6 +15,13 @@ const useResources = () => {
     stone: 0,
   });
 
+  const [capacityRates, setCapacityRates] = useState ({
+    water: 100,
+    food: 100,
+    wood: 100,
+    stone: 50,
+  });
+
   useEffect(() => {
     const interval = setInterval(() => {
       setResources(prevResources => ({
