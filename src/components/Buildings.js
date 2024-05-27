@@ -31,7 +31,15 @@ const Buildings = ({ resources, spendResources, updateProductionRate }) => {
   }, [buildings, selectedBuilding.id]);
 
   const getCurrentLevelData = (building) => {
-    return building.levels[building.currentLevel - 1];
+    return building.levels[building.currentLevel];
+  };
+
+  const getNextLevelData = (building) => {
+    const nextLevel = building.currentLevel + 1;
+    if (nextLevel < building.levels.length) {
+      return building.levels[nextLevel];
+    }
+    return null;
   };
 
   return (
@@ -42,12 +50,20 @@ const Buildings = ({ resources, spendResources, updateProductionRate }) => {
             <>
               <img src={selectedBuilding.image} alt={selectedBuilding.name} className="blue-image" />
               <div className="building-info">
-                <h2>{selectedBuilding.name} - Level {getCurrentLevelData(selectedBuilding).level}</h2>
+                <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
+                <h3>Current Level Information:</h3>
                 <p>Cost: {Object.entries(getCurrentLevelData(selectedBuilding).cost).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                 <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
                 <p>{getCurrentLevelData(selectedBuilding).description}</p>
-                {selectedBuilding.currentLevel < selectedBuilding.levels.length && (
-                  <button onClick={handleUpgrade}>Upgrade to Level {getCurrentLevelData(selectedBuilding).level + 1}</button>
+
+                {getNextLevelData(selectedBuilding) && (
+                  <>
+                    <h3>Next Level Information:</h3>
+                    <p>Cost: {Object.entries(getNextLevelData(selectedBuilding).cost).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                    <p>Production: {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                    <p>{getNextLevelData(selectedBuilding).description}</p>
+                    <button onClick={handleUpgrade}>Upgrade to Level {selectedBuilding.currentLevel + 1}</button>
+                  </>
                 )}
               </div>
             </>
