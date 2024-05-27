@@ -15,7 +15,7 @@ const useResources = () => {
     stone: 0,
   });
 
-  const [capacityRates, setCapacityRates] = useState ({
+  const [capacityRates, setCapacityRates] = useState({
     water: 100,
     food: 100,
     wood: 100,
@@ -25,20 +25,27 @@ const useResources = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setResources(prevResources => ({
-        water: prevResources.water + productionRates.water,
-        food: prevResources.food + productionRates.food,
-        wood: prevResources.wood + productionRates.wood,
-        stone: prevResources.stone + productionRates.stone,
+        water: Math.min(prevResources.water + productionRates.water, capacityRates.water),
+        food: Math.min(prevResources.food + productionRates.food, capacityRates.food),
+        wood: Math.min(prevResources.wood + productionRates.wood, capacityRates.wood),
+        stone: Math.min(prevResources.stone + productionRates.stone, capacityRates.stone),
       }));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [productionRates]);
+  }, [productionRates, capacityRates]);
 
   const updateProductionRate = (resource, rate) => {
     setProductionRates(prevRates => ({
       ...prevRates,
       [resource]: prevRates[resource] + rate
+    }));
+  };
+
+  const updateCapacityRates = (resource, capacity) => {
+    setCapacityRates(prevCapacity => ({
+      ...prevCapacity,
+      [resource]: capacity
     }));
   };
 
@@ -54,7 +61,7 @@ const useResources = () => {
     return true;
   };
 
-  return { resources, updateProductionRate, spendResources };
+  return { resources, updateProductionRate, spendResources, updateCapacityRates };
 };
 
 export default useResources;
