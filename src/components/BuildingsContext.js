@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext } from 'react';
 const BuildingsContext = createContext();
 
 const initialBuildingsData = [
-  // Lumberjack
+  //Lamberjack
   {
     id: 1,
     name: 'Lumberjack',
@@ -29,18 +29,18 @@ const initialBuildingsData = [
       },
       {
         level: 3,
-        cost: { wood: 200, stone: 100 },
-        production: { wood: 10 },
+        cost: { wood: 52, stone: 0, food: 0 },
+        production: { wood: 5 },
         description: 'Wood is the resource Number 1.'
       }
     ],
     currentLevel: 0
   },
-  // Stonemason
+  //Stonemason
   {
     id: 2,
     name: 'Stonemason',
-    image: 'green_building2.jpg',
+    image: 'green_building1.jpg',
     levels: [
       {
         level: 0,
@@ -62,42 +62,9 @@ const initialBuildingsData = [
       },
       {
         level: 3,
-        cost: { wood: 200, stone: 100 },
-        production: { stone: 10 },
+        cost: { wood: 52, stone: 0, food: 0 },
+        production: { stone: 5 },
         description: 'Stone is the resource Number 2.'
-      }
-    ],
-    currentLevel: 0
-  },
-  // Lager
-  {
-    id: 3,
-    name: 'Lager',
-    image: 'storage_building.jpg',
-    levels: [
-      {
-        level: 0,
-        cost: { wood: 0 },
-        capacity: { wood: 200, stone: 100 },
-        description: 'Storage capacity: 200 wood, 100 stone.'
-      },
-      {
-        level: 1,
-        cost: { wood: 50 },
-        capacity: { wood: 500, stone: 200 },
-        description: 'Storage capacity: 500 wood, 200 stone.'
-      },
-      {
-        level: 2,
-        cost: { wood: 100, stone: 50 },
-        capacity: { wood: 1000, stone: 500 },
-        description: 'Storage capacity: 1000 wood, 500 stone.'
-      },
-      {
-        level: 3,
-        cost: { wood: 200, stone: 100 },
-        capacity: { wood: 2000, stone: 1000 },
-        description: 'Storage capacity: 2000 wood, 1000 stone.'
       }
     ],
     currentLevel: 0
@@ -120,11 +87,9 @@ export const BuildingsProvider = ({ children }) => {
                 ...building,
                 currentLevel: nextLevel
               };
-              if (nextLevelData.production) {
-                Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
-                  updateProductionRate(resource, rate);
-                });
-              }
+              Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
+                updateProductionRate(resource, rate);
+              });
               return updatedBuilding;
             }
           }

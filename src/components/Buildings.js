@@ -5,7 +5,7 @@ import './App.css';
 const defaultImage = {
   id: 0,
   name: 'Welcome to Buildings',
-  image: 'default_building.jpg', // Pfad zum Standardbild
+  image: 'default_building.jpg',
   info: 'Select a building to see details.'
 };
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// Import Components
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import Buildings from './components/Buildings';
@@ -15,13 +14,9 @@ import World from './components/World';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import StartPage from './components/StartPage';
-// Import Resources
 import useResources from './components/SetResources';
-// Import Metamask
 import { connectMetaMask } from './components/MetaMask';
-// Import CSS
 import './components/App.css';
-// Import BuildingsContext
 import { BuildingsProvider } from './components/BuildingsContext';
 
 function App() {
@@ -62,7 +57,7 @@ function App() {
                 <Route path="/merchant" element={<Merchant />} />
                 <Route path="/research" element={<Research />} />
                 <Route path="/shipyard" element={<Shipyard />} />
-                <Route path="/defence" element={<Defense />} />
+                <Route path="/defense" element={<Defense />} />
                 <Route path="/military" element={<Military />} />
                 <Route path="/world" element={<World />} />
                 <Route path="/alliance" element={<Alliance />} />
