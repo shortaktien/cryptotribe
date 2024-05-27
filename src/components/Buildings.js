@@ -9,7 +9,7 @@ const defaultImage = {
   info: 'Select a building to see details.'
 };
 
-const Buildings = ({ resources, spendResources, updateProductionRate }) => {
+const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates }) => {
   const [selectedBuilding, setSelectedBuilding] = useState(defaultImage);
   const { buildings, upgradeBuilding } = useBuildings();
 
@@ -18,7 +18,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate }) => {
   };
 
   const handleUpgrade = () => {
-    upgradeBuilding(selectedBuilding.id, spendResources, updateProductionRate);
+    upgradeBuilding(selectedBuilding.id, spendResources, updateProductionRate, updateCapacityRates);
   };
 
   useEffect(() => {

@@ -43,10 +43,12 @@ const useResources = () => {
   };
 
   const updateCapacityRates = (resource, capacity) => {
-    setCapacityRates(prevCapacity => ({
-      ...prevCapacity,
-      [resource]: capacity
-    }));
+    setCapacityRates(prevCapacity => {
+      return {
+        ...prevCapacity,
+        [resource]: capacity
+      };
+    });
   };
 
   const spendResources = (cost) => {

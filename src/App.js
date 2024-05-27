@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
@@ -20,7 +20,7 @@ import './components/App.css';
 import { BuildingsProvider } from './components/BuildingsContext';
 
 function App() {
-  const { resources, updateProductionRate, spendResources } = useResources();
+  const { resources, updateProductionRate, spendResources, updateCapacityRates } = useResources();
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
@@ -51,6 +51,7 @@ function App() {
                       resources={resources}
                       spendResources={spendResources}
                       updateProductionRate={updateProductionRate}
+                      updateCapacityRates={updateCapacityRates}
                     />
                   }
                 />

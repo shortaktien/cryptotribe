@@ -51,7 +51,7 @@ const initialBuildingsData = [
       {
         level: 1,
         cost: { wood: 50 },
-        production: { stone: 0.5 },
+        production: { stone: 10 },
         description: 'Stone is the resource Number 2.'
       },
       {
@@ -89,8 +89,8 @@ const initialBuildingsData = [
       },
       {
         level: 2,
-        cost: { wood: 100, stone: 50 },
-        capacity: { water: 100, food: 100, wood: 100, stone: 50 },
+        cost: { wood: 150, stone: 50 },
+        capacity: { water: 100, food: 100, wood: 200, stone: 50 },
         description: 'A Warehouse to store Resources'
       },
       {
@@ -108,7 +108,7 @@ const initialBuildingsData = [
 export const BuildingsProvider = ({ children }) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
-  const upgradeBuilding = (buildingId, spendResources, updateProductionRate) => {
+  const upgradeBuilding = (buildingId, spendResources, updateProductionRate, updateCapacityRates) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
         if (building.id === buildingId) {
@@ -118,11 +118,18 @@ export const BuildingsProvider = ({ children }) => {
             if (spendResources(nextLevelData.cost)) {
               const updatedBuilding = {
                 ...building,
-                currentLevel: nextLevel
+                currentLevel: nextLevel,
+                capacity: { ...nextLevelData.capacity } // Clone the capacity object
               };
+              console.log('Current capacities:', updatedBuilding.capacity);             
               if (nextLevelData.production) {
                 Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
                   updateProductionRate(resource, rate);
+                });
+              }
+              if (nextLevelData.capacity) {
+                Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
+                  updateCapacityRates(resource, capacity);
                 });
               }
               return updatedBuilding;
@@ -133,6 +140,7 @@ export const BuildingsProvider = ({ children }) => {
       })
     );
   };
+  
 
   return (
     <BuildingsContext.Provider value={{ buildings, upgradeBuilding }}>
