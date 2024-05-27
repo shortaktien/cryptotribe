@@ -69,6 +69,39 @@ const initialBuildingsData = [
     ],
     currentLevel: 0
   },
+  //Stonemason
+  {
+    id: 3,
+    name: 'Warehouse',
+    image: 'green_building1.jpg',
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        capacity: { water: 100, food: 100, wood: 100, stone: 50 },
+        description: 'A Warehouse to store Resources'
+      },
+      {
+        level: 1,
+        cost: { wood: 50 },
+        capacity: { water: 100, food: 100, wood: 150, stone: 100 },
+        description: 'A Warehouse to store Resources'
+      },
+      {
+        level: 2,
+        cost: { wood: 100, stone: 50 },
+        capacity: { water: 100, food: 100, wood: 100, stone: 50 },
+        description: 'A Warehouse to store Resources'
+      },
+      {
+        level: 3,
+        cost: { wood: 52, stone: 0, food: 0 },
+        capacity: { water: 100, food: 100, wood: 100, stone: 50 },
+        description: 'A Warehouse to store Resources'
+      }
+    ],
+    currentLevel: 0
+  },
   // Weitere Gebäude ...
 ];
 
@@ -87,9 +120,11 @@ export const BuildingsProvider = ({ children }) => {
                 ...building,
                 currentLevel: nextLevel
               };
-              Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
-                updateProductionRate(resource, rate);
-              });
+              if (nextLevelData.production) {
+                Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
+                  updateProductionRate(resource, rate);
+                });
+              }
               return updatedBuilding;
             }
           }
