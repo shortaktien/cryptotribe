@@ -43,4 +43,25 @@ const getContract = async (web3) => {
   return contract;
 };
 
-export { getWeb3, getContract };
+const sendTransaction = async (web3, userAddress, contract, method, params) => {
+  const transactionParameters = {
+    to: contract.options.address,
+    from: userAddress,
+    data: contract.methods[method](...params).encodeABI(),
+    gas: '4500000',
+    gasPrice: web3.utils.toWei('10', 'gwei'),
+    type: '0x0' // Ensure legacy transaction
+  };
+
+  try {
+    const receipt = await web3.eth.sendTransaction(transactionParameters);
+    console.log('Transaction receipt: ', receipt);
+  } catch (error) {
+    console.error('Error in transaction: ', error);
+  }
+};
+
+
+
+
+export { getWeb3, getContract, sendTransaction };

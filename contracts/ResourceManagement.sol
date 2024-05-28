@@ -16,11 +16,13 @@ contract ResourceManagement {
 
     function upgradeBuilding(uint256 buildingId, string[] memory resourceNames, uint256[] memory resourceCosts) public {
         require(resourceNames.length == resourceCosts.length, "Resource names and costs length mismatch");
+        
         for (uint256 i = 0; i < resourceNames.length; i++) {
             require(resources[msg.sender][resourceNames[i]] >= resourceCosts[i], "Not enough resources");
             resources[msg.sender][resourceNames[i]] -= resourceCosts[i];
             emit ResourceSpent(msg.sender, resourceNames[i], resourceCosts[i]);
         }
+
         buildings[msg.sender][buildingId].level++;
         emit Upgrade(msg.sender, buildingId, buildings[msg.sender][buildingId].level);
     }

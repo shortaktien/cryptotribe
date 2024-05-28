@@ -18,7 +18,7 @@ import useResources from './components/SetResources';
 import { connectMetaMask } from './components/MetaMask';
 import { BuildingsProvider } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
-import { getWeb3, getContract } from './utils/web3';
+import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
 
 function App() {
@@ -28,18 +28,20 @@ function App() {
   const [userAvatar, setUserAvatar] = useState('');
   const [userName, setUserName] = useState('');
   const [userBalance, setUserBalance] = useState('');
+  const [web3, setWeb3] = useState(null); // Add web3 state
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
 
   useEffect(() => {
     const initWeb3 = async () => {
       try {
-        const web3 = await getWeb3();
-        const accounts = await web3.eth.getAccounts();
+        const web3Instance = await getWeb3();
+        setWeb3(web3Instance); // Set web3 instance
+        const accounts = await web3Instance.eth.getAccounts();
         setUserAddress(accounts[0]);
-        const contract = await getContract(web3);
-        setContract(contract);
-        console.log('Web3 and contract initialized:', { web3, contract });
+        const contractInstance = await getContract(web3Instance);
+        setContract(contractInstance);
+        console.log('Web3 and contract initialized:', { web3Instance, contractInstance });
       } catch (error) {
         console.error('Error initializing web3 or contract:', error);
         setContractError(error.message);
@@ -53,20 +55,33 @@ function App() {
       console.error('Contract not initialized');
       return;
     }
-
+  
     if (!userAddress) {
       console.error('User address not initialized');
       return;
     }
-
+  
+    // Check if resources are sufficient
+    const hasEnoughResources = resourceNames.every((resource, index) => {
+      return resources[resource] >= resourceCosts[index];
+    });
+  
+    if (!hasEnoughResources) {
+      console.error('Not enough resources');
+      return;
+    }
+  
     try {
       console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
-      const transaction = await contract.methods.upgradeBuilding(buildingId, resourceNames, resourceCosts).send({ from: userAddress });
-      console.log('Transaction successful:', transaction);
+      await sendTransaction(web3, userAddress, contract, 'upgradeBuilding', [buildingId, resourceNames, resourceCosts]);
     } catch (error) {
       console.error('Error upgrading building:', error);
+      if (error.data) {
+        console.error('Error data: ', error.data);
+      }
     }
   };
+  
 
   return (
     <Router>
