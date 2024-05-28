@@ -52,9 +52,8 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
         )}
         {dropdownVisible && (
           <div className="dropdown">
-            <p>Profile: {userName}</p>
             <p>Address: {userAddress}</p>
-            <p>Balance: {userBalance}</p>
+            <p>Balance: {userName}</p>
           </div>
         )}
       </div>
