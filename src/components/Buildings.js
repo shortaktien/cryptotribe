@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useBuildings } from './BuildingsContext';
+import buildingsMainPage from "../assets/buildingsMainPage.webp"; // Aktualisiere den Pfad
+
 import './App.css';
 
 const defaultImage = {
   id: 0,
   name: 'Welcome to Buildings',
-  image: 'default_building.jpg', // Pfad zum Standardbild
+  image: buildingsMainPage, // Aktualisierter Pfad zum Standardbild
   info: 'Select a building to see details.'
 };
 
@@ -79,10 +81,10 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     <div className='main-content'>
       <div className="buildings">
         <div className="blue-rectangle">
-          {selectedBuilding.id !== 0 ? (
-            <>
-              <img src={selectedBuilding.image} alt={selectedBuilding.name} className="blue-image" />
-              <div className="building-info">
+          <img src={selectedBuilding.image} alt={selectedBuilding.name} className="blue-image" />
+          <div className="building-info">
+            {selectedBuilding.id !== 0 ? (
+              <>
                 <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
                 <h3>Current Level Information:</h3>
                 <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
@@ -110,19 +112,19 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                     </button>
                   </>
                 )}
+              </>
+            ) : (
+              <div className="building-info">
+                <h2>{selectedBuilding.name}</h2>
+                <p>{selectedBuilding.info}</p>
               </div>
-            </>
-          ) : (
-            <div className="building-info">
-              <h2>{selectedBuilding.name}</h2>
-              <p>{selectedBuilding.info}</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-        <div className="green-rectangles">
+        <div className="circular-images">
           {buildings.map((building) => (
-            <div key={building.id} className="green-rectangle" onClick={() => handleBuildingClick(building)}>
-              <img src={building.image} alt={building.name} className="green-image" />
+            <div key={building.id} className="circular-image-wrapper" onClick={() => handleBuildingClick(building)}>
+              <img src={building.image} alt={building.name} className="circular-image" />
               <div className="level">{building.currentLevel}</div>
             </div>
           ))}

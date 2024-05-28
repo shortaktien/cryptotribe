@@ -1,15 +1,32 @@
 {
   "files": {
-    "main.css": "/static/css/main.496d7ff5.css",
-    "main.js": "/static/js/main.c17c8e2b.js",
+    "main.css": "/static/css/main.e446eada.css",
+    "main.js": "/static/js/main.f1ca1665.js",
     "static/js/511.faa2659f.chunk.js": "/static/js/511.faa2659f.chunk.js",
+    "static/media/buildingsMainPage.webp": "/static/media/buildingsMainPage.6015ef76b7aed91771c8.webp",
+    "static/media/cryptotribeImage.webp": "/static/media/cryptotribeImage.8325a861de8093508ebe.webp",
+    "static/media/populationImage.webp": "/static/media/populationImage.b5212e405745d38a2c0e.webp",
+    "static/media/foodImage.webp": "/static/media/foodImage.e33078869d6e2538a288.webp",
+    "static/media/waterImage.webp": "/static/media/waterImage.d5e287a97bf437cc267f.webp",
+    "static/media/woodImage.webp": "/static/media/woodImage.f1d76c4021b333cda5c7.webp",
+    "static/media/stoneImage.webp": "/static/media/stoneImage.d01dd4b1688fd366c30c.webp",
+    "static/media/researchImage.webp": "/static/media/researchImage.2a2649737b5a90729783.webp",
+    "static/media/overviewImage.webp": "/static/media/overviewImage.3d0f2bbbfc9b3c2f7415.webp",
+    "static/media/shopImage.webp": "/static/media/shopImage.a68c8414bd9354378626.webp",
+    "static/media/allianceImage.webp": "/static/media/allianceImage.d253267a23f268087ea5.webp",
+    "static/media/worldImage.webp": "/static/media/worldImage.ddf56d91e2adce3d156d.webp",
+    "static/media/shipyardImage.webp": "/static/media/shipyardImage.589a6a6e75ccef1516c5.webp",
+    "static/media/merchantImage.webp": "/static/media/merchantImage.0ef210bfea8901ffe731.webp",
+    "static/media/buildingsImage.webp": "/static/media/buildingsImage.c9bcb2dd092d9ab47605.webp",
+    "static/media/defenceImage.webp": "/static/media/defenceImage.44e751b58291877e02d2.webp",
+    "static/media/militaryImage.webp": "/static/media/militaryImage.ad65553b3fd5d3cfaede.webp",
     "index.html": "/index.html",
-    "main.496d7ff5.css.map": "/static/css/main.496d7ff5.css.map",
-    "main.c17c8e2b.js.map": "/static/js/main.c17c8e2b.js.map",
+    "main.e446eada.css.map": "/static/css/main.e446eada.css.map",
+    "main.f1ca1665.js.map": "/static/js/main.f1ca1665.js.map",
     "511.faa2659f.chunk.js.map": "/static/js/511.faa2659f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.496d7ff5.css",
-    "static/js/main.c17c8e2b.js"
+    "static/css/main.e446eada.css",
+    "static/js/main.f1ca1665.js"
   ]
 }

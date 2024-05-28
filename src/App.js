@@ -87,7 +87,12 @@ function App() {
     <Router>
       <div className="app">
         {isConnected ? (
-          <BuildingsProvider>
+          <BuildingsProvider
+            spendResources={spendResources}
+            updateProductionRate={updateProductionRate}
+            updateCapacityRates={updateCapacityRates}
+            updatePopulation={updatePopulation}  // <--- Sicherstellen, dass updatePopulation übergeben wird
+          >
             <ResearchProvider>
               <Header
                 userAddress={userAddress}
@@ -114,7 +119,7 @@ function App() {
                           spendResources={spendResources}
                           updateProductionRate={updateProductionRate}
                           updateCapacityRates={updateCapacityRates}
-                          updatePopulation={updatePopulation}
+                          updatePopulation={updatePopulation}  // <--- Sicherstellen, dass updatePopulation übergeben wird
                           handleUpgradeBuilding={handleUpgradeBuilding}
                         />
                       }

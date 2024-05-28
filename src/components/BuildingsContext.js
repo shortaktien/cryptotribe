@@ -1,13 +1,20 @@
 import React, { createContext, useState, useContext } from 'react';
 
+import lamberjackImage from "../assets/lamberjackImage.webp";
+import stonemasonImage from "../assets/stonemasonImage.webp";
+import warehouseImage from "../assets/warehouseImage.webp";
+import houseImage from "../assets/houseImage.webp";
+import farmImage from "../assets/farmImage.webp";
+import drawingWellImage from "../assets/drawingWellImage.webp";
+
 const BuildingsContext = createContext();
 
 const initialBuildingsData = [
-  //Lamberjack
+  // Lumberjack
   {
     id: 1,
     name: 'Lumberjack',
-    image: 'green_building1.jpg',
+    image: lamberjackImage,
     levels: [
       {
         level: 0,
@@ -23,24 +30,24 @@ const initialBuildingsData = [
       },
       {
         level: 2,
-        cost: { wood: 100, stone: 50 },
+        cost: { wood: 150, stone: 50, population: 20 },
         production: { wood: 20 },
         description: 'Wood is the resource Number 1.'
       },
       {
         level: 3,
-        cost: { wood: 52, stone: 0, food: 0 },
+        cost: { wood: 250, stone: 200, food: 100 },
         production: { wood: 30 },
         description: 'Wood is the resource Number 1.'
       }
     ],
     currentLevel: 0
   },
-  //Stonemason
+  // Stonemason
   {
     id: 2,
     name: 'Stonemason',
-    image: 'green_building1.jpg',
+    image: stonemasonImage,
     levels: [
       {
         level: 0,
@@ -56,24 +63,24 @@ const initialBuildingsData = [
       },
       {
         level: 2,
-        cost: { wood: 100, stone: 50 },
-        production: { stone: 5 },
+        cost: { wood: 200, stone: 150, population: 20 },
+        production: { stone: 20 },
         description: 'Stone is the resource Number 2.'
       },
       {
         level: 3,
-        cost: { wood: 52, stone: 0, food: 0 },
-        production: { stone: 5 },
+        cost: { wood: 250, stone: 300, food: 300 },
+        production: { stone: 30 },
         description: 'Stone is the resource Number 2.'
       }
     ],
     currentLevel: 0
   },
-  //Warehouse
+  // Warehouse
   {
     id: 3,
     name: 'Warehouse',
-    image: 'green_building1.jpg',
+    image: warehouseImage,
     levels: [
       {
         level: 0,
@@ -89,24 +96,24 @@ const initialBuildingsData = [
       },
       {
         level: 2,
-        cost: { wood: 150, stone: 50 },
-        capacity: { water: 100, food: 100, wood: 200, stone: 50 },
+        cost: { wood: 150, stone: 50, population: 20 },
+        capacity: { water: 200, food: 200, wood: 200, stone: 150 },
         description: 'A Warehouse to store Resources'
       },
       {
         level: 3,
-        cost: { wood: 52, stone: 0, food: 0 },
-        capacity: { water: 100, food: 100, wood: 100, stone: 50 },
+        cost: { wood: 200, stone: 150, food: 200 },
+        capacity: { water: 300, food: 300, wood: 300, stone: 200 },
         description: 'A Warehouse to store Resources'
       }
     ],
     currentLevel: 0
   },
-  //House
+  // House
   {
     id: 4,
     name: 'House',
-    image: 'green_building1.jpg',
+    image: houseImage,
     levels: [
       {
         level: 0,
@@ -128,18 +135,18 @@ const initialBuildingsData = [
       },
       {
         level: 3,
-        cost: { wood: 52, stone: 0, food: 0 },
+        cost: { wood: 300, stone: 200, food: 200 },
         population: 40,
         description: 'Every good Tribe need Population'
       }
     ],
     currentLevel: 0
   },
-  //Farm
+  // Farm
   {
     id: 5,
     name: 'Farm',
-    image: 'green_building1.jpg',
+    image: farmImage,
     levels: [
       {
         level: 0,
@@ -150,69 +157,76 @@ const initialBuildingsData = [
       {
         level: 1,
         cost: { wood: 50 },
-        production: { food: 4 },
+        production: { food: 3 },
         description: 'Population need food, so build farms'
       },
       {
         level: 2,
-        cost: { wood: 150, stone: 50 },
-        production: { food: 5 },
+        cost: { wood: 150, stone: 50, population: 20 },
+        production: { food: 4 },
         description: 'Population need food, so build farms'
       },
       {
         level: 3,
-        cost: { wood: 52, stone: 0, food: 0 },
+        cost: { wood: 300, stone: 200, food: 150 },
         production: { food: 5 },
         description: 'Population need food, so build farms'
       }
     ],
     currentLevel: 0
   },
-  //Drawing well
+  // Drawing well
   {
     id: 6,
     name: 'Drawing well',
-    image: 'green_building1.jpg',
+    image: drawingWellImage,
     levels: [
       {
         level: 0,
         cost: { wood: 0 },
         production: { water: 0 },
-        description: 'Population need food, so build farms'
+        description: 'Population need water, so build wells'
       },
       {
         level: 1,
         cost: { wood: 50 },
-        production: { water: 5 },
-        description: 'Population need food, so build farms'
+        production: { water: 4 },
+        description: 'Population need water, so build wells'
       },
       {
         level: 2,
-        cost: { wood: 150, stone: 50 },
+        cost: { wood: 150, stone: 150, population: 20 },
         production: { water: 5 },
-        description: 'Population need food, so build farms'
+        description: 'Population need water, so build wells'
       },
       {
         level: 3,
-        cost: { wood: 52, stone: 0, food: 0 },
-        production: { water: 5 },
-        description: 'Population need food, so build farms'
+        cost: { wood: 300, stone: 200, food: 100 },
+        production: { water: 6 },
+        description: 'Population need water, so build wells'
       }
     ],
     currentLevel: 0
-  },
+  }
   // Weitere Gebäude ...
 ];
 
-export const BuildingsProvider = ({ children }) => {
+export const BuildingsProvider = ({
+  children,
+  spendResources,
+  updateProductionRate,
+  updateCapacityRates,
+  updatePopulation
+}) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
   const upgradeBuilding = (
-      buildingId, 
-      spendResources, 
-      updateProductionRate, 
-      updateCapacityRates, 
-      updatePopulation) => {
+    buildingId, 
+    spendResources, 
+    updateProductionRate, 
+    updateCapacityRates, 
+    updatePopulation
+  ) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
         if (building.id === buildingId) {
@@ -248,7 +262,6 @@ export const BuildingsProvider = ({ children }) => {
       })
     );
   };
-  
 
   return (
     <BuildingsContext.Provider value={{ buildings, upgradeBuilding }}>

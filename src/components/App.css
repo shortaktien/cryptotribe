@@ -300,24 +300,36 @@
 }
 
 .blue-rectangle {
-  background-color: #0000FF; /* Blau */
+  background-color: rgba(235, 227, 227, 0.8); /* Dunkelweißer Hintergrund */
   border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-bottom: 20px;
-  width: 80%;
+  width: 90%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 .blue-image {
-  width: 50%;
+  width: 80%; /* Bild soll die volle Breite des Containers nutzen */
+  height: auto; /* Höhe automatisch anpassen */
   border-radius: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .building-info {
-  width: 45%;
-  color: white;
+  position: absolute; /* Absolut positionieren, um auf dem Bild zu sein */
+  top: 40px; /* Abstand von oben */
+  right: 130px; /* Abstand von rechts */
+  background-color: rgba(0, 0, 0, 0.685); /* Halbtransparenter schwarzer Hintergrund */
+  padding: 10px;
+  border-radius: 10px;
+  color: white; /* Textfarbe weiß */
+  z-index: 2; /* Höherer z-index als das Bild */
 }
 
 .green-rectangles {
@@ -327,23 +339,25 @@
 }
 
 .green-rectangle {
-  background-color: #00FF00; /* Grün */
+  background-color: rgba(235, 227, 227, 0.8); /* Grün */
   border-radius: 10px;
   padding: 10px;
   margin: 0 10px;
   position: relative;
   cursor: pointer;
   text-align: center;
+  width: 150px; /* Feste Breite setzen */
+  height: 150px; /* Feste Höhe setzen */
 }
 
 .green-image {
-  width: 100px;
-  height: 100px;
-  border-radius: 10px;
+  width: 100px; /* Breite des Bildes auf 100px setzen */
+  height: 100px; /* Höhe des Bildes auf 100px setzen */
+  border-radius: 50px;
 }
 
 .level {
-  background-color: #FF0000; /* Rot */
+  background-color: #ffa600e8; /* Rot */
   border-radius: 5px;
   color: white;
   padding: 5px;
@@ -351,4 +365,29 @@
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.circular-images {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.circular-image-wrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 15%;
+  overflow: hidden;
+  border: 2px solid #ccc; /* Optional: Rand um die Kreise */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff; /* Optional: Hintergrundfarbe */
+  position: relative;
+}
+
+.circular-image {
+  width: 180%;
+  height: auto;
 }
