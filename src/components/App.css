@@ -13,22 +13,6 @@
   margin-top: 0px; 
 }
 
-.resource {
-  display: flex;
-  align-items: center;
-  margin-right: 10px;
-}
-
-.resource-icon {
-  width: 45px;
-  height: 45px;
-  margin-right: 5px;
-}
-
-.header .resources {
-  display: flex;
-  gap: 15px; /* Adjust gap as needed */
-}
 
 /* src/components/StartPage.css */
 .start-page {
@@ -120,6 +104,24 @@
   }
 }
 
+
+.resource {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.resource-icon {
+  width: 45px;
+  height: 45px;
+  margin-right: 5px;
+}
+
+.header .resources {
+  display: flex;
+  gap: 15px; /* Adjust gap as needed */
+}
+
 /* src/components/MainContent.css */
 .main-content {
   flex: 1;
@@ -139,7 +141,7 @@
   color: #fff;
   padding: 10px;
   text-align: center;
-  height: 450; /* Adjust for header height */
+  height: 700px; /* Adjust for header height */
   border-radius: 20px; /* Rounded corners */
 }
 
@@ -149,17 +151,24 @@
 }
 
 .sidebar li {
-  padding: 10px 0;
+  padding: 5px 0;
 }
 
 .sidebar-link {
   text-decoration: none;
   color: #fff;
   background-color: #444;
-  padding: 10px;
-  border-radius: 15px;
-  display: block;
+  padding: 5px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center; /* Vertically center the icon and text */
   transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar-link img.sidebar-icon {
+  width: 45px;
+  height: 45px;
+  margin-right: 8px;
 }
 
 .sidebar-link:hover {
@@ -218,6 +227,14 @@
   display: block;
 }
 
+.icon-only .sidebar-link {
+  justify-content: center; /* Center the icon when there's no text */
+}
+
+.icon-only .sidebar-link span {
+  display: none; /* Hide the text in the dropdown */
+}
+
 @media screen and (max-width: 768px) {
   .sidebar {
     display: none;
@@ -227,7 +244,6 @@
   }
   .dropdown-toggle {
     display: block;
-
   }
   .dropdown-content {
     display: block;
