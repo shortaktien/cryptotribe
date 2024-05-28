@@ -6,8 +6,9 @@ import populationImage from '../assets/populationImage.webp';
 import stoneImage from '../assets/stoneImage.webp';
 import waterImage from '../assets/waterImage.webp';
 import woodImage from '../assets/woodImage.webp';
+import cryptotribeImage from "../assets/cryptotribeImage.webp";
 
-import './App.css';
+import "./App.css"; // Stelle sicher, dass du den korrekten Pfad verwendest
 
 const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -18,7 +19,8 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
 
   return (
     <div className="header">
-      <div className="logo">Cryptotribe</div>
+      <div className="logo"></div>
+      <img src={cryptotribeImage} alt="Cryptotribe Logo" className="logo-icon" />
       <div className="resources">
         <div className="resource">
           <img src={waterImage} alt="Water" className="resource-icon" />

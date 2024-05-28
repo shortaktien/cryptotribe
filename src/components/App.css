@@ -50,9 +50,11 @@
   border-radius: 20px;
 }
 
-.header .logo {
-  font-size: 24px;
-  margin-left: 50px;
+.logo-icon {
+  display: flex;
+  margin-left: 10px;
+  width: 185px;
+  height: 45px;
 }
 
 .resources {
@@ -62,9 +64,20 @@
   margin-left: 80px;
 }
 
-.resources div {
-  margin: 0;
-  white-space: nowrap; /* Verhindert Zeilenumbruch innerhalb der Ressourcen */
+.resource {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.resource-icon {
+  width: 45px;
+  height: 45px;
+  margin-right: 5px;
+}
+
+.resource span {
+  margin-left: 5px;
 }
 
 .profile {
@@ -89,12 +102,34 @@
 }
 
 @media screen and (max-width: 768px) {
-  .header .logo {
-    font-size: 16px; /* Logo wird kleiner */
+  .header .logo-icon {
+    width: 120px; /* Logo wird kleiner */
+    height: 30px; /* Logo wird kleiner */
     margin-left: 20px;
   }
   .resources {
     display: none; /* Ressourcen werden ausgeblendet */
+  }
+  .resources .resource {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .resources .resource span {
+    display: block;
+    font-size: 12px;
+  }
+  .resources {
+    display: flex; /* Ressourcen werden wieder angezeigt */
+    flex-direction: row; /* Richtet die Ressourcen nebeneinander aus */
+    gap: 10px; /* Reduziert den Abstand zwischen den Ressourcen */
+  }
+  .resource span {
+    display: none; /* Blendet den Text aus */
+  }
+  .resource-icon {
+    width: 30px; /* Verkleinert das Icon */
+    height: 30px; /* Verkleinert das Icon */
   }
   .dropdown-content {
     top: 40px; /* Dropdown-Position anpassen */
@@ -105,22 +140,6 @@
 }
 
 
-.resource {
-  display: flex;
-  align-items: center;
-  margin-right: 10px;
-}
-
-.resource-icon {
-  width: 45px;
-  height: 45px;
-  margin-right: 5px;
-}
-
-.header .resources {
-  display: flex;
-  gap: 15px; /* Adjust gap as needed */
-}
 
 /* src/components/MainContent.css */
 .main-content {
@@ -274,7 +293,6 @@
 }
 
 /*src/components/Buildings.css*/
-/* src/components/Buildings.css */
 .buildings {
   display: flex;
   flex-direction: column;
