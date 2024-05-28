@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
-//import useResources from './SetResources';
+
+import foodImage from '../assets/foodImage.webp';
+import populationImage from '../assets/populationImage.webp';
+import stoneImage from '../assets/stoneImage.webp';
+import waterImage from '../assets/waterImage.webp';
+import woodImage from '../assets/woodImage.webp';
+
 import './App.css';
 
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources, population }) => {
+const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -14,15 +20,30 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, pop
     <div className="header">
       <div className="logo">Cryptotribe</div>
       <div className="resources">
-        <div>Water: {resources.water}</div>
-        <div>Food: {resources.food}</div>
-        <div>Wood: {resources.wood}</div>
-        <div>Stone: {resources.stone}</div>
-        <div>Population: {resources.population}</div>
+        <div className="resource">
+          <img src={waterImage} alt="Water" className="resource-icon" />
+          <span>Water: {resources.water}</span>
+        </div>
+        <div className="resource">
+          <img src={foodImage} alt="Food" className="resource-icon" />
+          <span>Food: {resources.food}</span>
+        </div>
+        <div className="resource">
+          <img src={woodImage} alt="Wood" className="resource-icon" />
+          <span>Wood: {resources.wood}</span>
+        </div>
+        <div className="resource">
+          <img src={stoneImage} alt="Stone" className="resource-icon" />
+          <span>Stone: {resources.stone}</span>
+        </div>
+        <div className="resource">
+          <img src={populationImage} alt="Population" className="resource-icon" />
+          <span>Population: {resources.population}</span>
+        </div>
         <div>Tribe [0:0:0]</div>
       </div>
       <div className="profile">
-      {userAvatar ? (
+        {userAvatar ? (
           <img src={userAvatar} alt="Profile" className="profile-icon" onClick={toggleDropdown} />
         ) : (
           <FaUserCircle size={40} onClick={toggleDropdown} />
@@ -30,7 +51,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, pop
         {dropdownVisible && (
           <div className="dropdown">
             <p>Profile: {userName}</p>
-            <p>Adress: {userAddress}</p>
+            <p>Address: {userAddress}</p>
             <p>Balance: {userBalance}</p>
           </div>
         )}

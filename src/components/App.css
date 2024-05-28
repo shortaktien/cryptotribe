@@ -10,8 +10,26 @@
   flex: 1;
   background-color: #eaeaea;
   padding: 10px;
-  margin-top: 0px; /* Fügen Sie einen oberen Rand hinzu, um es vom Header zu trennen */
+  margin-top: 0px; 
 }
+
+.resource {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.resource-icon {
+  width: 45px;
+  height: 45px;
+  margin-right: 5px;
+}
+
+.header .resources {
+  display: flex;
+  gap: 15px; /* Adjust gap as needed */
+}
+
 /* src/components/StartPage.css */
 .start-page {
   text-align: center;
