@@ -7,6 +7,7 @@ import stoneImage from '../assets/stoneImage.webp';
 import waterImage from '../assets/waterImage.webp';
 import woodImage from '../assets/woodImage.webp';
 import cryptotribeImage from "../assets/cryptotribeImage.webp";
+import knowledgeImage from "../assets/knowledgeImage.webp";
 
 import "./App.css"; // Stelle sicher, dass du den korrekten Pfad verwendest
 
@@ -41,6 +42,10 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
         <div className="resource">
           <img src={populationImage} alt="Population" className="resource-icon" />
           <span>Population: {resources.population}</span>
+        </div>
+        <div className="resource">
+          <img src={knowledgeImage} alt="Research" className="resource-icon" />
+          <span>Sciennce: {resources.knowledge}</span>
         </div>
         <div>Tribe [0:0:0]</div>
       </div>

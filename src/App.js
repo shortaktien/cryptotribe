@@ -91,9 +91,12 @@ function App() {
             spendResources={spendResources}
             updateProductionRate={updateProductionRate}
             updateCapacityRates={updateCapacityRates}
-            updatePopulation={updatePopulation}  // <--- Sicherstellen, dass updatePopulation übergeben wird
+            updatePopulation={updatePopulation}
           >
-            <ResearchProvider>
+            <ResearchProvider
+              spendResources={spendResources}
+              updateResearchEffects={updateResearchEffects}
+            >
               <Header
                 userAddress={userAddress}
                 userAvatar={userAvatar}
@@ -119,7 +122,7 @@ function App() {
                           spendResources={spendResources}
                           updateProductionRate={updateProductionRate}
                           updateCapacityRates={updateCapacityRates}
-                          updatePopulation={updatePopulation}  // <--- Sicherstellen, dass updatePopulation übergeben wird
+                          updatePopulation={updatePopulation}
                           handleUpgradeBuilding={handleUpgradeBuilding}
                         />
                       }

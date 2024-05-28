@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
+import researchLaborImage from "../assets/researchLaborImage.webp";
 
 const ResearchContext = createContext();
 
@@ -6,6 +7,7 @@ const initialResearchData = [
   {
     id: 1,
     name: 'Agriculture',
+    image: researchLaborImage,
     description: 'Increase food production efficiency.',
     levels: [
       {
@@ -38,10 +40,18 @@ const initialResearchData = [
   // Weitere Forschungseinträge ...
 ];
 
-export const ResearchProvider = ({ children }) => {
+export const ResearchProvider = ({
+  children,
+  spendResources,
+  updateResearchEffects
+}) => {
   const [researches, setResearches] = useState(initialResearchData);
 
-  const upgradeResearch = (researchId, spendResources, updateResearchEffects) => {
+  const upgradeResearch = (
+    researchId, 
+    spendResources, 
+    updateResearchEffects
+  ) => {
     setResearches(prevResearches =>
       prevResearches.map(research => {
         if (research.id === researchId) {
