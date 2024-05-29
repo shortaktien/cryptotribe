@@ -249,7 +249,7 @@ export const BuildingsProvider = ({
   spendResources,
   updateProductionRate,
   updateCapacityRates,
-  updatePopulation // Hier updatePopulation hinzufügen
+  updatePopulation // Sicherstellen, dass es eine Funktion ist
 }) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
@@ -258,7 +258,7 @@ export const BuildingsProvider = ({
     spendResources, 
     updateProductionRate, 
     updateCapacityRates, 
-    updatePopulation // Hier updatePopulation verwenden
+    updatePopulation // Sicherstellen, dass es eine Funktion ist
   ) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
@@ -266,6 +266,8 @@ export const BuildingsProvider = ({
           const nextLevel = building.currentLevel + 1;
           if (nextLevel < building.levels.length) {
             const nextLevelData = building.levels[nextLevel];
+            
+            // Ressourcenverbrauch
             if (spendResources(nextLevelData.cost)) {
               const updatedBuilding = {
                 ...building,
@@ -283,9 +285,9 @@ export const BuildingsProvider = ({
                   updateCapacityRates(resource, capacity);
                 });
               }
+              // Population wird nicht abgezogen, nur geprüft
               if (nextLevelData.population) {
-                updatePopulation(nextLevelData.population);
-                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Current water consumption: ${nextLevelData.population * 0.2}, Current food consumption: ${nextLevelData.population * 0.2}`);
+                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Requires population: ${nextLevelData.population}`);
               }
               return updatedBuilding;
             }
