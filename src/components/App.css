@@ -59,6 +59,10 @@
   color: #fff;
   padding: 10px 20px;
   border-radius: 20px;
+  /* Entferne position: sticky oder fixed */
+  position: relative; /* Standardwert */
+  top: auto; /* Stelle sicher, dass kein sticky oder fixed Verhalten vorhanden ist */
+  margin-bottom: 20px; /* Füge einen unteren Rand hinzu, um Abstand zu schaffen */
 }
 
 .logo-icon {
