@@ -24,7 +24,7 @@ const initialBuildingsData = [
       },
       {
         level: 1,
-        cost: { wood: 50 },
+        cost: { wood: 50, population: 1 },
         production: { wood: 10 },
         description: 'Wood is the resource Number 1.'
       },
@@ -58,7 +58,7 @@ const initialBuildingsData = [
       {
         level: 1,
         cost: { wood: 50 },
-        production: { stone: 10 },
+        production: { stone: 10, population: 1 },
         description: 'Stone is the resource Number 2.'
       },
       {
@@ -91,7 +91,7 @@ const initialBuildingsData = [
       {
         level: 1,
         cost: { wood: 50 },
-        capacity: { water: 100, food: 100, wood: 150, stone: 100 },
+        capacity: { water: 100, food: 100, wood: 150, stone: 100, population: 5 },
         description: 'A Warehouse to store Resources'
       },
       {
@@ -161,7 +161,7 @@ const initialBuildingsData = [
       {
         level: 1,
         cost: { wood: 50 },
-        production: { food: 3 },
+        production: { food: 3, population: 5 },
         description: 'Population need food, so build farms'
       },
       {
@@ -194,7 +194,7 @@ const initialBuildingsData = [
       {
         level: 1,
         cost: { wood: 50 },
-        production: { water: 4 },
+        production: { water: 4, population: 1 },
         description: 'Population need water, so build wells'
       },
       {
@@ -226,7 +226,7 @@ const initialBuildingsData = [
       },
       {
         level: 1,
-        cost: { wood: 150 },
+        cost: { wood: 150, population: 10 },
         production: { knowledge: 1 },
         description: 'Science is important'
       },
