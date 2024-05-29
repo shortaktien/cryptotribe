@@ -261,8 +261,7 @@ export const BuildingsProvider = ({
     buildingId, 
     spendResources, 
     updateProductionRate, 
-    updateCapacityRates, 
-    updatePopulation 
+    updateCapacityRates 
   ) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
@@ -270,12 +269,9 @@ export const BuildingsProvider = ({
           const nextLevel = building.currentLevel + 1;
           if (nextLevel < building.levels.length) {
             const nextLevelData = building.levels[nextLevel];
-            
-            // Ressourcenverbrauch
+  
             const totalCost = { ...nextLevelData.cost };
-            if (nextLevelData.population) {
-              totalCost.population = nextLevelData.population;
-            }
+  
             if (spendResources(totalCost)) {
               const updatedBuilding = {
                 ...building,
@@ -294,10 +290,6 @@ export const BuildingsProvider = ({
                 });
               }
   
-              if (nextLevelData.population) {
-                updatePopulation(nextLevelData.population);
-                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Population increased by: ${nextLevelData.population}`);
-              }
               return updatedBuilding;
             }
           }
@@ -306,6 +298,7 @@ export const BuildingsProvider = ({
       })
     );
   };
+  
   
   
 
