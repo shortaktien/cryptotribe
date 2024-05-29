@@ -13,7 +13,6 @@
   margin-top: 0px; 
 }
 
-
 /* src/components/StartPage.css */
 .start-page {
   text-align: center;
@@ -38,7 +37,6 @@
   background-color: #45a049;
 }
 
-
 /* src/components/Header.css */
 .header {
   display: flex;
@@ -59,7 +57,7 @@
 
 .resources {
   display: flex;
-  gap: 20px; /* Abstand zwischen den Ressourcen */
+  gap: 10px; /* Abstand zwischen den Ressourcen */
   margin-right: 90px;
   margin-left: 80px;
 }
@@ -67,7 +65,12 @@
 .resource {
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 1px;
+  position: relative;
+}
+
+.resource-container {
+  position: relative;
 }
 
 .resource-icon {
@@ -76,8 +79,30 @@
   margin-right: 5px;
 }
 
-.resource span {
+.resource-amount {
   margin-left: 5px;
+}
+
+.resource-tooltip {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%; /* Position above the icon */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.resource-container:hover .resource-tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
 .profile {
@@ -122,7 +147,7 @@
   .resources {
     display: flex; /* Ressourcen werden wieder angezeigt */
     flex-direction: row; /* Richtet die Ressourcen nebeneinander aus */
-    gap: 10px; /* Reduziert den Abstand zwischen den Ressourcen */
+    gap: 5px; /* Reduziert den Abstand zwischen den Ressourcen */
   }
   .resource span {
     display: none; /* Blendet den Text aus */
@@ -138,7 +163,6 @@
     margin-right: 20px;
   }
 }
-
 
 
 /* src/components/MainContent.css */
@@ -269,7 +293,6 @@
   }
 }
 
-
 /* src/components/ResourceCard.css */
 .resource-card {
   background-color: #fff;
@@ -279,8 +302,6 @@
   margin: 10px;
   text-align: left;
 }
-
-
 
 /* src/components/Footer.css */
 .footer {

@@ -1,29 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { useResearch } from './ResearchContext';
+import researchLaborImage from "../assets/researchLaborImage.webp"; // Aktualisiere den Pfad
+
 import './App.css';
 
-const Research = ({ resources, spendResources, updateResearchEffects }) => {
-  const [selectedResearch, setSelectedResearch] = useState(null);
+const defaultImage = {
+  id: 0,
+  name: 'Welcome to Research',
+  image: researchLaborImage, // Aktualisierter Pfad zum Standardbild
+  info: 'Select a research to see details.'
+};
+
+const Research = ({ resources, spendResources, updateResearchEffects, handleUpgradeResearch }) => {
+  const [selectedResearch, setSelectedResearch] = useState(defaultImage);
   const { researches, upgradeResearch } = useResearch();
 
   const handleResearchClick = (research) => {
     setSelectedResearch(research);
   };
 
-  const handleUpgrade = () => {
-    if (selectedResearch) {
-      upgradeResearch(selectedResearch.id, spendResources, updateResearchEffects);
+  const handleUpgrade = async () => {
+    const researchId = selectedResearch.id;
+    const nextLevelData = selectedResearch.levels[selectedResearch.currentLevel + 1];
+    const resourceNames = Object.keys(nextLevelData.cost);
+    const resourceCosts = Object.values(nextLevelData.cost);
+
+    const success = spendResources(nextLevelData.cost);
+    if (success) {
+      console.log('Resources spent successfully:', nextLevelData.cost);
+      await handleUpgradeResearch(researchId, resourceNames, resourceCosts);
+      upgradeResearch(researchId, spendResources, updateResearchEffects);
+    } else {
+      console.log('Not enough resources:', nextLevelData.cost);
     }
   };
 
   useEffect(() => {
-    if (selectedResearch) {
+    if (selectedResearch.id !== 0) {
       const updatedResearch = researches.find(r => r.id === selectedResearch.id);
       if (updatedResearch) {
         setSelectedResearch(updatedResearch);
       }
     }
-  }, [researches, selectedResearch]);
+  }, [researches, selectedResearch.id]);
 
   const getCurrentLevelData = (research) => {
     return research.levels[research.currentLevel];
@@ -59,43 +78,44 @@ const Research = ({ resources, spendResources, updateResearchEffects }) => {
   };
 
   return (
-    <div className="main-content">
-      <h2>Research</h2>
+    <div className='main-content'>
       <div className="researches">
         <div className="blue-rectangle">
-          {selectedResearch ? (
-            <>
-              <div className="research-info">
+          <img src={selectedResearch.image} alt={selectedResearch.name} className="blue-image" />
+          <div className="research-info">
+            {selectedResearch.id !== 0 ? (
+              <>
                 <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
                 <h3>Current Level Information:</h3>
                 <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
                 <p>Effect: {getCurrentLevelData(selectedResearch).effect}</p>
-                <p>{selectedResearch.description}</p>
+                <p>{getCurrentLevelData(selectedResearch).description}</p>
 
                 {getNextLevelData(selectedResearch) && (
                   <>
                     <h3>Next Level Information:</h3>
                     <p>Cost: {renderResourceCost(getNextLevelData(selectedResearch).cost)}</p>
                     <p>Effect: {getNextLevelData(selectedResearch).effect}</p>
+                    <p>{getNextLevelData(selectedResearch).description}</p>
                     <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost)}>
                       Upgrade to Level {selectedResearch.currentLevel + 1}
                     </button>
                   </>
                 )}
+              </>
+            ) : (
+              <div className="research-info">
+                <h2>{selectedResearch.name}</h2>
+                <p>{selectedResearch.info}</p>
               </div>
-            </>
-          ) : (
-            <div className="research-info">
-              <h2>Select a Research</h2>
-              <p>Click on a research item to see details and upgrade options.</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-        <div className="green-rectangles">
+        <div className="circular-images">
           {researches.map((research) => (
-            <div key={research.id} className="green-rectangle" onClick={() => handleResearchClick(research)}>
+            <div key={research.id} className="circular-image-wrapper" onClick={() => handleResearchClick(research)}>
+              <img src={research.image} alt={research.name} className="circular-image" />
               <div className="level">{research.currentLevel}</div>
-              <h3>{research.name}</h3>
             </div>
           ))}
         </div>

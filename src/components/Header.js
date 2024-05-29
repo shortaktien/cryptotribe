@@ -9,7 +9,7 @@ import woodImage from '../assets/woodImage.webp';
 import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
 
-import "./App.css"; // Stelle sicher, dass du den korrekten Pfad verwendest
+import "./App.css"; // Stellen Sie sicher, dass der korrekte Pfad verwendet wird
 
 const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -18,35 +18,29 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
     setDropdownVisible(!dropdownVisible);
   };
 
+  const resourcesData = [
+    { name: 'Water', value: resources.water, image: waterImage },
+    { name: 'Food', value: resources.food, image: foodImage },
+    { name: 'Wood', value: resources.wood, image: woodImage },
+    { name: 'Stone', value: resources.stone, image: stoneImage },
+    { name: 'Population', value: resources.population, image: populationImage },
+    { name: 'Science', value: resources.knowledge, image: knowledgeImage }
+  ];
+
   return (
     <div className="header">
       <div className="logo"></div>
       <img src={cryptotribeImage} alt="Cryptotribe Logo" className="logo-icon" />
       <div className="resources">
-        <div className="resource">
-          <img src={waterImage} alt="Water" className="resource-icon" />
-          <span>Water: {resources.water}</span>
-        </div>
-        <div className="resource">
-          <img src={foodImage} alt="Food" className="resource-icon" />
-          <span>Food: {resources.food}</span>
-        </div>
-        <div className="resource">
-          <img src={woodImage} alt="Wood" className="resource-icon" />
-          <span>Wood: {resources.wood}</span>
-        </div>
-        <div className="resource">
-          <img src={stoneImage} alt="Stone" className="resource-icon" />
-          <span>Stone: {resources.stone}</span>
-        </div>
-        <div className="resource">
-          <img src={populationImage} alt="Population" className="resource-icon" />
-          <span>Population: {resources.population}</span>
-        </div>
-        <div className="resource">
-          <img src={knowledgeImage} alt="Research" className="resource-icon" />
-          <span>Sciennce: {resources.knowledge}</span>
-        </div>
+        {resourcesData.map((resource, index) => (
+          <div key={index} className="resource">
+            <div className="resource-container">
+              <img src={resource.image} alt={resource.name} className="resource-icon" />
+              <div className="resource-tooltip">{resource.name}</div>
+            </div>
+            <span className="resource-amount">{resource.value}</span>
+          </div>
+        ))}
         <div>Tribe [0:0:0]</div>
       </div>
       <div className="profile">

@@ -28,7 +28,7 @@ function App() {
   const [userAvatar, setUserAvatar] = useState('');
   const [userName, setUserName] = useState('');
   const [userBalance, setUserBalance] = useState('');
-  const [web3, setWeb3] = useState(null); // Add web3 state
+  const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
 
@@ -36,7 +36,7 @@ function App() {
     const initWeb3 = async () => {
       try {
         const web3Instance = await getWeb3();
-        setWeb3(web3Instance); // Set web3 instance
+        setWeb3(web3Instance);
         const accounts = await web3Instance.eth.getAccounts();
         setUserAddress(accounts[0]);
         const contractInstance = await getContract(web3Instance);
@@ -61,7 +61,6 @@ function App() {
       return;
     }
   
-    // Check if resources are sufficient
     const hasEnoughResources = resourceNames.every((resource, index) => {
       return resources[resource] >= resourceCosts[index];
     });
@@ -81,7 +80,6 @@ function App() {
       }
     }
   };
-  
 
   return (
     <Router>
