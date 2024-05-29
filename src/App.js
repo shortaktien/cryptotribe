@@ -120,7 +120,7 @@ function App() {
             spendResources={spendResources}
             updateProductionRate={updateProductionRate}
             updateCapacityRates={updateCapacityRates}
-            updatePopulation={updatePopulation} // Hier updatePopulation übergeben
+            updatePopulation={(newPopulation) => updatePopulation(newPopulation)} // Sicherstellen, dass es eine Funktion ist
           >
             <ResearchProvider
               spendResources={spendResources}
@@ -151,7 +151,7 @@ function App() {
                           spendResources={spendResources}
                           updateProductionRate={updateProductionRate}
                           updateCapacityRates={updateCapacityRates}
-                          updatePopulation={updatePopulation} // Hier updatePopulation übergeben
+                          updatePopulation={updatePopulation} // Sicherstellen, dass es eine Funktion ist
                           handleUpgradeBuilding={handleUpgradeBuilding}
                         />
                       }
