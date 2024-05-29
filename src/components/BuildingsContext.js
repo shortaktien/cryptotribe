@@ -207,6 +207,39 @@ const initialBuildingsData = [
       }
     ],
     currentLevel: 0
+  },
+  // Science
+  {
+    id: 7,
+    name: 'Science',
+    image: drawingWellImage,
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        production: { knowledge: 0 },
+        description: 'Science is important'
+      },
+      {
+        level: 1,
+        cost: { wood: 150 },
+        production: { knowledge: 1 },
+        description: 'Science is important'
+      },
+      {
+        level: 2,
+        cost: { wood: 250, stone: 150, population: 20 },
+        production: { knowledge: 2 },
+        description: 'Science is important'
+      },
+      {
+        level: 3,
+        cost: { wood: 300, stone: 200, food: 100 },
+        production: { knowledge: 3 },
+        description: 'Science is important'
+      }
+    ],
+    currentLevel: 0
   }
   // Weitere Gebäude ...
 ];
@@ -216,7 +249,7 @@ export const BuildingsProvider = ({
   spendResources,
   updateProductionRate,
   updateCapacityRates,
-  updatePopulation
+  updatePopulation // Hier updatePopulation hinzufügen
 }) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
@@ -225,7 +258,7 @@ export const BuildingsProvider = ({
     spendResources, 
     updateProductionRate, 
     updateCapacityRates, 
-    updatePopulation
+    updatePopulation // Hier updatePopulation verwenden
   ) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {

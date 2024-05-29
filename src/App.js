@@ -55,26 +55,57 @@ function App() {
       console.error('Contract not initialized');
       return;
     }
-  
+
     if (!userAddress) {
       console.error('User address not initialized');
       return;
     }
-  
+
     const hasEnoughResources = resourceNames.every((resource, index) => {
       return resources[resource] >= resourceCosts[index];
     });
-  
+
     if (!hasEnoughResources) {
       console.error('Not enough resources');
       return;
     }
-  
+
     try {
       console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
       await sendTransaction(web3, userAddress, contract, 'upgradeBuilding', [buildingId, resourceNames, resourceCosts]);
     } catch (error) {
       console.error('Error upgrading building:', error);
+      if (error.data) {
+        console.error('Error data: ', error.data);
+      }
+    }
+  };
+
+  const handleUpgradeResearch = async (researchId, resourceNames, resourceCosts) => {
+    if (!contract) {
+      console.error('Contract not initialized');
+      return;
+    }
+
+    if (!userAddress) {
+      console.error('User address not initialized');
+      return;
+    }
+
+    const hasEnoughResources = resourceNames.every((resource, index) => {
+      return resources[resource] >= resourceCosts[index];
+    });
+
+    if (!hasEnoughResources) {
+      console.error('Not enough resources');
+      return;
+    }
+
+    try {
+      console.log('Sending transaction with the following parameters:', { researchId, resourceNames, resourceCosts });
+      await sendTransaction(web3, userAddress, contract, 'upgradeResearch', [researchId, resourceNames, resourceCosts]);
+    } catch (error) {
+      console.error('Error upgrading research:', error);
       if (error.data) {
         console.error('Error data: ', error.data);
       }
@@ -89,7 +120,7 @@ function App() {
             spendResources={spendResources}
             updateProductionRate={updateProductionRate}
             updateCapacityRates={updateCapacityRates}
-            updatePopulation={updatePopulation}
+            updatePopulation={updatePopulation} // Hier updatePopulation übergeben
           >
             <ResearchProvider
               spendResources={spendResources}
@@ -120,12 +151,11 @@ function App() {
                           spendResources={spendResources}
                           updateProductionRate={updateProductionRate}
                           updateCapacityRates={updateCapacityRates}
-                          updatePopulation={updatePopulation}
+                          updatePopulation={updatePopulation} // Hier updatePopulation übergeben
                           handleUpgradeBuilding={handleUpgradeBuilding}
                         />
                       }
                     />
-                    <Route path="/merchant" element={<Merchant />} />
                     <Route
                       path="/research"
                       element={
@@ -133,9 +163,11 @@ function App() {
                           resources={resources}
                           spendResources={spendResources}
                           updateResearchEffects={updateResearchEffects}
+                          handleUpgradeResearch={handleUpgradeResearch}
                         />
                       }
                     />
+                    <Route path="/merchant" element={<Merchant />} />
                     <Route path="/shipyard" element={<Shipyard />} />
                     <Route path="/defense" element={<Defense />} />
                     <Route path="/military" element={<Military />} />

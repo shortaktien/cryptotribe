@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext } from 'react';
-import researchLaborImage from "../assets/researchLaborImage.webp";
+
+import agricultureResearchImage from "../assets/agricultureResearchImage.webp";
+
 
 const ResearchContext = createContext();
 
@@ -7,30 +9,30 @@ const initialResearchData = [
   {
     id: 1,
     name: 'Agriculture',
-    image: researchLaborImage,
+    image: agricultureResearchImage,
     description: 'Increase food production efficiency.',
     levels: [
       {
         level: 0,
-        cost: { science: 0 },
+        cost: { knowledge: 0 },
         effect: 'No bonus.',
         multiplier: { food: 0 }
       },
       {
         level: 1,
-        cost: { science: 50 },
+        cost: { knowledge: 50 },
         effect: 'Increase food production by 10%.',
         multiplier: { food: 0.1 }
       },
       {
         level: 2,
-        cost: { science: 150 },
+        cost: { knowledge: 150 },
         effect: 'Increase food production by 20%.',
         multiplier: { food: 0.2 }
       },
       {
         level: 3,
-        cost: { science: 300 },
+        cost: { knowledge: 300 },
         effect: 'Increase food production by 30%.',
         multiplier: { food: 0.3 }
       }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useResearch } from './ResearchContext';
-import researchLaborImage from "../assets/researchLaborImage.webp"; // Aktualisiere den Pfad
+import researchLaborImage from "../assets/researchLaborImage.webp"; 
+
 
 import './App.css';
 

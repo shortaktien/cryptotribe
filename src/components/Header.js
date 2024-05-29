@@ -19,12 +19,12 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
   };
 
   const resourcesData = [
-    { name: 'Water', value: resources.water, image: waterImage },
-    { name: 'Food', value: resources.food, image: foodImage },
-    { name: 'Wood', value: resources.wood, image: woodImage },
-    { name: 'Stone', value: resources.stone, image: stoneImage },
-    { name: 'Population', value: resources.population, image: populationImage },
-    { name: 'Science', value: resources.knowledge, image: knowledgeImage }
+    { name: 'Water', value: Math.floor(resources.water), image: waterImage },
+    { name: 'Food', value: Math.floor(resources.food), image: foodImage },
+    { name: 'Wood', value: Math.floor(resources.wood), image: woodImage },
+    { name: 'Stone', value: Math.floor(resources.stone), image: stoneImage },
+    { name: 'Population', value: Math.floor(resources.population), image: populationImage },
+    { name: 'Knowledge', value: Math.floor(resources.knowledge), image: knowledgeImage }
   ];
 
   return (
@@ -52,7 +52,8 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
         {dropdownVisible && (
           <div className="dropdown">
             <p>Address: {userAddress}</p>
-            <p>Balance: {userName}</p>
+            <p>Balance: {userBalance}</p>
+            <p>Name: {userName}</p>
           </div>
         )}
       </div>
