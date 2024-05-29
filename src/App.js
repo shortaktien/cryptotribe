@@ -22,7 +22,7 @@ import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
 
 function App() {
-  const { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects } = useResources();
+  const { resources, updateProductionRate, spendResources, updateCapacityRates, refundResources, updateResearchEffects } = useResources();
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
@@ -112,6 +112,28 @@ function App() {
     }
   };
 
+  const handleDemolishBuilding = async (buildingId, resourceNames, resourceCosts) => {
+    if (!contract) {
+      console.error('Contract not initialized');
+      return;
+    }
+
+    if (!userAddress) {
+      console.error('User address not initialized');
+      return;
+    }
+
+    try {
+      console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
+      await sendTransaction(web3, userAddress, contract, 'demolishBuilding', [buildingId, resourceNames, resourceCosts]);
+    } catch (error) {
+      console.error('Error demolishing building:', error);
+      if (error.data) {
+        console.error('Error data: ', error.data);
+      }
+    }
+  };
+
   return (
     <Router>
       <div className="app">
@@ -120,7 +142,7 @@ function App() {
             spendResources={spendResources}
             updateProductionRate={updateProductionRate}
             updateCapacityRates={updateCapacityRates}
-            updatePopulation={updatePopulation} // Sicherstellen, dass es eine Funktion ist
+            refundResources={refundResources} // refundResources hinzufügen
           >
             <ResearchProvider
               spendResources={spendResources}
@@ -148,11 +170,11 @@ function App() {
                       element={
                         <Buildings
                           resources={resources}
-                          updatePopulation={updatePopulation}
                           spendResources={spendResources}
                           updateProductionRate={updateProductionRate}
                           updateCapacityRates={updateCapacityRates}
                           handleUpgradeBuilding={handleUpgradeBuilding}
+                          handleDemolishBuilding={handleDemolishBuilding} // handleDemolishBuilding hinzufügen
                         />
                       }
                     />

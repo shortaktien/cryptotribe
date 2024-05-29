@@ -61,14 +61,23 @@ const useResources = () => {
     const interval = setInterval(() => {
       const netProduction = calculateNetProduction(productionRates);
       setResources(prevResources => {
-        return {
+        const newResources = {
           water: Math.min(Math.max(prevResources.water + netProduction.water, 0), capacityRates.water),
           food: Math.min(Math.max(prevResources.food + netProduction.food, 0), capacityRates.food),
           wood: Math.min(prevResources.wood + netProduction.wood, capacityRates.wood),
           stone: Math.min(prevResources.stone + netProduction.stone, capacityRates.stone),
           knowledge: Math.min(prevResources.knowledge + netProduction.knowledge, capacityRates.knowledge),
-          population: Math.min(prevResources.population + netProduction.population, capacityRates.population),
+          population: prevResources.population,
         };
+
+        // Check if food or water is 0 and adjust population accordingly
+        if (newResources.food === 0 || newResources.water === 0) {
+          newResources.population = Math.max(newResources.population - 1, 0);
+        } else {
+          newResources.population = Math.min(newResources.population + netProduction.population, capacityRates.population);
+        }
+
+        return newResources;
       });
     }, 1000);
 
@@ -94,11 +103,14 @@ const useResources = () => {
     }));
   };
 
-  const updatePopulation = (population) => {
-    setResources(prevResources => ({
-      ...prevResources,
-      population: prevResources.population + population
-    }));
+  const refundResources = (refund) => {
+    setResources(prevResources => {
+      const updatedResources = { ...prevResources };
+      for (const [resource, amount] of Object.entries(refund)) {
+        updatedResources[resource] = Math.max(updatedResources[resource] + amount, 0); // Ensure resources do not go negative
+      }
+      return updatedResources;
+    });
   };
 
   const spendResources = (cost) => {
@@ -113,7 +125,7 @@ const useResources = () => {
     return true;
   };
 
-  return { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects };
+  return { resources, updateProductionRate, spendResources, updateCapacityRates, refundResources, updateResearchEffects };
 };
 
 export default useResources;

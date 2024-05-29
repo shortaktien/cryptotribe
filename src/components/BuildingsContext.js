@@ -160,8 +160,8 @@ const initialBuildingsData = [
       },
       {
         level: 1,
-        cost: { wood: 50 },
-        production: { food: 3, population: 5 },
+        cost: { wood: 50, population: 5 },
+        production: { food: 3 },
         description: 'Population need food, so build farms'
       },
       {
@@ -253,7 +253,7 @@ export const BuildingsProvider = ({
   spendResources,
   updateProductionRate,
   updateCapacityRates,
-  updatePopulation // Sicherstellen, dass es eine Funktion ist
+  refundResources  // Neue Funktion zur Rückerstattung der Ressourcen
 }) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
@@ -261,7 +261,7 @@ export const BuildingsProvider = ({
     buildingId, 
     spendResources, 
     updateProductionRate, 
-    updateCapacityRates 
+    updateCapacityRates
   ) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
@@ -269,27 +269,22 @@ export const BuildingsProvider = ({
           const nextLevel = building.currentLevel + 1;
           if (nextLevel < building.levels.length) {
             const nextLevelData = building.levels[nextLevel];
-  
             const totalCost = { ...nextLevelData.cost };
-  
             if (spendResources(totalCost)) {
               const updatedBuilding = {
                 ...building,
                 currentLevel: nextLevel
               };
-  
               if (nextLevelData.production) {
                 Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
                   updateProductionRate(resource, rate);
                 });
               }
-  
               if (nextLevelData.capacity) {
                 Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
                   updateCapacityRates(resource, capacity);
                 });
               }
-  
               return updatedBuilding;
             }
           }
@@ -298,12 +293,53 @@ export const BuildingsProvider = ({
       })
     );
   };
-  
-  
-  
+
+  const demolishBuilding = (
+    buildingId,
+    resourceNames,
+    resourceCosts
+  ) => {
+    setBuildings(prevBuildings =>
+      prevBuildings.map(building => {
+        if (building.id === buildingId) {
+          const prevLevel = building.currentLevel - 1;
+          if (prevLevel >= 0) {
+            const currentLevelData = building.levels[building.currentLevel];
+            const updatedBuilding = {
+              ...building,
+              currentLevel: prevLevel
+            };
+
+            // Ressourcen zurückerstatten
+            resourceNames.forEach((resource, index) => {
+              refundResources({ [resource]: resourceCosts[index] });
+            });
+
+            // Produktionsrate und Kapazität reduzieren
+            if (currentLevelData.production) {
+              Object.entries(currentLevelData.production).forEach(([resource, rate]) => {
+                updateProductionRate(resource, -rate); // Reduzierung der Produktionsrate
+              });
+            }
+
+            if (currentLevelData.capacity) {
+              Object.entries(currentLevelData.capacity).forEach(([resource, capacity]) => {
+                updateCapacityRates(resource, -capacity); // Reduzierung der Kapazitätsrate
+              });
+            }
+
+            return updatedBuilding;
+          } else {
+            console.log('Cannot demolish a building at level 0');
+          }
+        }
+        return building;
+      })
+    );
+  };
 
   return (
-    <BuildingsContext.Provider value={{ buildings, upgradeBuilding }}>
+    <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding }}>
       {children}
     </BuildingsContext.Provider>
   );

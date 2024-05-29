@@ -326,6 +326,16 @@
     display: block;
   }
 }
+/*researchbutton wird disabled wenn gebäude nicht gebaut wurde*/
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+}
 
 /* src/components/ResourceCard.css */
 .resource-card {
