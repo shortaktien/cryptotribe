@@ -148,10 +148,10 @@ function App() {
                       element={
                         <Buildings
                           resources={resources}
+                          updatePopulation={updatePopulation}
                           spendResources={spendResources}
                           updateProductionRate={updateProductionRate}
                           updateCapacityRates={updateCapacityRates}
-                          updatePopulation={updatePopulation} // Sicherstellen, dass es eine Funktion ist
                           handleUpgradeBuilding={handleUpgradeBuilding}
                         />
                       }

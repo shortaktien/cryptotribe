@@ -6,7 +6,7 @@ const useResources = () => {
     food: 100,
     wood: 100,
     stone: 0,
-    knowledge: 50, // Wissenschaftsressourcen
+    knowledge: 100, // Wissenschaftsressourcen
     population: 10,  // Anfangspopulation
   });
 
@@ -15,7 +15,8 @@ const useResources = () => {
     food: 0,
     wood: 0,
     stone: 0,
-    knowledge: 0, // Wissenschaftsproduktion
+    knowledge: 0, 
+    population: 0,
   });
 
   const [capacityRates, setCapacityRates] = useState({
@@ -24,6 +25,7 @@ const useResources = () => {
     wood: 100,
     stone: 50,
     knowledge: 100, // Wissenschaftskapazität
+    population: 10
   });
 
   const [researchEffects, setResearchEffects] = useState({
@@ -65,7 +67,7 @@ const useResources = () => {
           wood: Math.min(prevResources.wood + netProduction.wood, capacityRates.wood),
           stone: Math.min(prevResources.stone + netProduction.stone, capacityRates.stone),
           knowledge: Math.min(prevResources.knowledge + netProduction.knowledge, capacityRates.knowledge),
-          population: prevResources.population,
+          population: Math.min(prevResources.population + netProduction.population, capacityRates.population),
         };
       });
     }, 1000);

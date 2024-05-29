@@ -112,34 +112,38 @@ const initialBuildingsData = [
   // House
   {
     id: 4,
-    name: 'House',
-    image: houseImage,
-    levels: [
-      {
-        level: 0,
-        cost: { wood: 0 },
-        population: 10,
-        description: 'Every good Tribe need Population'
-      },
-      {
-        level: 1,
-        cost: { wood: 50 },
-        population: 20,
-        description: 'Every good Tribe need Population'
-      },
-      {
-        level: 2,
-        cost: { wood: 150, stone: 50 },
-        population: 30,
-        description: 'Every good Tribe need Population'
-      },
-      {
-        level: 3,
-        cost: { wood: 300, stone: 200, food: 200 },
-        population: 40,
-        description: 'Every good Tribe need Population'
-      }
-    ],
+  name: 'House',
+  image: houseImage,
+  levels: [
+    {
+      level: 0,
+      cost: { wood: 0 },
+      production: { population: 0.1 },  // Neue Produktionsrate
+      capacity: { population: 20 },     // Neue Kapazität
+      description: 'Every good Tribe need Population'
+    },
+    {
+      level: 1,
+      cost: { wood: 50 },
+      production: { population: 0.2 },  // Neue Produktionsrate
+      capacity: { population: 30 },     // Neue Kapazität
+      description: 'Every good Tribe need Population'
+    },
+    {
+      level: 2,
+      cost: { wood: 150, stone: 50 },
+      production: { population: 0.3 },  // Neue Produktionsrate
+      capacity: { population: 40 },     // Neue Kapazität
+      description: 'Every good Tribe need Population'
+    },
+    {
+      level: 3,
+      cost: { wood: 300, stone: 200, food: 200 },
+      production: { population: 0.4 },  // Neue Produktionsrate
+      capacity: { population: 50 },     // Neue Kapazität
+      description: 'Every good Tribe need Population'
+    }
+  ],
     currentLevel: 0
   },
   // Farm
@@ -258,7 +262,7 @@ export const BuildingsProvider = ({
     spendResources, 
     updateProductionRate, 
     updateCapacityRates, 
-    updatePopulation // Sicherstellen, dass es eine Funktion ist
+    updatePopulation 
   ) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
@@ -268,26 +272,31 @@ export const BuildingsProvider = ({
             const nextLevelData = building.levels[nextLevel];
             
             // Ressourcenverbrauch
-            if (spendResources(nextLevelData.cost)) {
+            const totalCost = { ...nextLevelData.cost };
+            if (nextLevelData.population) {
+              totalCost.population = nextLevelData.population;
+            }
+            if (spendResources(totalCost)) {
               const updatedBuilding = {
                 ...building,
-                currentLevel: nextLevel,
-                capacity: { ...nextLevelData.capacity } // Clone the capacity object
+                currentLevel: nextLevel
               };
-              console.log('Current capacities:', updatedBuilding.capacity);             
+  
               if (nextLevelData.production) {
                 Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
                   updateProductionRate(resource, rate);
                 });
               }
+  
               if (nextLevelData.capacity) {
                 Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
                   updateCapacityRates(resource, capacity);
                 });
               }
-              // Population wird nicht abgezogen, nur geprüft
+  
               if (nextLevelData.population) {
-                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Requires population: ${nextLevelData.population}`);
+                updatePopulation(nextLevelData.population);
+                console.log(`Building ${building.name} upgraded to level ${nextLevel}. Population increased by: ${nextLevelData.population}`);
               }
               return updatedBuilding;
             }
@@ -297,6 +306,8 @@ export const BuildingsProvider = ({
       })
     );
   };
+  
+  
 
   return (
     <BuildingsContext.Provider value={{ buildings, upgradeBuilding }}>

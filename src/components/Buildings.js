@@ -11,7 +11,7 @@ const defaultImage = {
   info: 'Select a building to see details.'
 };
 
-const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, handleUpgradeBuilding }) => {
+const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, handleUpgradeBuilding, updatePopulation }) => {
   const [selectedBuilding, setSelectedBuilding] = useState(defaultImage);
   const { buildings, upgradeBuilding } = useBuildings();
 
@@ -24,12 +24,12 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     const nextLevelData = selectedBuilding.levels[selectedBuilding.currentLevel + 1];
     const resourceNames = Object.keys(nextLevelData.cost);
     const resourceCosts = Object.values(nextLevelData.cost);
-
+  
     const success = spendResources(nextLevelData.cost);
     if (success) {
       console.log('Resources spent successfully:', nextLevelData.cost);
       await handleUpgradeBuilding(buildingId, resourceNames, resourceCosts);
-      upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
+      upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates, updatePopulation); // Füge updatePopulation hinzu
     } else {
       console.log('Not enough resources:', nextLevelData.cost);
     }
