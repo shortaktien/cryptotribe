@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { useBuildings } from './BuildingsContext'; // Importiere den Kontext
 
@@ -18,9 +18,15 @@ import './App.css';
 const Sidebar = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const { buildings } = useBuildings(); // Verwende den Kontext
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
+  };
+
+  const handleMenuClick = (path) => {
+    setDropdownVisible(false);
+    navigate(path);
   };
 
   // Überprüfe, ob das Science-Gebäude gebaut wurde
@@ -90,54 +96,54 @@ const Sidebar = () => {
           <div className="dropdown-content">
             <ul className="icon-only">
               <li>
-                <Link to="/overview" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/overview')}>
                   <img src={overviewImage} alt="Overview" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/buildings" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/buildings')}>
                   <img src={buildingsImage} alt="Buildings" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li className={isScienceBuilt ? '' : 'disabled'}>
-                <Link to="/research" className={`sidebar-link ${isScienceBuilt ? '' : 'disabled-link'}`}>
+                <button className={`sidebar-link ${isScienceBuilt ? '' : 'disabled-link'}`} onClick={() => handleMenuClick('/research')}>
                   <img src={researchImage} alt="Research" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/merchant" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/merchant')}>
                   <img src={merchantImage} alt="Merchant" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/shipyard" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/shipyard')}>
                   <img src={shipyardImage} alt="Shipyard" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/defence" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/defence')}>
                   <img src={defenceImage} alt="Defence" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/military" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/military')}>
                   <img src={militaryImage} alt="Military" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/world" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/world')}>
                   <img src={worldImage} alt="World" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/alliance" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/alliance')}>
                   <img src={allianceImage} alt="Alliance" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
               <li>
-                <Link to="/shop" className="sidebar-link">
+                <button className="sidebar-link" onClick={() => handleMenuClick('/shop')}>
                   <img src={shopImage} alt="Shop" className="sidebar-icon" />
-                </Link>
+                </button>
               </li>
             </ul>
           </div>

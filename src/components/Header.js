@@ -8,8 +8,8 @@ import waterImage from '../assets/waterImage.webp';
 import woodImage from '../assets/woodImage.webp';
 import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
-import kohleImage from "../assets/knowledgeImage.webp"; // Fügen Sie das Bild für Kohle hinzu
-import goldImage from "../assets/knowledgeImage.webp"; // Fügen Sie das Bild für Gold hinzu
+import kohleImage from "../assets/knowledgeImage.webp";
+import goldImage from "../assets/knowledgeImage.webp";
 
 import "./App.css"; 
 
@@ -20,6 +20,10 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     setDropdownVisible(!dropdownVisible);
   };
 
+  const closeDropdown = () => {
+    setDropdownVisible(false);
+  };
+
   const resourcesData = [
     { name: 'Water', value: Math.floor(resources.water), capacity: capacityRates.water, image: waterImage },
     { name: 'Food', value: Math.floor(resources.food), capacity: capacityRates.food, image: foodImage },
@@ -27,8 +31,8 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     { name: 'Stone', value: Math.floor(resources.stone), capacity: capacityRates.stone, image: stoneImage },
     { name: 'Population', value: Math.floor(resources.population), capacity: capacityRates.population, image: populationImage },
     { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
-    { name: 'Kohle', value: Math.floor(resources.kohle), capacity: capacityRates.kohle, image: kohleImage }, // Kohle hinzufügen
-    { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage } // Gold hinzufügen
+    { name: 'Kohle', value: Math.floor(resources.kohle), capacity: capacityRates.kohle, image: kohleImage },
+    { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage }
   ];
 
   return (
@@ -54,7 +58,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
           <FaUserCircle size={40} onClick={toggleDropdown} />
         )}
         {dropdownVisible && (
-          <div className="dropdown">
+          <div className="dropdown" onClick={closeDropdown}>
             <p>Address: {userAddress}</p>
             <p>Balance: {userBalance}</p>
             <p>Name: {userName}</p>

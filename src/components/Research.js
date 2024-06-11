@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useResearch } from './ResearchContext';
-import researchMainPage from "../assets/researchLaborImage.webp";
+import agricultureResearchImage from "../assets/agricultureResearchImage.webp";
 import './App.css';
 
 const defaultImage = {
   id: 0,
   name: 'Welcome to Research',
-  image: researchMainPage,
-  info: 'Select a research topic to see details.'
+  image: agricultureResearchImage,
+  info: 'Select a research to see details.'
 };
 
-const Research = ({ resources, spendResources, updateResearchEffects }) => {
+const Research = ({ resources, spendResources, updateResearchEffects, handleUpgradeResearch }) => {
   const [selectedResearch, setSelectedResearch] = useState(defaultImage);
   const { researches, upgradeResearch } = useResearch();
 
@@ -25,7 +25,8 @@ const Research = ({ resources, spendResources, updateResearchEffects }) => {
     const success = spendResources(nextLevelData.cost);
     if (success) {
       console.log('Resources spent successfully:', nextLevelData.cost);
-      await upgradeResearch(researchId, spendResources, updateResearchEffects);
+      await handleUpgradeResearch(researchId, nextLevelData.cost);
+      upgradeResearch(researchId, spendResources, updateResearchEffects);
     } else {
       console.log('Not enough resources:', nextLevelData.cost);
     }
@@ -79,12 +80,12 @@ const Research = ({ resources, spendResources, updateResearchEffects }) => {
 
   return (
     <div className='main-content'>
-      <div className="buildings">
+      <div className="research">
         <div className="blue-rectangle">
           <img src={selectedResearch.image} alt={selectedResearch.name} className="blue-image" />
-          
+
           {selectedResearch.id !== 0 && (
-            <div className="building-info current-info">
+            <div className="research-info current-info">
               <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
               <h3>Current Level Information:</h3>
               <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
@@ -94,7 +95,7 @@ const Research = ({ resources, spendResources, updateResearchEffects }) => {
           )}
 
           {selectedResearch.id !== 0 && (
-            <div className="building-info next-info">
+            <div className="research-info next-info">
               {getNextLevelData(selectedResearch) && (
                 <>
                   <h3>Next Level Information:</h3>
@@ -102,7 +103,7 @@ const Research = ({ resources, spendResources, updateResearchEffects }) => {
                   <p>Effect: {getNextLevelData(selectedResearch).effect}</p>
                   <p>{getNextLevelData(selectedResearch).description}</p>
                   <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || selectedResearch.isResearching}>
-                    {selectedResearch.isResearching ? `Researching... ${selectedResearch.researchProgress}/${getNextLevelData(selectedResearch).buildTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
+                    {selectedResearch.isResearching ? `Researching... ${selectedResearch.researchProgress}/${getNextLevelData(selectedResearch).researchTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
                   </button>
                 </>
               )}
