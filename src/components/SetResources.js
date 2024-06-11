@@ -9,7 +9,8 @@ const useResources = () => {
     knowledge: 100, // Wissenschaftsressourcen
     population: 10,  // Anfangspopulation
     kohle: 0, // Kohleresourcen
-    gold: 0 // Goldresourcen
+    gold: 0, // Goldresourcen
+    military: 0,
   });
 
   const [productionRates, setProductionRates] = useState({
@@ -31,7 +32,8 @@ const useResources = () => {
     knowledge: 100, // Wissenschaftskapazität
     population: 10,
     kohle: 50,
-    gold: 50
+    gold: 50,
+    military: 0
   });
 
   const [researchEffects, setResearchEffects] = useState({
@@ -76,6 +78,7 @@ const useResources = () => {
           population: Math.min(prevResources.population + netProduction.population, capacityRates.population),
           kohle: Math.min(prevResources.kohle + netProduction.kohle, capacityRates.kohle),
           gold: Math.min(prevResources.gold + netProduction.gold, capacityRates.gold),
+          military: Math.min(prevResources.military, capacityRates.military)
         };
       });
     }, 1000);

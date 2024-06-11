@@ -341,6 +341,18 @@
   opacity: 0.5;
 }
 
+/*militarybutton wird disabeld wenn gebäude nicht gebaut wird*/
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
 /* src/components/ResourceCard.css */
 .resource-card {
   background-color: #fff;

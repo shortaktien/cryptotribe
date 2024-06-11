@@ -32,6 +32,9 @@ const Sidebar = () => {
   // Überprüfe, ob das Science-Gebäude gebaut wurde
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
 
+  // Überprüfe, ob die Barracks gebaut sind
+  const isBarracksBuilt = buildings.some(building => building.name === 'Barracks' && building.currentLevel > 0);
+
   return (
     <div>
       <div className="sidebar">
@@ -66,8 +69,8 @@ const Sidebar = () => {
               <img src={defenceImage} alt="Defence" className="sidebar-icon" /> Defence
             </Link>
           </li>
-          <li>
-            <Link to="/military" className="sidebar-link">
+          <li className={isBarracksBuilt ? '' : 'disabled'}>
+            <Link to="/military" className={`sidebar-link ${isBarracksBuilt ? '' : 'disabled-link'}`} onClick={handleMenuClick}>
               <img src={militaryImage} alt="Military" className="sidebar-icon" /> Military
             </Link>
           </li>

@@ -18,11 +18,13 @@ import useResources from './components/SetResources';
 import { connectMetaMask } from './components/MetaMask';
 import { BuildingsProvider } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
+import { MilitaryProvider } from './components/MilitaryContext'; // Ensure this is imported
+
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
 
 function App() {
-  const { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates } = useResources();
+  const { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources } = useResources();
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
@@ -112,6 +114,16 @@ function App() {
     }
   };
 
+  const handleTrainUnit = async (unitId) => {
+    // Logik zum Trainieren einer Einheit hier hinzufügen
+    console.log(`Train unit with id ${unitId}`);
+  };
+
+  const handleDisbandUnit = async (unitId) => {
+    // Logik zum Entlassen einer Einheit hier hinzufügen
+    console.log(`Disband unit with id ${unitId}`);
+  };
+
   return (
     <Router>
       <div className="app">
@@ -120,65 +132,81 @@ function App() {
             spendResources={spendResources}
             updateProductionRate={updateProductionRate}
             updateCapacityRates={updateCapacityRates}
-            refundResources={updatePopulation} 
+            refundResources={updatePopulation}
           >
             <ResearchProvider
               spendResources={spendResources}
               updateResearchEffects={updateResearchEffects}
             >
-              <Header
-                userAddress={userAddress}
-                userAvatar={userAvatar}
-                userName={userName}
-                userBalance={userBalance}
-                resources={resources}
-                capacityRates={capacityRates} // Füge dies hinzu
-              />
-              <div className="content">
-                <Sidebar />
-                {contractError ? (
-                  <div className="error">
-                    <p>{contractError}</p>
-                  </div>
-                ) : (
-                  <Routes>
-                    <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
-                    <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
-                    <Route
-                      path="/buildings"
-                      element={
-                        <Buildings
-                          resources={resources}
-                          spendResources={spendResources}
-                          updateProductionRate={updateProductionRate}
-                          updateCapacityRates={updateCapacityRates}
-                          handleUpgradeBuilding={handleUpgradeBuilding}
-                          handleDemolishBuilding={handleUpgradeResearch}
-                        />
-                      }
-                    />
-                    <Route
-                      path="/research"
-                      element={
-                        <Research
-                          resources={resources}
-                          spendResources={spendResources}
-                          updateResearchEffects={updateResearchEffects}
-                          handleUpgradeResearch={handleUpgradeResearch}
-                        />
-                      }
-                    />
-                    <Route path="/merchant" element={<Merchant />} />
-                    <Route path="/shipyard" element={<Shipyard />} />
-                    <Route path="/defense" element={<Defense />} />
-                    <Route path="/military" element={<Military />} />
-                    <Route path="/world" element={<World />} />
-                    <Route path="/alliance" element={<Alliance />} />
-                    <Route path="/shop" element={<Shop />} />
-                  </Routes>
-                )}
-              </div>
-              <Footer />
+              <MilitaryProvider
+                spendResources={spendResources}
+                updateCapacityRates={updateCapacityRates}
+                refundResources={refundResources}
+              >
+                <Header
+                  userAddress={userAddress}
+                  userAvatar={userAvatar}
+                  userName={userName}
+                  userBalance={userBalance}
+                  resources={resources}
+                  capacityRates={capacityRates}
+                />
+                <div className="content">
+                  <Sidebar />
+                  {contractError ? (
+                    <div className="error">
+                      <p>{contractError}</p>
+                    </div>
+                  ) : (
+                    <Routes>
+                      <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                      <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                      <Route
+                        path="/buildings"
+                        element={
+                          <Buildings
+                            resources={resources}
+                            spendResources={spendResources}
+                            updateProductionRate={updateProductionRate}
+                            updateCapacityRates={updateCapacityRates}
+                            handleUpgradeBuilding={handleUpgradeBuilding}
+                            handleDemolishBuilding={handleUpgradeResearch}
+                          />
+                        }
+                      />
+                      <Route
+                        path="/research"
+                        element={
+                          <Research
+                            resources={resources}
+                            spendResources={spendResources}
+                            updateResearchEffects={updateResearchEffects}
+                            handleUpgradeResearch={handleUpgradeResearch}
+                          />
+                        }
+                      />
+                      <Route path="/merchant" element={<Merchant />} />
+                      <Route path="/shipyard" element={<Shipyard />} />
+                      <Route path="/defence" element={<Defense />} />
+                      <Route
+                        path="/military"
+                        element={
+                          <Military
+                            resources={resources}
+                            spendResources={spendResources}
+                            handleTrainUnit={handleTrainUnit}
+                            handleDisbandUnit={handleDisbandUnit}
+                          />
+                        }
+                      />
+                      <Route path="/world" element={<World />} />
+                      <Route path="/alliance" element={<Alliance />} />
+                      <Route path="/shop" element={<Shop />} />
+                    </Routes>
+                  )}
+                </div>
+                <Footer />
+              </MilitaryProvider>
             </ResearchProvider>
           </BuildingsProvider>
         ) : (

@@ -8,6 +8,7 @@ import farmImage from "../assets/farmImage.webp";
 import drawingWellImage from "../assets/drawingWellImage.webp";
 import kohlemineImage from "../assets/drawingWellImage.webp";
 import goldmineImage from "../assets/drawingWellImage.webp";
+import militaryImage from "../assets/drawingWellImage.webp";
 
 const BuildingsContext = createContext();
 
@@ -352,7 +353,43 @@ const initialBuildingsData = [
       }
     ],
     currentLevel: 0
-  },
+  },// Barracks
+  {
+    id: 10,
+    name: 'Barracks',
+    image: militaryImage,
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        capacity: { military: 0 },
+        description: 'Barracks to train soldiers.',
+        buildTime: 0
+      },
+      {
+        level: 1,
+        cost: { wood: 50, population: 5 },
+        capacity: { military: 10 },
+        description: 'Barracks to train soldiers.',
+        buildTime: 3
+      },
+      {
+        level: 2,
+        cost: { wood: 150, stone: 50, population: 20 },
+        capacity: { military: 20 },
+        description: 'Barracks to train soldiers.',
+        buildTime: 5
+      },
+      {
+        level: 3,
+        cost: { wood: 300, stone: 200, food: 100 },
+        capacity: { military: 30 },
+        description: 'Barracks to train soldiers.',
+        buildTime: 8
+      }
+    ],
+    currentLevel: 0
+  }
 ];
 
 export const BuildingsProvider = ({
@@ -364,12 +401,7 @@ export const BuildingsProvider = ({
 }) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
-  const upgradeBuilding = (
-    buildingId, 
-    spendResources, 
-    updateProductionRate, 
-    updateCapacityRates
-  ) => {
+  const upgradeBuilding = (buildingId, spendResources, updateProductionRate, updateCapacityRates) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
         if (building.id === buildingId) {
@@ -425,11 +457,7 @@ export const BuildingsProvider = ({
     );
   };
 
-  const demolishBuilding = (
-    buildingId,
-    resourceNames,
-    resourceCosts
-  ) => {
+  const demolishBuilding = (buildingId, resourceNames, resourceCosts) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
         if (building.id === buildingId) {

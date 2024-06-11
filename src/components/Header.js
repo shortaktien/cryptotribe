@@ -10,6 +10,7 @@ import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
 import kohleImage from "../assets/knowledgeImage.webp";
 import goldImage from "../assets/knowledgeImage.webp";
+import militaryImage from "../assets/knowledgeImage.webp"; // BILD ÄNDERN!!! 
 
 import "./App.css"; 
 
@@ -32,7 +33,8 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     { name: 'Population', value: Math.floor(resources.population), capacity: capacityRates.population, image: populationImage },
     { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
     { name: 'Kohle', value: Math.floor(resources.kohle), capacity: capacityRates.kohle, image: kohleImage },
-    { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage }
+    { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage },
+    { name: 'Military', value: Math.floor(resources.military), capacity: capacityRates.military, image: militaryImage }
   ];
 
   return (
