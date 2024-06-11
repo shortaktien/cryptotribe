@@ -22,7 +22,7 @@ import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
 
 function App() {
-  const { resources, updateProductionRate, spendResources, updateCapacityRates, refundResources, updateResearchEffects } = useResources();
+  const { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates } = useResources();
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
@@ -112,28 +112,6 @@ function App() {
     }
   };
 
-  const handleDemolishBuilding = async (buildingId, resourceNames, resourceCosts) => {
-    if (!contract) {
-      console.error('Contract not initialized');
-      return;
-    }
-
-    if (!userAddress) {
-      console.error('User address not initialized');
-      return;
-    }
-
-    try {
-      console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
-      await sendTransaction(web3, userAddress, contract, 'demolishBuilding', [buildingId, resourceNames, resourceCosts]);
-    } catch (error) {
-      console.error('Error demolishing building:', error);
-      if (error.data) {
-        console.error('Error data: ', error.data);
-      }
-    }
-  };
-
   return (
     <Router>
       <div className="app">
@@ -142,7 +120,7 @@ function App() {
             spendResources={spendResources}
             updateProductionRate={updateProductionRate}
             updateCapacityRates={updateCapacityRates}
-            refundResources={refundResources} // refundResources hinzufügen
+            refundResources={updatePopulation} 
           >
             <ResearchProvider
               spendResources={spendResources}
@@ -154,6 +132,7 @@ function App() {
                 userName={userName}
                 userBalance={userBalance}
                 resources={resources}
+                capacityRates={capacityRates} // Füge dies hinzu
               />
               <div className="content">
                 <Sidebar />
@@ -163,8 +142,8 @@ function App() {
                   </div>
                 ) : (
                   <Routes>
-                    <Route path="/" element={<MainContent />} />
-                    <Route path="/overview" element={<MainContent />} />
+                    <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                    <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
                     <Route
                       path="/buildings"
                       element={
@@ -174,7 +153,7 @@ function App() {
                           updateProductionRate={updateProductionRate}
                           updateCapacityRates={updateCapacityRates}
                           handleUpgradeBuilding={handleUpgradeBuilding}
-                          handleDemolishBuilding={handleDemolishBuilding} // handleDemolishBuilding hinzufügen
+                          handleDemolishBuilding={handleUpgradeResearch}
                         />
                       }
                     />

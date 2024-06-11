@@ -6,6 +6,8 @@ import warehouseImage from "../assets/warehouseImage.webp";
 import houseImage from "../assets/houseImage.webp";
 import farmImage from "../assets/farmImage.webp";
 import drawingWellImage from "../assets/drawingWellImage.webp";
+import kohlemineImage from "../assets/drawingWellImage.webp";
+import goldmineImage from "../assets/drawingWellImage.webp";
 
 const BuildingsContext = createContext();
 
@@ -20,25 +22,29 @@ const initialBuildingsData = [
         level: 0,
         cost: { wood: 0 },
         production: { wood: 0 },
-        description: 'Wood is the resource Number 1.'
+        description: 'Wood is the resource Number 1.',
+        buildTime: 0
       },
       {
         level: 1,
         cost: { wood: 50, population: 1 },
         production: { wood: 10 },
-        description: 'Wood is the resource Number 1.'
+        description: 'Wood is the resource Number 1.',
+        buildTime: 3
       },
       {
         level: 2,
         cost: { wood: 150, stone: 50, population: 20 },
         production: { wood: 20 },
-        description: 'Wood is the resource Number 1.'
+        description: 'Wood is the resource Number 1.',
+        buildTime: 5
       },
       {
         level: 3,
         cost: { wood: 250, stone: 200, food: 100 },
         production: { wood: 30 },
-        description: 'Wood is the resource Number 1.'
+        description: 'Wood is the resource Number 1.',
+        buildTime: 8
       }
     ],
     currentLevel: 0
@@ -53,25 +59,29 @@ const initialBuildingsData = [
         level: 0,
         cost: { wood: 0 },
         production: { stone: 0 },
-        description: 'Stone is the resource Number 2.'
+        description: 'Stone is the resource Number 2.',
+        buildTime: 0
       },
       {
         level: 1,
         cost: { wood: 50 },
         production: { stone: 10, population: 1 },
-        description: 'Stone is the resource Number 2.'
+        description: 'Stone is the resource Number 2.',
+        buildTime: 3
       },
       {
         level: 2,
         cost: { wood: 200, stone: 150, population: 20 },
         production: { stone: 20 },
-        description: 'Stone is the resource Number 2.'
+        description: 'Stone is the resource Number 2.',
+        buildTime: 5
       },
       {
         level: 3,
         cost: { wood: 250, stone: 300, food: 300 },
         production: { stone: 30 },
-        description: 'Stone is the resource Number 2.'
+        description: 'Stone is the resource Number 2.',
+        buildTime: 8
       }
     ],
     currentLevel: 0
@@ -85,26 +95,30 @@ const initialBuildingsData = [
       {
         level: 0,
         cost: { wood: 0 },
-        capacity: { water: 100, food: 100, wood: 100, stone: 50 },
-        description: 'A Warehouse to store Resources'
+        capacity: { water: 1000, food: 1000, wood: 1000, stone: 500 },
+        description: 'A Warehouse to store Resources',
+        buildTime: 0
       },
       {
         level: 1,
         cost: { wood: 50 },
-        capacity: { water: 100, food: 100, wood: 150, stone: 100, population: 5 },
-        description: 'A Warehouse to store Resources'
+        capacity: { water: 1000, food: 1000, wood: 1500, stone: 1000 },
+        description: 'A Warehouse to store Resources',
+        buildTime: 3
       },
       {
         level: 2,
         cost: { wood: 150, stone: 50, population: 20 },
         capacity: { water: 200, food: 200, wood: 200, stone: 150 },
-        description: 'A Warehouse to store Resources'
+        description: 'A Warehouse to store Resources',
+        buildTime: 5
       },
       {
         level: 3,
         cost: { wood: 200, stone: 150, food: 200 },
-        capacity: { water: 300, food: 300, wood: 300, stone: 200 },
-        description: 'A Warehouse to store Resources'
+        capacity: { water: 300, food: 300, wood: 400, stone: 300 },
+        description: 'A Warehouse to store Resources',
+        buildTime: 8
       }
     ],
     currentLevel: 0
@@ -119,29 +133,33 @@ const initialBuildingsData = [
       level: 0,
       cost: { wood: 0 },
       production: { population: 0.1 },  // Neue Produktionsrate
-      capacity: { population: 20 },     // Neue Kapazität
-      description: 'Every good Tribe need Population'
+      capacity: { population: 10 },     // Neue Kapazität
+      description: 'Every good Tribe need Population',
+      buildTime: 0
     },
     {
       level: 1,
       cost: { wood: 50 },
-      production: { population: 0.2 },  // Neue Produktionsrate
+      production: { population: 0.3 },  // Neue Produktionsrate
       capacity: { population: 30 },     // Neue Kapazität
-      description: 'Every good Tribe need Population'
+      description: 'Every good Tribe need Population',
+      buildTime: 3
     },
     {
       level: 2,
       cost: { wood: 150, stone: 50 },
-      production: { population: 0.3 },  // Neue Produktionsrate
-      capacity: { population: 40 },     // Neue Kapazität
-      description: 'Every good Tribe need Population'
+      production: { population: 0.5 },  // Neue Produktionsrate
+      capacity: { population: 35 },     // Neue Kapazität
+      description: 'Every good Tribe need Population',
+      buildTime: 5
     },
     {
       level: 3,
       cost: { wood: 300, stone: 200, food: 200 },
-      production: { population: 0.4 },  // Neue Produktionsrate
-      capacity: { population: 50 },     // Neue Kapazität
-      description: 'Every good Tribe need Population'
+      production: { population: 0.8 },  // Neue Produktionsrate
+      capacity: { population: 40 },     // Neue Kapazität
+      description: 'Every good Tribe need Population',
+      buildTime: 8
     }
   ],
     currentLevel: 0
@@ -156,25 +174,29 @@ const initialBuildingsData = [
         level: 0,
         cost: { wood: 0 },
         production: { food: 0 },
-        description: 'Population need food, so build farms'
+        description: 'Population need food, so build farms',
+        buildTime: 0
       },
       {
         level: 1,
         cost: { wood: 50, population: 5 },
-        production: { food: 3 },
-        description: 'Population need food, so build farms'
+        production: { food: 6 },
+        description: 'Population need food, so build farms',
+        buildTime: 3
       },
       {
         level: 2,
         cost: { wood: 150, stone: 50, population: 20 },
-        production: { food: 4 },
-        description: 'Population need food, so build farms'
+        production: { food: 7 },
+        description: 'Population need food, so build farms',
+        buildTime: 5
       },
       {
         level: 3,
         cost: { wood: 300, stone: 200, food: 150 },
-        production: { food: 5 },
-        description: 'Population need food, so build farms'
+        production: { food: 8 },
+        description: 'Population need food, so build farms',
+        buildTime: 8
       }
     ],
     currentLevel: 0
@@ -189,25 +211,29 @@ const initialBuildingsData = [
         level: 0,
         cost: { wood: 0 },
         production: { water: 0 },
-        description: 'Population need water, so build wells'
+        description: 'Population need water, so build wells',
+        buildTime: 0
       },
       {
         level: 1,
         cost: { wood: 50 },
         production: { water: 4, population: 1 },
-        description: 'Population need water, so build wells'
+        description: 'Population need water, so build wells',
+        buildTime: 3
       },
       {
         level: 2,
         cost: { wood: 150, stone: 150, population: 20 },
         production: { water: 5 },
-        description: 'Population need water, so build wells'
+        description: 'Population need water, so build wells',
+        buildTime: 5
       },
       {
         level: 3,
         cost: { wood: 300, stone: 200, food: 100 },
         production: { water: 6 },
-        description: 'Population need water, so build wells'
+        description: 'Population need water, so build wells',
+        buildTime: 8
       }
     ],
     currentLevel: 0
@@ -222,30 +248,111 @@ const initialBuildingsData = [
         level: 0,
         cost: { wood: 0 },
         production: { knowledge: 0 },
-        description: 'Science is important'
+        capacity: { knowledge: 100 },
+        description: 'Science is important',
+        buildTime: 0
       },
       {
         level: 1,
         cost: { wood: 150, population: 10 },
         production: { knowledge: 1 },
-        description: 'Science is important'
+        capacity: { knowledge: 200 },
+        description: 'Science is important',
+        buildTime: 3
       },
       {
         level: 2,
         cost: { wood: 250, stone: 150, population: 20 },
         production: { knowledge: 2 },
-        description: 'Science is important'
+        capacity: { knowledge: 300 },
+        description: 'Science is important',
+        buildTime: 5
       },
       {
         level: 3,
         cost: { wood: 300, stone: 200, food: 100 },
         production: { knowledge: 3 },
-        description: 'Science is important'
+        capacity: { knowledge: 400 },
+        description: 'Science is important',
+        buildTime: 8
       }
     ],
     currentLevel: 0
-  }
-  // Weitere Gebäude ...
+  },
+  // Kohlemine
+  {
+    id: 8,
+    name: 'Kohlemine',
+    image: kohlemineImage,
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        production: { kohle: 0 },
+        description: 'Kohle ist wichtig für die Energieerzeugung.',
+        buildTime: 0
+      },
+      {
+        level: 1,
+        cost: { wood: 50, population: 5 },
+        production: { kohle: 10 },
+        description: 'Kohle ist wichtig für die Energieerzeugung.',
+        buildTime: 3
+      },
+      {
+        level: 2,
+        cost: { wood: 150, stone: 50, population: 20 },
+        production: { kohle: 20 },
+        description: 'Kohle ist wichtig für die Energieerzeugung.',
+        buildTime: 5
+      },
+      {
+        level: 3,
+        cost: { wood: 300, stone: 200, food: 100 },
+        production: { kohle: 30 },
+        description: 'Kohle ist wichtig für die Energieerzeugung.',
+        buildTime: 8
+      }
+    ],
+    currentLevel: 0
+  },
+  // Goldmine
+  {
+    id: 9,
+    name: 'Goldmine',
+    image: goldmineImage,
+    levels: [
+      {
+        level: 0,
+        cost: { wood: 0 },
+        production: { gold: 0 },
+        description: 'Gold ist wertvoll für den Handel.',
+        buildTime: 0
+      },
+      {
+        level: 1,
+        cost: { wood: 50, population: 5 },
+        production: { gold: 10 },
+        description: 'Gold ist wertvoll für den Handel.',
+        buildTime: 3
+      },
+      {
+        level: 2,
+        cost: { wood: 150, stone: 50, population: 20 },
+        production: { gold: 20 },
+        description: 'Gold ist wertvoll für den Handel.',
+        buildTime: 5
+      },
+      {
+        level: 3,
+        cost: { wood: 300, stone: 200, food: 100 },
+        production: { gold: 30 },
+        description: 'Gold ist wertvoll für den Handel.',
+        buildTime: 8
+      }
+    ],
+    currentLevel: 0
+  },
 ];
 
 export const BuildingsProvider = ({
@@ -253,7 +360,7 @@ export const BuildingsProvider = ({
   spendResources,
   updateProductionRate,
   updateCapacityRates,
-  refundResources  // Neue Funktion zur Rückerstattung der Ressourcen
+  refundResources
 }) => {
   const [buildings, setBuildings] = useState(initialBuildingsData);
 
@@ -273,18 +380,42 @@ export const BuildingsProvider = ({
             if (spendResources(totalCost)) {
               const updatedBuilding = {
                 ...building,
-                currentLevel: nextLevel
+                isBuilding: true,
+                buildProgress: 0
               };
-              if (nextLevelData.production) {
-                Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
-                  updateProductionRate(resource, rate);
-                });
-              }
-              if (nextLevelData.capacity) {
-                Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
-                  updateCapacityRates(resource, capacity);
-                });
-              }
+              const intervalId = setInterval(() => {
+                setBuildings(prevBuildings =>
+                  prevBuildings.map(b => {
+                    if (b.id === buildingId) {
+                      if (b.buildProgress >= nextLevelData.buildTime) {
+                        clearInterval(intervalId);
+                        const newBuilding = {
+                          ...b,
+                          currentLevel: nextLevel,
+                          isBuilding: false,
+                          buildProgress: 0
+                        };
+                        if (nextLevelData.production) {
+                          Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
+                            updateProductionRate(resource, rate);
+                          });
+                        }
+                        if (nextLevelData.capacity) {
+                          Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
+                            updateCapacityRates(resource, capacity);
+                          });
+                        }
+                        return newBuilding;
+                      }
+                      return {
+                        ...b,
+                        buildProgress: b.buildProgress + 1
+                      };
+                    }
+                    return b;
+                  })
+                );
+              }, 1000);
               return updatedBuilding;
             }
           }

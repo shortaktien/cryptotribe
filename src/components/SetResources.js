@@ -8,6 +8,8 @@ const useResources = () => {
     stone: 0,
     knowledge: 100, // Wissenschaftsressourcen
     population: 10,  // Anfangspopulation
+    kohle: 0, // Kohleresourcen
+    gold: 0 // Goldresourcen
   });
 
   const [productionRates, setProductionRates] = useState({
@@ -17,6 +19,8 @@ const useResources = () => {
     stone: 0,
     knowledge: 0, 
     population: 0,
+    kohle: 0,
+    gold: 0
   });
 
   const [capacityRates, setCapacityRates] = useState({
@@ -25,7 +29,9 @@ const useResources = () => {
     wood: 100,
     stone: 50,
     knowledge: 100, // Wissenschaftskapazität
-    population: 10
+    population: 10,
+    kohle: 50,
+    gold: 50
   });
 
   const [researchEffects, setResearchEffects] = useState({
@@ -61,23 +67,16 @@ const useResources = () => {
     const interval = setInterval(() => {
       const netProduction = calculateNetProduction(productionRates);
       setResources(prevResources => {
-        const newResources = {
+        return {
           water: Math.min(Math.max(prevResources.water + netProduction.water, 0), capacityRates.water),
           food: Math.min(Math.max(prevResources.food + netProduction.food, 0), capacityRates.food),
           wood: Math.min(prevResources.wood + netProduction.wood, capacityRates.wood),
           stone: Math.min(prevResources.stone + netProduction.stone, capacityRates.stone),
           knowledge: Math.min(prevResources.knowledge + netProduction.knowledge, capacityRates.knowledge),
-          population: prevResources.population,
+          population: Math.min(prevResources.population + netProduction.population, capacityRates.population),
+          kohle: Math.min(prevResources.kohle + netProduction.kohle, capacityRates.kohle),
+          gold: Math.min(prevResources.gold + netProduction.gold, capacityRates.gold),
         };
-
-        // Check if food or water is 0 and adjust population accordingly
-        if (newResources.food === 0 || newResources.water === 0) {
-          newResources.population = Math.max(newResources.population - 1, 0);
-        } else {
-          newResources.population = Math.min(newResources.population + netProduction.population, capacityRates.population);
-        }
-
-        return newResources;
       });
     }, 1000);
 
@@ -103,14 +102,11 @@ const useResources = () => {
     }));
   };
 
-  const refundResources = (refund) => {
-    setResources(prevResources => {
-      const updatedResources = { ...prevResources };
-      for (const [resource, amount] of Object.entries(refund)) {
-        updatedResources[resource] = Math.max(updatedResources[resource] + amount, 0); // Ensure resources do not go negative
-      }
-      return updatedResources;
-    });
+  const updatePopulation = (population) => {
+    setResources(prevResources => ({
+      ...prevResources,
+      population: prevResources.population + population
+    }));
   };
 
   const spendResources = (cost) => {
@@ -125,7 +121,19 @@ const useResources = () => {
     return true;
   };
 
-  return { resources, updateProductionRate, spendResources, updateCapacityRates, refundResources, updateResearchEffects };
+  const refundResources = (refund) => {
+    setResources(prevResources => {
+      const newResources = { ...prevResources };
+      for (const [resource, amount] of Object.entries(refund)) {
+        newResources[resource] += amount;
+      }
+      return newResources;
+    });
+  };
+
+  const getNetProductionRates = () => calculateNetProduction(productionRates);
+
+  return { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, refundResources, getNetProductionRates };
 };
 
 export default useResources;

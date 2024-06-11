@@ -1,15 +1,24 @@
 {
   "files": {
-    "main.css": "/static/css/main.e446eada.css",
-    "main.js": "/static/js/main.f1ca1665.js",
+    "main.css": "/static/css/main.10b552d6.css",
+    "main.js": "/static/js/main.0fcd0138.js",
     "static/js/511.faa2659f.chunk.js": "/static/js/511.faa2659f.chunk.js",
     "static/media/buildingsMainPage.webp": "/static/media/buildingsMainPage.6015ef76b7aed91771c8.webp",
+    "static/media/researchLaborImage.webp": "/static/media/researchLaborImage.8426e754cf409509b422.webp",
+    "static/media/farmImage.webp": "/static/media/farmImage.794c8bf5afe1083ec568.webp",
+    "static/media/lamberjackImage.webp": "/static/media/lamberjackImage.134372c5f2b128810ca3.webp",
+    "static/media/stonemasonImage.webp": "/static/media/stonemasonImage.d15aba96a91f5a919529.webp",
+    "static/media/warehouseImage.webp": "/static/media/warehouseImage.e5819a13967376618859.webp",
+    "static/media/houseImage.webp": "/static/media/houseImage.b9a212306beb6e66d35b.webp",
     "static/media/cryptotribeImage.webp": "/static/media/cryptotribeImage.8325a861de8093508ebe.webp",
+    "static/media/drawingWellImage.webp": "/static/media/drawingWellImage.281d0e435bcf4fbed8dc.webp",
     "static/media/populationImage.webp": "/static/media/populationImage.b5212e405745d38a2c0e.webp",
     "static/media/foodImage.webp": "/static/media/foodImage.e33078869d6e2538a288.webp",
+    "static/media/agricultureResearchImage.webp": "/static/media/agricultureResearchImage.b33e1ee2b910cd94ca04.webp",
     "static/media/waterImage.webp": "/static/media/waterImage.d5e287a97bf437cc267f.webp",
     "static/media/woodImage.webp": "/static/media/woodImage.f1d76c4021b333cda5c7.webp",
     "static/media/stoneImage.webp": "/static/media/stoneImage.d01dd4b1688fd366c30c.webp",
+    "static/media/knowledgeImage.webp": "/static/media/knowledgeImage.bded1d9931c1db4c954e.webp",
     "static/media/researchImage.webp": "/static/media/researchImage.2a2649737b5a90729783.webp",
     "static/media/overviewImage.webp": "/static/media/overviewImage.3d0f2bbbfc9b3c2f7415.webp",
     "static/media/shopImage.webp": "/static/media/shopImage.a68c8414bd9354378626.webp",
@@ -21,12 +30,12 @@
     "static/media/defenceImage.webp": "/static/media/defenceImage.44e751b58291877e02d2.webp",
     "static/media/militaryImage.webp": "/static/media/militaryImage.ad65553b3fd5d3cfaede.webp",
     "index.html": "/index.html",
-    "main.e446eada.css.map": "/static/css/main.e446eada.css.map",
-    "main.f1ca1665.js.map": "/static/js/main.f1ca1665.js.map",
+    "main.10b552d6.css.map": "/static/css/main.10b552d6.css.map",
+    "main.0fcd0138.js.map": "/static/js/main.0fcd0138.js.map",
     "511.faa2659f.chunk.js.map": "/static/js/511.faa2659f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e446eada.css",
-    "static/js/main.f1ca1665.js"
+    "static/css/main.10b552d6.css",
+    "static/js/main.0fcd0138.js"
   ]
 }

@@ -8,10 +8,12 @@ import waterImage from '../assets/waterImage.webp';
 import woodImage from '../assets/woodImage.webp';
 import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
+import kohleImage from "../assets/knowledgeImage.webp"; // Fügen Sie das Bild für Kohle hinzu
+import goldImage from "../assets/knowledgeImage.webp"; // Fügen Sie das Bild für Gold hinzu
 
-import "./App.css"; // Stellen Sie sicher, dass der korrekte Pfad verwendet wird
+import "./App.css"; 
 
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) => {
+const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -19,12 +21,14 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
   };
 
   const resourcesData = [
-    { name: 'Water', value: Math.floor(resources.water), image: waterImage },
-    { name: 'Food', value: Math.floor(resources.food), image: foodImage },
-    { name: 'Wood', value: Math.floor(resources.wood), image: woodImage },
-    { name: 'Stone', value: Math.floor(resources.stone), image: stoneImage },
-    { name: 'Population', value: Math.floor(resources.population), image: populationImage },
-    { name: 'Knowledge', value: Math.floor(resources.knowledge), image: knowledgeImage }
+    { name: 'Water', value: Math.floor(resources.water), capacity: capacityRates.water, image: waterImage },
+    { name: 'Food', value: Math.floor(resources.food), capacity: capacityRates.food, image: foodImage },
+    { name: 'Wood', value: Math.floor(resources.wood), capacity: capacityRates.wood, image: woodImage },
+    { name: 'Stone', value: Math.floor(resources.stone), capacity: capacityRates.stone, image: stoneImage },
+    { name: 'Population', value: Math.floor(resources.population), capacity: capacityRates.population, image: populationImage },
+    { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
+    { name: 'Kohle', value: Math.floor(resources.kohle), capacity: capacityRates.kohle, image: kohleImage }, // Kohle hinzufügen
+    { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage } // Gold hinzufügen
   ];
 
   return (
@@ -36,9 +40,9 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources }) =
           <div key={index} className="resource">
             <div className="resource-container">
               <img src={resource.image} alt={resource.name} className="resource-icon" />
-              <div className="resource-tooltip">{resource.name}</div>
+              <div className="resource-tooltip">{resource.name}: {resource.value}/{resource.capacity}</div>
             </div>
-            <span className="resource-amount">{resource.value}</span>
+            <span className="resource-amount">{resource.value}/{resource.capacity}</span>
           </div>
         ))}
         <div>Tribe [0:0:0]</div>

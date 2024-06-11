@@ -376,14 +376,14 @@
   margin-bottom: 20px;
   width: 90%;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   z-index: 1;
 }
 
 .blue-image {
-  width: 100%; /* Bild soll die volle Breite des Containers nutzen */
+  width: 80%; /* Bild soll die volle Breite des Containers nutzen */
   height: auto; /* Höhe automatisch anpassen */
   border-radius: 10px;
   position: relative;
@@ -391,68 +391,100 @@
 }
 
 .building-info {
-  background-color: rgba(0, 0, 0, 0.685);
+  position: absolute; /* Absolut positionieren, um auf dem Bild zu sein */
+  top: 40px; /* Abstand von oben */
+  right: 130px; /* Abstand von rechts */
+  background-color: rgba(0, 0, 0, 0.685); /* Halbtransparenter schwarzer Hintergrund */
   padding: 10px;
   border-radius: 10px;
+  color: white; /* Textfarbe weiß */
+  z-index: 2; /* Höherer z-index als das Bild */
+}
+
+.next-info {
+  top: auto; /* Automatische Positionierung */
+  bottom: 40px; /* Abstand von unten */
+}
+
+.green-rectangles {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.green-rectangle {
+  background-color: rgba(235, 227, 227, 0.8); /* Grün */
+  border-radius: 10px;
+  padding: 10px;
+  margin: 0 10px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  width: 150px; /* Feste Breite setzen */
+  height: 150px; /* Feste Höhe setzen */
+}
+
+.green-image {
+  width: 100px; /* Breite des Bildes auf 100px setzen */
+  height: 100px; /* Höhe des Bildes auf 100px setzen */
+  border-radius: 50px;
+}
+
+.level {
+  background-color: #ffa600e8; /* Rot */
+  border-radius: 5px;
   color: white;
-  z-index: 2;
-  width: 40%; /* Feste Breite */
-  
-  max-width: 600px; /* Maximale Breite */
-  text-align: left;
+  padding: 5px;
   position: absolute;
-  top: 10%; /* Abstand von oben */
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.building-info.current-info {
-  left: 5%;
+.circular-images {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding: 20px 0;
 }
 
-.building-info.next-info {
-  right: 5%;
+.circular-image-wrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 15%;
+  overflow: hidden;
+  border: 2px solid #ccc; /* Optional: Rand um die Kreise */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff; /* Optional: Hintergrundfarbe */
+  position: relative;
 }
 
-@media screen and (max-width: 768px) {
-  .building-info {
-    position: static;
-    width: 97%;
-    margin-top: 10px;
-    
-  }
-  
-  .blue-rectangle {
-    width: 100%;
-    padding: 10px;
-  }
-
-  .blue-image {
-    width: 100%;
-  }
-
-  .tooltip {
-    display: inline-block;
-  }
+.circular-image {
+  width: 180%;
+  height: auto;
 }
 
 .tooltip {
   position: relative;
-  display: none; /* Standardmäßig ausgeblendet */
+  display: inline-block;
   cursor: pointer;
 }
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 200px;
-  background-color: rgba(0, 0, 0, 0.89);
+  width: 120px;
+  background-color: black;
   color: #fff;
   text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
+  border-radius: 5px;
+  padding: 5px;
   position: absolute;
-  z-index: 2;
-  bottom: 125%; /* Position above the text */
+  z-index: 1;
+  bottom: 125%; /* Position above the icon */
   left: 50%;
-  margin-left: -100px;
+  margin-left: -60px;
   opacity: 0;
   transition: opacity 0.3s;
 }

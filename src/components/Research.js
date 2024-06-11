@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useResearch } from './ResearchContext';
-import researchLaborImage from "../assets/researchLaborImage.webp"; 
-
-
+import researchMainPage from "../assets/researchLaborImage.webp";
 import './App.css';
 
 const defaultImage = {
   id: 0,
   name: 'Welcome to Research',
-  image: researchLaborImage, // Aktualisierter Pfad zum Standardbild
-  info: 'Select a research to see details.'
+  image: researchMainPage,
+  info: 'Select a research topic to see details.'
 };
 
-const Research = ({ resources, spendResources, updateResearchEffects, handleUpgradeResearch }) => {
+const Research = ({ resources, spendResources, updateResearchEffects }) => {
   const [selectedResearch, setSelectedResearch] = useState(defaultImage);
   const { researches, upgradeResearch } = useResearch();
 
@@ -23,14 +21,11 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
   const handleUpgrade = async () => {
     const researchId = selectedResearch.id;
     const nextLevelData = selectedResearch.levels[selectedResearch.currentLevel + 1];
-    const resourceNames = Object.keys(nextLevelData.cost);
-    const resourceCosts = Object.values(nextLevelData.cost);
 
     const success = spendResources(nextLevelData.cost);
     if (success) {
       console.log('Resources spent successfully:', nextLevelData.cost);
-      await handleUpgradeResearch(researchId, resourceNames, resourceCosts);
-      upgradeResearch(researchId, spendResources, updateResearchEffects);
+      await upgradeResearch(researchId, spendResources, updateResearchEffects);
     } else {
       console.log('Not enough resources:', nextLevelData.cost);
     }
@@ -50,6 +45,9 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
   };
 
   const getNextLevelData = (research) => {
+    if (!research.levels) {
+      return null;
+    }
     const nextLevel = research.currentLevel + 1;
     if (nextLevel < research.levels.length) {
       return research.levels[nextLevel];
@@ -61,16 +59,17 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
     return Object.entries(cost).every(([resource, amount]) => resources[resource] >= amount);
   };
 
-  const renderResourceCost = (cost) => {
+  const renderResourceCost = (cost, highlight = false) => {
     return Object.entries(cost).map(([resource, amount], index, array) => {
       const hasEnough = resources[resource] >= amount;
+      const style = highlight ? {
+        color: hasEnough ? 'green' : 'red',
+        fontWeight: hasEnough ? 'normal' : 'bold'
+      } : {};
       return (
         <span
           key={resource}
-          style={{
-            color: hasEnough ? 'green' : 'red',
-            fontWeight: hasEnough ? 'normal' : 'bold'
-          }}
+          style={style}
         >
           {amount} {resource}{index < array.length - 1 ? ', ' : ''}
         </span>
@@ -80,36 +79,49 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
 
   return (
     <div className='main-content'>
-      <div className="researches">
+      <div className="buildings">
         <div className="blue-rectangle">
           <img src={selectedResearch.image} alt={selectedResearch.name} className="blue-image" />
-          <div className="research-info">
-            {selectedResearch.id !== 0 ? (
-              <>
-                <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
-                <h3>Current Level Information:</h3>
-                <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
-                <p>Effect: {getCurrentLevelData(selectedResearch).effect}</p>
-                <p>{getCurrentLevelData(selectedResearch).description}</p>
+          
+          {selectedResearch.id !== 0 && (
+            <div className="building-info current-info">
+              <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
+              <h3>Current Level Information:</h3>
+              <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
+              <p>Effect: {getCurrentLevelData(selectedResearch).effect}</p>
+              <p>{getCurrentLevelData(selectedResearch).description}</p>
+            </div>
+          )}
 
-                {getNextLevelData(selectedResearch) && (
-                  <>
-                    <h3>Next Level Information:</h3>
-                    <p>Cost: {renderResourceCost(getNextLevelData(selectedResearch).cost)}</p>
-                    <p>Effect: {getNextLevelData(selectedResearch).effect}</p>
-                    <p>{getNextLevelData(selectedResearch).description}</p>
-                    <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost)}>
-                      Upgrade to Level {selectedResearch.currentLevel + 1}
-                    </button>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="research-info">
-                <h2>{selectedResearch.name}</h2>
-                <p>{selectedResearch.info}</p>
-              </div>
-            )}
+          {selectedResearch.id !== 0 && (
+            <div className="building-info next-info">
+              {getNextLevelData(selectedResearch) && (
+                <>
+                  <h3>Next Level Information:</h3>
+                  <p>Cost: {renderResourceCost(getNextLevelData(selectedResearch).cost, true)}</p>
+                  <p>Effect: {getNextLevelData(selectedResearch).effect}</p>
+                  <p>{getNextLevelData(selectedResearch).description}</p>
+                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || selectedResearch.isResearching}>
+                    {selectedResearch.isResearching ? `Researching... ${selectedResearch.researchProgress}/${getNextLevelData(selectedResearch).buildTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          <div className="tooltip">
+            <button>?</button>
+            <span className="tooltiptext">
+              {selectedResearch.id !== 0 && (
+                <>
+                  <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
+                  <h3>Current Level Information:</h3>
+                  <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
+                  <p>Effect: {getCurrentLevelData(selectedResearch).effect}</p>
+                  <p>{getCurrentLevelData(selectedResearch).description}</p>
+                </>
+              )}
+            </span>
           </div>
         </div>
         <div className="circular-images">

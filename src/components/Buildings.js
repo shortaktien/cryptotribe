@@ -45,7 +45,6 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     const resourceNames = Object.keys(currentLevelData.cost);
     const resourceCosts = Object.values(currentLevelData.cost).map(cost => Math.floor(cost * 0.5));
 
-    // Call demolishBuilding directly without awaiting handleDemolishBuilding
     demolishBuilding(buildingId, resourceNames, resourceCosts);
   };
 
@@ -64,7 +63,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
 
   const getNextLevelData = (building) => {
     if (!building.levels) {
-      return null; // Rückgabe von null, wenn levels nicht definiert ist
+      return null;
     }
     const nextLevel = building.currentLevel + 1;
     if (nextLevel < building.levels.length) {
@@ -103,14 +102,14 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
           
           {selectedBuilding.id !== 0 && (
             <div className="building-info current-info">
-              <h2>{selectedBuilding.name} - Level: {selectedBuilding.currentLevel}</h2>
+              <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
               <h3>Current Level Information:</h3>
-              
+              <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
               {getCurrentLevelData(selectedBuilding).production && (
-                <p><b>Production:</b> {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
               )}
               {getCurrentLevelData(selectedBuilding).capacity && (
-                <p><b>Capacity:</b> {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
               )}
               <p>{getCurrentLevelData(selectedBuilding).description}</p>
             </div>
@@ -120,17 +119,17 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
             <div className="building-info next-info">
               {getNextLevelData(selectedBuilding) && (
                 <>
-                  <h3>Next Level:</h3>
-                  <p><b>Cost:</b> {renderResourceCost(getNextLevelData(selectedBuilding).cost, true)}</p>
+                  <h3>Next Level Information:</h3>
+                  <p>Cost: {renderResourceCost(getNextLevelData(selectedBuilding).cost, true)}</p>
                   {getNextLevelData(selectedBuilding).production && (
-                    <p><b>Production:</b> {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                    <p>Production: {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
                   )}
                   {getNextLevelData(selectedBuilding).capacity && (
-                    <p><b>Capacity:</b> {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                    <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                   )}
                   <p>{getNextLevelData(selectedBuilding).description}</p>
-                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost)}>
-                    Upgrade to Level {selectedBuilding.currentLevel + 1}
+                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost) || selectedBuilding.isBuilding}>
+                    {selectedBuilding.isBuilding ? `Building... ${selectedBuilding.buildProgress}/${getNextLevelData(selectedBuilding).buildTime}` : `Upgrade to Level ${selectedBuilding.currentLevel + 1}`}
                   </button>
                   <button onClick={handleDemolish} disabled={selectedBuilding.currentLevel === 0}>
                     Demolish to Level {selectedBuilding.currentLevel - 1}
