@@ -10,7 +10,7 @@ const useResources = () => {
     population: 10,  // Anfangspopulation
     kohle: 0, // Kohleresourcen
     gold: 0, // Goldresourcen
-    military: 0,
+    military: 0, //Kapazitäten für das Militär
   });
 
   const [productionRates, setProductionRates] = useState({

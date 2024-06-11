@@ -18,7 +18,7 @@ import useResources from './components/SetResources';
 import { connectMetaMask } from './components/MetaMask';
 import { BuildingsProvider } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
-import { MilitaryProvider } from './components/MilitaryContext'; // Ensure this is imported
+import { MilitaryProvider } from './components/MilitaryContext';
 
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
@@ -115,14 +115,14 @@ function App() {
   };
 
   const handleTrainUnit = async (unitId) => {
-    // Logik zum Trainieren einer Einheit hier hinzufügen
     console.log(`Train unit with id ${unitId}`);
   };
 
   const handleDisbandUnit = async (unitId) => {
-    // Logik zum Entlassen einer Einheit hier hinzufügen
     console.log(`Disband unit with id ${unitId}`);
   };
+
+  console.log("Capacity Rates in App:", capacityRates);
 
   return (
     <Router>
@@ -194,6 +194,7 @@ function App() {
                           <Military
                             resources={resources}
                             spendResources={spendResources}
+                            updateCapacityRates={updateCapacityRates}
                             handleTrainUnit={handleTrainUnit}
                             handleDisbandUnit={handleDisbandUnit}
                           />

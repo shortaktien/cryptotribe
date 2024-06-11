@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
-import { useBuildings } from './BuildingsContext'; // Importiere den Kontext
+import { useBuildings } from './BuildingsContext';
 
 import allianceImage from "../assets/allianceImage.webp";
 import buildingsImage from "../assets/buildingsImage.webp";
@@ -17,7 +17,7 @@ import './App.css';
 
 const Sidebar = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const { buildings } = useBuildings(); // Verwende den Kontext
+  const { buildings } = useBuildings();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -29,10 +29,7 @@ const Sidebar = () => {
     navigate(path);
   };
 
-  // Überprüfe, ob das Science-Gebäude gebaut wurde
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
-
-  // Überprüfe, ob die Barracks gebaut sind
   const isBarracksBuilt = buildings.some(building => building.name === 'Barracks' && building.currentLevel > 0);
 
   return (
@@ -70,7 +67,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className={isBarracksBuilt ? '' : 'disabled'}>
-            <Link to="/military" className={`sidebar-link ${isBarracksBuilt ? '' : 'disabled-link'}`} onClick={handleMenuClick}>
+            <Link to="/military" className={`sidebar-link ${isBarracksBuilt ? '' : 'disabled-link'}`}>
               <img src={militaryImage} alt="Military" className="sidebar-icon" /> Military
             </Link>
           </li>
@@ -128,8 +125,8 @@ const Sidebar = () => {
                   <img src={defenceImage} alt="Defence" className="sidebar-icon" />
                 </button>
               </li>
-              <li>
-                <button className="sidebar-link" onClick={() => handleMenuClick('/military')}>
+              <li className={isBarracksBuilt ? '' : 'disabled'}>
+                <button className={`sidebar-link ${isBarracksBuilt ? '' : 'disabled-link'}`} onClick={() => handleMenuClick('/military')}>
                   <img src={militaryImage} alt="Military" className="sidebar-icon" />
                 </button>
               </li>

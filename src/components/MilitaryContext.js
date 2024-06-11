@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext } from 'react';
-
 import unitImage from "../assets/lamberjackImage.webp"; // Temporäres Bild verwenden
 
 const MilitaryContext = createContext();
@@ -10,7 +9,6 @@ const initialUnitsData = [
     name: 'Infantry',
     image: unitImage,
     cost: { food: 10, population: 1 },
-    capacity: { military: 1 },
     buildTime: 3,
     attack: 2,
     defense: 1,
@@ -21,7 +19,6 @@ const initialUnitsData = [
     name: 'Cavalry',
     image: unitImage,
     cost: { food: 20, population: 1 },
-    capacity: { military: 2 },
     buildTime: 5,
     attack: 1,
     defense: 2,
@@ -29,12 +26,7 @@ const initialUnitsData = [
   }
 ];
 
-export const MilitaryProvider = ({
-  children,
-  spendResources,
-  updateCapacityRates,
-  refundResources
-}) => {
+export const MilitaryProvider = ({ children, spendResources, updateCapacityRates, refundResources }) => {
   const [units, setUnits] = useState(initialUnitsData);
 
   const trainUnit = (unitId) => {
@@ -58,9 +50,7 @@ export const MilitaryProvider = ({
                         isTraining: false,
                         buildProgress: 0
                       };
-                      Object.entries(u.capacity).forEach(([resource, capacity]) => {
-                        updateCapacityRates(resource, capacity);
-                      });
+                      updateCapacityRates('military', 1);
                       return newUnit;
                     }
                     return {
@@ -84,10 +74,8 @@ export const MilitaryProvider = ({
     setUnits(prevUnits =>
       prevUnits.map(unit => {
         if (unit.id === unitId) {
-          Object.entries(unit.capacity).forEach(([resource, capacity]) => {
-            updateCapacityRates(resource, -capacity);
-          });
           refundResources(unit.cost);
+          updateCapacityRates('military', -1);
           return {
             ...unit,
             isTraining: false,
