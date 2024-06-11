@@ -81,7 +81,7 @@ function App() {
     }
   };
 
-  const handleUpgradeResearch = async (researchId, resourceNames, resourceCosts) => {
+  const handleUpgradeResearch = async (researchId, cost) => {
     if (!contract) {
       console.error('Contract not initialized');
       return;
@@ -92,8 +92,8 @@ function App() {
       return;
     }
 
-    const hasEnoughResources = resourceNames.every((resource, index) => {
-      return resources[resource] >= resourceCosts[index];
+    const hasEnoughResources = Object.entries(cost).every(([resource, amount]) => {
+      return resources[resource] >= amount;
     });
 
     if (!hasEnoughResources) {
@@ -102,8 +102,8 @@ function App() {
     }
 
     try {
-      console.log('Sending transaction with the following parameters:', { researchId, resourceNames, resourceCosts });
-      await sendTransaction(web3, userAddress, contract, 'upgradeResearch', [researchId, resourceNames, resourceCosts]);
+      console.log('Sending transaction with the following parameters:', { researchId, cost });
+      await sendTransaction(web3, userAddress, contract, 'upgradeResearch', [researchId, Object.keys(cost), Object.values(cost)]);
     } catch (error) {
       console.error('Error upgrading research:', error);
       if (error.data) {

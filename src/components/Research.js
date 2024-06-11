@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useResearch } from './ResearchContext';
-import agricultureResearchImage from "../assets/agricultureResearchImage.webp";
+import researchMainPage from "../assets/researchLaborImage.webp";
 import './App.css';
 
 const defaultImage = {
   id: 0,
   name: 'Welcome to Research',
-  image: agricultureResearchImage,
-  info: 'Select a research to see details.'
+  image: researchMainPage,
+  info: 'Select a research topic to see details.'
 };
 
 const Research = ({ resources, spendResources, updateResearchEffects, handleUpgradeResearch }) => {
@@ -18,17 +18,29 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
     setSelectedResearch(research);
   };
 
+  const isOverlapping = (research) => {
+    const element = document.querySelector(`.research-info.current-info-${research.id}`);
+    const nextElement = document.querySelector(`.research-info.next-info-${research.id}`);
+    if (element && nextElement) {
+      const rect = element.getBoundingClientRect();
+      const nextRect = nextElement.getBoundingClientRect();
+      return !(rect.bottom < nextRect.top || rect.top > nextRect.bottom || rect.right < nextRect.left || rect.left > nextRect.right);
+    }
+    return false;
+  };
+
   const handleUpgrade = async () => {
     const researchId = selectedResearch.id;
     const nextLevelData = selectedResearch.levels[selectedResearch.currentLevel + 1];
+    const cost = nextLevelData.cost;
 
-    const success = spendResources(nextLevelData.cost);
+    const success = spendResources(cost);
     if (success) {
-      console.log('Resources spent successfully:', nextLevelData.cost);
-      await handleUpgradeResearch(researchId, nextLevelData.cost);
+      console.log('Resources spent successfully:', cost);
+      await handleUpgradeResearch(researchId, cost);
       upgradeResearch(researchId, spendResources, updateResearchEffects);
     } else {
-      console.log('Not enough resources:', nextLevelData.cost);
+      console.log('Not enough resources:', cost);
     }
   };
 
@@ -80,12 +92,12 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
 
   return (
     <div className='main-content'>
-      <div className="research">
+      <div className="researches">
         <div className="blue-rectangle">
           <img src={selectedResearch.image} alt={selectedResearch.name} className="blue-image" />
 
           {selectedResearch.id !== 0 && (
-            <div className="research-info current-info">
+            <div className={`research-info current-info current-info-${selectedResearch.id} ${isOverlapping(selectedResearch) ? 'overlapping' : ''}`}>
               <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
               <h3>Current Level Information:</h3>
               <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
@@ -95,15 +107,15 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
           )}
 
           {selectedResearch.id !== 0 && (
-            <div className="research-info next-info">
+            <div className={`research-info next-info next-info-${selectedResearch.id}`}>
               {getNextLevelData(selectedResearch) && (
                 <>
                   <h3>Next Level Information:</h3>
                   <p>Cost: {renderResourceCost(getNextLevelData(selectedResearch).cost, true)}</p>
                   <p>Effect: {getNextLevelData(selectedResearch).effect}</p>
                   <p>{getNextLevelData(selectedResearch).description}</p>
-                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || selectedResearch.isResearching}>
-                    {selectedResearch.isResearching ? `Researching... ${selectedResearch.researchProgress}/${getNextLevelData(selectedResearch).researchTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
+                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || selectedResearch.isBuilding}>
+                    {selectedResearch.isBuilding ? `Researching... ${selectedResearch.buildProgress}/${getNextLevelData(selectedResearch).buildTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
                   </button>
                 </>
               )}

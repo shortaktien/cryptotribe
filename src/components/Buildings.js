@@ -18,6 +18,17 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     setSelectedBuilding(building);
   };
 
+  const isOverlapping = (building) => {
+    const element = document.querySelector(`.building-info.current-info-${building.id}`);
+    const nextElement = document.querySelector(`.building-info.next-info-${building.id}`);
+    if (element && nextElement) {
+      const rect = element.getBoundingClientRect();
+      const nextRect = nextElement.getBoundingClientRect();
+      return !(rect.bottom < nextRect.top || rect.top > nextRect.bottom || rect.right < nextRect.left || rect.left > nextRect.right);
+    }
+    return false;
+  };
+
   const handleUpgrade = async () => {
     const buildingId = selectedBuilding.id;
     const nextLevelData = selectedBuilding.levels[selectedBuilding.currentLevel + 1];
@@ -101,7 +112,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
           <img src={selectedBuilding.image} alt={selectedBuilding.name} className="blue-image" />
           
           {selectedBuilding.id !== 0 && (
-            <div className="building-info current-info">
+            <div className={`building-info current-info current-info-${selectedBuilding.id} ${isOverlapping(selectedBuilding) ? 'overlapping' : ''}`}>
               <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
               <h3>Current Level Information:</h3>
               <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
@@ -116,7 +127,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
           )}
 
           {selectedBuilding.id !== 0 && (
-            <div className="building-info next-info">
+            <div className={`building-info next-info next-info-${selectedBuilding.id}`}>
               {getNextLevelData(selectedBuilding) && (
                 <>
                   <h3>Next Level Information:</h3>
