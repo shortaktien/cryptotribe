@@ -33,7 +33,8 @@ const useResources = () => {
     population: 10,
     kohle: 50,
     gold: 50,
-    military: 0
+    military: 0,
+    maxMilitaryCapacity: 0
   });
 
   const [researchEffects, setResearchEffects] = useState({
@@ -98,11 +99,18 @@ const useResources = () => {
     }));
   };
 
-  const updateCapacityRates = (resource, capacity) => {
-    setCapacityRates(prevCapacity => ({
-      ...prevCapacity,
-      [resource]: capacity
+  const updateCapacityRates = (resource, amount) => {
+    setCapacityRates(prevCapacityRates => ({
+      ...prevCapacityRates,
+      [resource]: (prevCapacityRates[resource] || 0) + amount
     }));
+
+    if (resource === 'military') {
+      setResources(prevResources => ({
+        ...prevResources,
+        military: Math.min(prevResources.military + amount, capacityRates.maxMilitaryCapacity)
+      }));
+    }
   };
 
   const updatePopulation = (population) => {
@@ -136,7 +144,17 @@ const useResources = () => {
 
   const getNetProductionRates = () => calculateNetProduction(productionRates);
 
-  return { resources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, refundResources, getNetProductionRates };
+  return { 
+    resources, 
+    updateProductionRate, 
+    spendResources, 
+    updateCapacityRates, 
+    updatePopulation, 
+    updateResearchEffects, 
+    capacityRates,
+    setCapacityRates, 
+    refundResources, 
+    getNetProductionRates };
 };
 
 export default useResources;

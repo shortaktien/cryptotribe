@@ -437,7 +437,10 @@ export const BuildingsProvider = ({
                             updateCapacityRates(resource, capacity);
                           });
                         }
-                        return newBuilding;
+                          if (building.name === 'Barracks') {
+                            updateCapacityRates('maxMilitaryCapacity', nextLevelData.capacity.military);
+                          }
+                          return newBuilding;
                       }
                       return {
                         ...b,

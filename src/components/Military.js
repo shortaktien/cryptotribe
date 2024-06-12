@@ -12,7 +12,7 @@ const defaultImage = {
 
 const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, handleDisbandUnit }) => {
   const [selectedUnit, setSelectedUnit] = useState(defaultImage);
-  const { units, trainUnit, disbandUnit } = useMilitary();
+  const { units, trainUnit, disbandUnit, currentCapacity } = useMilitary();
 
   const handleUnitClick = (unit) => {
     setSelectedUnit(unit);
@@ -46,12 +46,11 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
     }
   }, [units, selectedUnit.id]);
 
-  const canTrain = (cost) => {
-    const totalMilitaryUnits = units.reduce((total, unit) => total + (unit.isTraining ? 1 : 0), 0);
-    return (
-      Object.entries(cost).every(([resource, amount]) => resources[resource] >= amount) &&
-      totalMilitaryUnits < capacityRates.military
-    );
+  const canTrain = (cost, capacity) => {
+    const totalCapacity = currentCapacity + capacity;
+    const canTrain = Object.entries(cost).every(([resource, amount]) => resources[resource] >= amount) && totalCapacity <= capacityRates.military;
+    console.log(`Einheiten gebaut: ${currentCapacity}/${capacityRates.military}`);
+    return canTrain;
   };
 
   const renderResourceCost = (cost, highlight = false) => {
@@ -91,7 +90,7 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
 
           {selectedUnit.id !== 0 && (
             <div className={`unit-info next-info next-info-${selectedUnit.id}`}>
-              <button onClick={handleTrain} disabled={!canTrain(selectedUnit.cost) || selectedUnit.isTraining}>
+              <button onClick={handleTrain} disabled={!canTrain(selectedUnit.cost, selectedUnit.capacity) || selectedUnit.isTraining}>
                 {selectedUnit.isTraining ? `Training... ${selectedUnit.buildProgress}/${selectedUnit.buildTime}` : `Train Unit`}
               </button>
               <button onClick={handleDisband} disabled={selectedUnit.isTraining}>

@@ -12,6 +12,7 @@ const initialUnitsData = [
     buildTime: 3,
     attack: 2,
     defense: 1,
+    capacity: 1, // Kapazität, die diese Einheit benötigt
     description: 'Basic infantry unit.'
   },
   {
@@ -22,18 +23,19 @@ const initialUnitsData = [
     buildTime: 5,
     attack: 1,
     defense: 2,
+    capacity: 2, // Kapazität, die diese Einheit benötigt
     description: 'Basic cavalry unit.'
   }
 ];
 
-export const MilitaryProvider = ({ children, spendResources, updateCapacityRates, refundResources }) => {
+export const MilitaryProvider = ({ children, spendResources, updateCapacityRates, refundResources, resources, capacityRates }) => {
   const [units, setUnits] = useState(initialUnitsData);
 
   const trainUnit = (unitId) => {
     setUnits(prevUnits =>
       prevUnits.map(unit => {
         if (unit.id === unitId) {
-          if (spendResources(unit.cost)) {
+          if (spendResources(unit.cost) && (resources.military + unit.capacity <= capacityRates.maxMilitaryCapacity)) {
             const updatedUnit = {
               ...unit,
               isTraining: true,
@@ -45,12 +47,12 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
                   if (u.id === unitId) {
                     if (u.buildProgress >= unit.buildTime) {
                       clearInterval(intervalId);
+                      updateCapacityRates('military', unit.capacity); // Kapazität erhöhen
                       const newUnit = {
                         ...u,
                         isTraining: false,
                         buildProgress: 0
                       };
-                      updateCapacityRates('military', 1);
                       return newUnit;
                     }
                     return {
@@ -75,7 +77,7 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
       prevUnits.map(unit => {
         if (unit.id === unitId) {
           refundResources(unit.cost);
-          updateCapacityRates('military', -1);
+          updateCapacityRates('military', -unit.capacity); // Kapazität verringern
           return {
             ...unit,
             isTraining: false,

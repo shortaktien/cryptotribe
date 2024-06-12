@@ -10,9 +10,9 @@ import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
 import kohleImage from "../assets/coalRessourceImage.webp";
 import goldImage from "../assets/goldRessourceImage.webp";
-import militaryImage from "../assets/militaryRessourceImage.webp"; // BILD ÄNDERN!!! 
+import militaryImage from "../assets/militaryRessourceImage.webp"; // BILD ÄNDERN!!!
 
-import "./App.css"; 
+import "./App.css";
 
 const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -34,7 +34,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
     { name: 'Kohle', value: Math.floor(resources.kohle), capacity: capacityRates.kohle, image: kohleImage },
     { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage },
-    { name: 'Military', value: Math.floor(resources.military), capacity: capacityRates.military, image: militaryImage }
+    { name: 'Military', value: Math.floor(resources.military), capacity: capacityRates.maxMilitaryCapacity, image: militaryImage }
   ];
 
   return (
