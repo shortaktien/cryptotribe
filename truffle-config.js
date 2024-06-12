@@ -5,24 +5,12 @@ const mnemonic = secrets.mnemonic;
 
 module.exports = {
   networks: {
-    iotaTestnet: {
+    iota: {
       provider: () => new HDWalletProvider(mnemonic, 'https://json-rpc.evm.testnet.iotaledger.net'),
       network_id: 1075, // IOTA EVM Testnet network ID
       gas: 6000000,
-      gasPrice: 10000000000, // 10 Gwei, kein Bedarf an `web3.utils.toWei`
-      //type: "0x0"
+      gasPrice: 10000000000, // 10 Gwei
     },
-    try {
-      const receipt = await web3.eth.sendTransaction(transactionParameters);
-      console.log('Transaction receipt: ', receipt);
-    } catch (error) {
-      console.error('Error in transaction: ', error);
-      if (error.data) {
-        console.error('Error data: ', error.data);
-      }
-    }
-    };
-    
   },
   compilers: {
     solc: {
@@ -30,4 +18,3 @@ module.exports = {
     },
   },
 };
-

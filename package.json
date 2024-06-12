@@ -7,7 +7,6 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@truffle/hdwallet-provider": "^2.1.15",
     "body-parser": "^1.20.2",
     "crypto-js": "^4.2.0",
     "express": "^4.19.2",
@@ -21,7 +20,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "source-map-loader": "^5.0.0"
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "source-map-loader": "^5.0.0",
+    "truffle": "^5.11.5"
   },
   "scripts": {
     "start": "react-scripts start",
