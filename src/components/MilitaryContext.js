@@ -35,7 +35,7 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
     setUnits(prevUnits =>
       prevUnits.map(unit => {
         if (unit.id === unitId) {
-          if (spendResources(unit.cost) && (resources.military + unit.capacity <= capacityRates.maxMilitaryCapacity)) {
+          if (spendResources(unit.cost)) {
             const updatedUnit = {
               ...unit,
               isTraining: true,
@@ -90,7 +90,7 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
   };
 
   return (
-    <MilitaryContext.Provider value={{ units, trainUnit, disbandUnit }}>
+    <MilitaryContext.Provider value={{ units, trainUnit, disbandUnit, resources, capacityRates }}>
       {children}
     </MilitaryContext.Provider>
   );
