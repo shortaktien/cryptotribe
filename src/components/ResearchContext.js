@@ -10,76 +10,48 @@ const initialResearchData = [
     id: 1,
     name: 'Agriculture',
     image: agricultureResearchImage,
-    levels: [
-      {
-        level: 0,
-        cost: { knowledge: 0 },
-        effect: 'No bonus.',
-        multiplier: { food: 0 },
-        buildTime: 0
-      },
-      {
-        level: 1,
-        cost: { knowledge: 50 },
-        effect: 'Increase food production by 10%.',
-        multiplier: { food: 0.1 },
-        buildTime: 3
-      },
-      {
-        level: 2,
-        cost: { knowledge: 150 },
-        effect: 'Increase food production by 20%.',
-        multiplier: { food: 0.2 },
-        buildTime: 5
-      },
-      {
-        level: 3,
-        cost: { knowledge: 300 },
-        effect: 'Increase food production by 30%.',
-        multiplier: { food: 0.3 },
-        buildTime: 8
-      }
-    ],
-    currentLevel: 0
+    baseCost: { knowledge: 1 },
+    baseEffect: 0.1,
+    multiplier: 1.9,
+    effectResource: 'food',
+    buildTime: 3,
+    currentLevel: 0,
+    levels: generateLevels(50, 0.1, 1.9, 'food', 3) // Generate levels dynamically
   },
   {
     id: 2,
-    name: 'Other Research',
+    name: 'Water Conservation',
     image: waterResearchImage,
-    levels: [
-      {
-        level: 0,
-        cost: { knowledge: 0 },
-        effect: 'No bonus.',
-        multiplier: { other: 0 },
-        buildTime: 0
-      },
-      {
-        level: 1,
-        cost: { knowledge: 50 },
-        effect: 'Increase other production by 10%.',
-        multiplier: { other: 0.1 },
-        buildTime: 3
-      },
-      {
-        level: 2,
-        cost: { knowledge: 150 },
-        effect: 'Increase other production by 20%.',
-        multiplier: { other: 0.2 },
-        buildTime: 5
-      },
-      {
-        level: 3,
-        cost: { knowledge: 300 },
-        effect: 'Increase other production by 30%.',
-        multiplier: { other: 0.3 },
-        buildTime: 8
-      }
-    ],
-    currentLevel: 0
+    baseCost: { knowledge: 1 },
+    baseEffect: 0.1,
+    multiplier: 1.9,
+    effectResource: 'water',
+    buildTime: 3,
+    currentLevel: 0,
+    levels: generateLevels(50, 0.1, 1.9, 'water', 3) // Generate levels dynamically
   }
   // Weitere Forschungseinträge ...
 ];
+
+function generateLevels(baseCost, baseEffect, multiplier, effectResource, baseBuildTime, maxLevel = 20) {
+  const levels = [];
+  for (let level = 0; level <= maxLevel; level++) {
+    const cost = { knowledge: Math.ceil(baseCost * Math.pow(multiplier, level)) };
+    const effect = `Increase ${effectResource} production by ${Math.ceil(baseEffect * (level + 1) * 100)}%.`;
+    const buildTime = Math.ceil(baseBuildTime * Math.pow(multiplier, level));
+    const multiplierObj = {};
+    multiplierObj[effectResource] = baseEffect * (level + 1);
+    
+    levels.push({
+      level,
+      cost,
+      effect,
+      multiplier: multiplierObj,
+      buildTime
+    });
+  }
+  return levels;
+}
 
 export const ResearchProvider = ({
   children,
@@ -88,11 +60,7 @@ export const ResearchProvider = ({
 }) => {
   const [researches, setResearches] = useState(initialResearchData);
 
-  const upgradeResearch = (
-    researchId, 
-    spendResources, 
-    updateResearchEffects
-  ) => {
+  const upgradeResearch = (researchId, spendResources, updateResearchEffects) => {
     setResearches(prevResearches =>
       prevResearches.map(research => {
         if (research.id === researchId) {

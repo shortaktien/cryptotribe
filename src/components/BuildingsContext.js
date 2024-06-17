@@ -93,7 +93,7 @@ const initialBuildingsData = [
     name: 'Science',
     image: scienceBuildingImage,
     baseCost: { wood: 1, population: 1 },
-    baseProduction: { knowledge: 1 / 3600 }, // pro Sekunde
+    baseProduction: { knowledge: 10000 / 3600 }, // pro Sekunde
     baseCapacity: { knowledge: 200 },
     baseBuildTime: 3,
     currentLevel: 0,

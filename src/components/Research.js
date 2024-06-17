@@ -114,8 +114,8 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
                   <p>Cost: {renderResourceCost(getNextLevelData(selectedResearch).cost, true)}</p>
                   <p>Effect: {getNextLevelData(selectedResearch).effect}</p>
                   <p>{getNextLevelData(selectedResearch).description}</p>
-                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || selectedResearch.isBuilding}>
-                    {selectedResearch.isBuilding ? `Researching... ${selectedResearch.buildProgress}/${getNextLevelData(selectedResearch).buildTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
+                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || selectedResearch.isResearching}>
+                    {selectedResearch.isResearching ? `Researching... ${selectedResearch.researchProgress}/${getNextLevelData(selectedResearch).buildTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
                   </button>
                 </>
               )}

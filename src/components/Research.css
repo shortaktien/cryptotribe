@@ -37,7 +37,7 @@
     color: white;
     z-index: 2;
     transition: opacity 0.3s ease-in-out;
-    width: 300px; /* Ensure it fits within the parent */
+    width: calc(300px); /* Ensure it fits within the parent */
   }
   
   .next-info {
