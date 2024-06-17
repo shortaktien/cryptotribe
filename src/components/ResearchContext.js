@@ -10,25 +10,25 @@ const initialResearchData = [
     id: 1,
     name: 'Agriculture',
     image: agricultureResearchImage,
-    baseCost: { knowledge: 1 },
-    baseEffect: 0.1,
+    baseCost: { knowledge: 50 },
+    baseEffect: 0.0075,
     multiplier: 1.9,
     effectResource: 'food',
     buildTime: 3,
     currentLevel: 0,
-    levels: generateLevels(50, 0.1, 1.9, 'food', 3) // Generate levels dynamically
+    levels: generateLevels(50, 0.0075, 1.9, 'food', 3) // Generate levels dynamically
   },
   {
     id: 2,
     name: 'Water Conservation',
     image: waterResearchImage,
-    baseCost: { knowledge: 1 },
-    baseEffect: 0.1,
+    baseCost: { knowledge: 50 },
+    baseEffect: 0.0075,
     multiplier: 1.9,
     effectResource: 'water',
     buildTime: 3,
     currentLevel: 0,
-    levels: generateLevels(50, 0.1, 1.9, 'water', 3) // Generate levels dynamically
+    levels: generateLevels(50, 0.0075, 1.9, 'water', 3) // Generate levels dynamically
   }
   // Weitere Forschungseinträge ...
 ];
@@ -70,9 +70,30 @@ export const ResearchProvider = ({
             if (spendResources(nextLevelData.cost)) {
               updateResearchEffects(nextLevelData.multiplier);
               console.log(`Research ${research.name} upgraded to level ${nextLevel}. Updated production effects:`, nextLevelData.multiplier);
+              const intervalId = setInterval(() => {
+                setResearches(prevResearches =>
+                  prevResearches.map(r => {
+                    if (r.id === researchId) {
+                      if (r.researchProgress >= nextLevelData.buildTime) {
+                        clearInterval(intervalId);
+                        return {
+                          ...r,
+                          currentLevel: nextLevel,
+                          isResearching: false,
+                          researchProgress: 0
+                        };
+                      }
+                      return {
+                        ...r,
+                        researchProgress: r.researchProgress + 1
+                      };
+                    }
+                    return r;
+                  })
+                );
+              }, 1000);
               return {
                 ...research,
-                currentLevel: nextLevel,
                 isResearching: true,
                 researchProgress: 0
               };

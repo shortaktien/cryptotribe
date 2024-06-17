@@ -2,10 +2,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    
   }
   
   .blue-rectangle {
-    background-color: rgba(235, 227, 227, 0.8); /* Light gray background */
+    
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -20,6 +21,7 @@
   }
   
   .blue-image {
+
     width: 80%;
     height: auto;
     border-radius: 10px;
@@ -51,7 +53,7 @@
   }
   
   .green-rectangle {
-    background-color: rgba(235, 227, 227, 0.8); /* Green */
+
     border-radius: 10px;
     padding: 10px;
     margin: 0 10px;
@@ -66,11 +68,13 @@
   }
   
   .green-image {
+    
     width: 100px; /* Set width of the image to 100px */
     height: 100px; /* Set height of the image to 100px */
     border-radius: 50px;
   }
   
+  /*Actual Level in a orange box*/
   .level {
     background-color: #ffa600e8; /* Red */
     border-radius: 5px;
@@ -99,7 +103,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fff; /* Optional: Background color */
     position: relative;
   }
   
@@ -136,7 +139,7 @@
     opacity: 1;
   }
   
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 368px) {
     .tooltip {
       display: block; /* Display on smaller screens */
     }
