@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from 'react';
 
 import agricultureResearchImage from "../assets/agricultureResearchImage.webp";
-import otherResearchImage from "../assets/agricultureResearchImage.webp"; // Fügen Sie weitere Forschungsbilder hinzu
+import waterResearchImage from "../assets/waterResearchUpdateImage.webp";
 
 const ResearchContext = createContext();
 
@@ -45,7 +45,7 @@ const initialResearchData = [
   {
     id: 2,
     name: 'Other Research',
-    image: otherResearchImage,
+    image: waterResearchImage,
     levels: [
       {
         level: 0,

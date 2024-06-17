@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBuildings } from './BuildingsContext';
 import buildingsMainPage from "../assets/buildingsMainPage.webp";
-import './App.css';
+import './Buildings.css'; // Separate CSS-Datei für Buildings
 
 const defaultImage = {
   id: 0,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useResearch } from './ResearchContext';
 import researchMainPage from "../assets/researchLaborImage.webp";
-import './App.css';
+import './Research.css';
 
 const defaultImage = {
   id: 0,
