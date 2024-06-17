@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext } from 'react';
-import unitImage from "../assets/lamberjackImage.webp"; // Temporäres Bild verwenden
+import unitImage1 from "../assets/infantrieUnitImage.webp"; 
+import unitImage2 from "../assets/cavalryUnitImage.webp";
 
 const MilitaryContext = createContext();
 
@@ -7,7 +8,7 @@ const initialUnitsData = [
   {
     id: 1,
     name: 'Infantry',
-    image: unitImage,
+    image: unitImage1,
     cost: { food: 10, population: 1 },
     buildTime: 3,
     attack: 2,
@@ -18,7 +19,7 @@ const initialUnitsData = [
   {
     id: 2,
     name: 'Cavalry',
-    image: unitImage,
+    image: unitImage2,
     cost: { food: 20, population: 1 },
     buildTime: 5,
     attack: 1,

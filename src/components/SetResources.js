@@ -1,40 +1,53 @@
 import { useState, useEffect, useCallback } from 'react';
+import Military from './Military';
 
 const useResources = () => {
   const [resources, setResources] = useState({
-    water: 100,
-    food: 100,
-    wood: 100,
-    stone: 0,
-    knowledge: 100, // Wissenschaftsressourcen
+    water: 250,
+    food: 250,
+    wood: 300,
+    stone: 100,
+    knowledge: 0, // Wissenschaftsressourcen
     population: 10,  // Anfangspopulation
-    kohle: 0, // Kohleresourcen
+    coal: 0, // Kohleresourcen
     gold: 0, // Goldresourcen
     military: 0, //Kapazitäten für das Militär
   });
 
   const [productionRates, setProductionRates] = useState({
+    water: 40 / 3600,
+    food: 35 / 3600,
+    wood: 33 /3600,
+    stone: 29 /3600,
+    knowledge: 1 / 3600, 
+    population: 1 /3600,
+    coal: 15 / 3600,
+    gold: 0.01 / 3600
+  });
+
+  const [capacityRates, setCapacityRates] = useState({
+    water: 500,
+    food: 500,
+    wood: 500,
+    stone: 500,
+    knowledge: 100, // Wissenschaftskapazität
+    population: 10,
+    coal: 500,
+    gold: 500,
+    military: 0,
+    maxMilitaryCapacity: 0
+  });
+
+  const [resourceChanges, setResourceChanges] = useState({
     water: 0,
     food: 0,
     wood: 0,
     stone: 0,
     knowledge: 0, 
     population: 0,
-    kohle: 0,
-    gold: 0
-  });
-
-  const [capacityRates, setCapacityRates] = useState({
-    water: 100,
-    food: 100,
-    wood: 100,
-    stone: 50,
-    knowledge: 100, // Wissenschaftskapazität
-    population: 10,
-    kohle: 50,
-    gold: 50,
-    military: 0,
-    maxMilitaryCapacity: 0
+    coal: 0,
+    gold: 0,
+    military: 0
   });
 
   const [researchEffects, setResearchEffects] = useState({
@@ -60,8 +73,8 @@ const useResources = () => {
 
     // Subtract population consumption
     const population = resources.population;
-    netProduction.food -= population * 0.2; // Population consumption of food
-    netProduction.water -= population * 0.1; // Population consumption of water
+    netProduction.food -= (population * 0.2) / 3600; // Population consumption of food
+    netProduction.water -= (population * 0.1) / 3600; // Population consumption of water
 
     return netProduction;
   }, [researchEffects, resources.population]);
@@ -70,17 +83,27 @@ const useResources = () => {
     const interval = setInterval(() => {
       const netProduction = calculateNetProduction(productionRates);
       setResources(prevResources => {
-        return {
+        const newResources = {
           water: Math.min(Math.max(prevResources.water + netProduction.water, 0), capacityRates.water),
           food: Math.min(Math.max(prevResources.food + netProduction.food, 0), capacityRates.food),
           wood: Math.min(prevResources.wood + netProduction.wood, capacityRates.wood),
           stone: Math.min(prevResources.stone + netProduction.stone, capacityRates.stone),
           knowledge: Math.min(prevResources.knowledge + netProduction.knowledge, capacityRates.knowledge),
           population: Math.min(prevResources.population + netProduction.population, capacityRates.population),
-          kohle: Math.min(prevResources.kohle + netProduction.kohle, capacityRates.kohle),
+          coal: Math.min(prevResources.coal + netProduction.coal, capacityRates.coal),
           gold: Math.min(prevResources.gold + netProduction.gold, capacityRates.gold),
           military: Math.min(prevResources.military, capacityRates.military)
         };
+
+        // Set the changes in resources
+        const changes = {};
+        Object.keys(newResources).forEach(resource => {
+          changes[resource] = newResources[resource] - prevResources[resource];
+        });
+
+        setResourceChanges(changes);
+
+        return newResources;
       });
     }, 1000);
 
@@ -146,6 +169,7 @@ const useResources = () => {
 
   return { 
     resources, 
+    resourceChanges,
     updateProductionRate, 
     spendResources, 
     updateCapacityRates, 
@@ -154,7 +178,8 @@ const useResources = () => {
     capacityRates,
     setCapacityRates, 
     refundResources, 
-    getNetProductionRates };
+    getNetProductionRates 
+  };
 };
 
 export default useResources;

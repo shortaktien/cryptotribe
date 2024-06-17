@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 
 import foodImage from '../assets/foodImage.webp';
@@ -8,14 +8,15 @@ import waterImage from '../assets/waterImage.webp';
 import woodImage from '../assets/woodImage.webp';
 import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
-import kohleImage from "../assets/coalRessourceImage.webp";
+import coalImage from "../assets/coalRessourceImage.webp";
 import goldImage from "../assets/goldRessourceImage.webp";
 import militaryImage from "../assets/militaryRessourceImage.webp"; // BILD ÄNDERN!!!
 
 import "./App.css";
 
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates }) => {
+const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates, resourceChanges = {} }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [highlightedResources, setHighlightedResources] = useState({});
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -25,17 +26,34 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     setDropdownVisible(false);
   };
 
-  const resourcesData = [
+  const resourcesData = useMemo(() => [
     { name: 'Water', value: Math.floor(resources.water), capacity: capacityRates.water, image: waterImage },
     { name: 'Food', value: Math.floor(resources.food), capacity: capacityRates.food, image: foodImage },
     { name: 'Wood', value: Math.floor(resources.wood), capacity: capacityRates.wood, image: woodImage },
     { name: 'Stone', value: Math.floor(resources.stone), capacity: capacityRates.stone, image: stoneImage },
-    { name: 'Population', value: Math.floor(resources.population), capacity: capacityRates.population, image: populationImage },
-    { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
-    { name: 'Kohle', value: Math.floor(resources.kohle), capacity: capacityRates.kohle, image: kohleImage },
+    { name: 'Coal', value: Math.floor(resources.coal), capacity: capacityRates.coal, image: coalImage },
     { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage },
+    { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
+    { name: 'Population', value: Math.floor(resources.population), capacity: capacityRates.population, image: populationImage },
     { name: 'Military', value: Math.floor(resources.military), capacity: capacityRates.maxMilitaryCapacity, image: militaryImage }
-  ];
+  ], [resources, capacityRates]);
+
+  useEffect(() => {
+    const newHighlightedResources = {};
+    Object.keys(resourceChanges).forEach(key => {
+      if (resourceChanges[key] !== undefined && resourceChanges[key] !== 0) {
+        newHighlightedResources[key] = resourceChanges[key] > 0 ? 'highlight-green' : 'highlight-red';
+      }
+    });
+
+    setHighlightedResources(newHighlightedResources);
+
+    const timer = setTimeout(() => {
+      setHighlightedResources({});
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [resourceChanges]); // Verwenden Sie hier nur `resourceChanges` als Abhängigkeit
 
   return (
     <div className="header">
@@ -43,7 +61,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
       <img src={cryptotribeImage} alt="Cryptotribe Logo" className="logo-icon" />
       <div className="resources">
         {resourcesData.map((resource, index) => (
-          <div key={index} className="resource">
+          <div key={index} className={`resource ${highlightedResources[resource.name.toLowerCase()] || ''}`}>
             <div className="resource-container">
               <img src={resource.image} alt={resource.name} className="resource-icon" />
               <div className="resource-tooltip">{resource.name}: {resource.value}/{resource.capacity}</div>

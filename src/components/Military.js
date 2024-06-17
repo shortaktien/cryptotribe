@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMilitary } from './MilitaryContext';
-import militaryMainPage from "../assets/houseImage.webp";
+import militaryMainPage from "../assets/barracksBuildingImage.webp";
 import './App.css';
 
 const defaultImage = {

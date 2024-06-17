@@ -14,6 +14,18 @@
   flex-wrap: wrap; /* Hinzugefügt für bessere Reaktionsfähigkeit */
 }
 
+/* App.css */
+.resource.highlight-green .resource-amount {
+  color: green;
+  font-weight: bold;
+}
+
+.resource.highlight-red .resource-amount {
+  color: red;
+  font-weight: bold;
+}
+
+
 /* Neue Media Query für kleinere Bildschirme */
 @media screen and (max-width: 768px) {
   .content {

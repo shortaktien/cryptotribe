@@ -22,7 +22,7 @@ const MainContent = ({ getNetProductionRates }) => {
       <ul>
         {Object.entries(netProduction).map(([resource, rate]) => (
           <li key={resource}>
-            {resource}: {rate.toFixed(2)}
+            {resource}: {rate.toFixed(3)}
           </li>
         ))}
       </ul>

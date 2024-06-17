@@ -73,9 +73,6 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
   };
 
   const getNextLevelData = (building) => {
-    if (!building.levels) {
-      return null;
-    }
     const nextLevel = building.currentLevel + 1;
     if (nextLevel < building.levels.length) {
       return building.levels[nextLevel];
@@ -117,7 +114,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
               <h3>Current Level Information:</h3>
               <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
               {getCurrentLevelData(selectedBuilding).production && (
-                <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate.toFixed(2)} ${resource}/s`).join(', ')}</p>
               )}
               {getCurrentLevelData(selectedBuilding).capacity && (
                 <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
