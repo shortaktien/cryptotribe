@@ -1,0 +1,53 @@
+/* src/components/MainContent.css */
+.main-content {
+    display: flex;
+    justify-content: space-around; /* Space out the boxes */
+    background-color: #f8f9fa; /* Light background color for better readability */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 20px;
+    margin: 20px auto; /* Center content with automatic margins */
+    max-width: 1250px; /* Limit the maximum width for readability */
+    text-align: center; /* Center align text */
+  }
+  
+  .box {
+    background-color: #fff; /* White background for the boxes */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 20px;
+    width: 45%; /* Limit the width of each box */
+    margin: 10px;
+  }
+  
+  .title {
+    font-size: 24px; /* Increase font size for the title */
+    margin-bottom: 20px; /* Add space below the title */
+    color: #333; /* Darker text color for better contrast */
+  }
+  
+  .production-list, .unit-list {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0;
+    margin: 0;
+  }
+  
+  .production-item, .unit-item {
+    background-color: #f8f9fa; /* Light background for list items */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+    margin-bottom: 10px; /* Space between list items */
+    padding: 10px;
+    display: flex;
+    justify-content: space-between; /* Space out resource name and rate */
+  }
+  
+  .resource-name, .unit-name {
+    font-weight: bold; /* Bold font for names */
+    color: #007bff; /* Blue color for names */
+  }
+  
+  .resource-rate, .unit-count {
+    color: #28a745; /* Green color for counts */
+  }
+  

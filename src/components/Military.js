@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMilitary } from './MilitaryContext';
 import militaryMainPage from "../assets/barracksBuildingImage.webp";
-import './App.css';
+import './Military.css';
 
 const defaultImage = {
   id: 0,
@@ -16,6 +16,17 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
 
   const handleUnitClick = (unit) => {
     setSelectedUnit(unit);
+  };
+
+  const isOverlapping = (unit) => {
+    const element = document.querySelector(`.unit-info.current-info-${unit.id}`);
+    const nextElement = document.querySelector(`.unit-info.next-info-${unit.id}`);
+    if (element && nextElement) {
+      const rect = element.getBoundingClientRect();
+      const nextRect = nextElement.getBoundingClientRect();
+      return !(rect.bottom < nextRect.top || rect.top > nextRect.bottom || rect.right < nextRect.left || rect.left > nextRect.right);
+    }
+    return false;
   };
 
   const handleTrain = async () => {
@@ -76,7 +87,7 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
           <img src={selectedUnit.image} alt={selectedUnit.name} className="blue-image" />
 
           {selectedUnit.id !== 0 && (
-            <div className={`unit-info current-info current-info-${selectedUnit.id}`}>
+            <div className={`unit-info current-info current-info-${selectedUnit.id} ${isOverlapping(selectedUnit) ? 'overlapping' : ''}`}>
               <h2>{selectedUnit.name}</h2>
               <h3>Unit Information:</h3>
               <p>Cost: {renderResourceCost(selectedUnit.cost)}</p>

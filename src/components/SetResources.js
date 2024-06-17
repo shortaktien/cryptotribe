@@ -8,7 +8,7 @@ const useResources = () => {
     wood: 300,
     stone: 100,
     knowledge: 0, // Wissenschaftsressourcen
-    population: 10,  // Anfangspopulation
+    population: 15,  // Anfangspopulation
     coal: 0, // Kohleresourcen
     gold: 0, // Goldresourcen
     military: 0, //Kapazitäten für das Militär
@@ -31,7 +31,7 @@ const useResources = () => {
     wood: 500,
     stone: 500,
     knowledge: 100, // Wissenschaftskapazität
-    population: 10,
+    population: 15,
     coal: 500,
     gold: 500,
     military: 0,
