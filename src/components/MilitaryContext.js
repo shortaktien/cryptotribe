@@ -14,7 +14,8 @@ const initialUnitsData = [
     attack: 2,
     defense: 1,
     capacity: 1, // Kapazität, die diese Einheit benötigt
-    description: 'Basic infantry unit.'
+    description: 'Basic infantry unit.',
+    count: 0 // Initialisiere die Anzahl der Einheiten
   },
   {
     id: 2,
@@ -25,7 +26,8 @@ const initialUnitsData = [
     attack: 1,
     defense: 2,
     capacity: 2, // Kapazität, die diese Einheit benötigt
-    description: 'Basic cavalry unit.'
+    description: 'Basic cavalry unit.',
+    count: 0 // Initialisiere die Anzahl der Einheiten
   }
 ];
 
@@ -48,11 +50,12 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
                   if (u.id === unitId) {
                     if (u.buildProgress >= unit.buildTime) {
                       clearInterval(intervalId);
-                      updateCapacityRates('military', unit.capacity); // Kapazität erhöhen
+                      updateCapacityRates('military', unit.capacity);
                       const newUnit = {
                         ...u,
                         isTraining: false,
-                        buildProgress: 0
+                        buildProgress: 0,
+                        count: (u.count || 0) + 1 // Anzahl der Einheiten erhöhen
                       };
                       return newUnit;
                     }
@@ -78,9 +81,10 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
       prevUnits.map(unit => {
         if (unit.id === unitId) {
           refundResources(unit.cost);
-          updateCapacityRates('military', -unit.capacity); // Kapazität verringern
+          updateCapacityRates('military', -unit.capacity);
           return {
             ...unit,
+            count: (unit.count || 0) - 1, // Anzahl der Einheiten verringern
             isTraining: false,
             buildProgress: 0
           };

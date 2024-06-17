@@ -146,3 +146,14 @@
     display: none; /* Bei kleineren Bildschirmen ausblenden */
   }
 }
+
+
+.total-stats {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.total-stats p {
+  margin: 5px 0;
+}

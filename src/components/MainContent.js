@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './MainContent.css';
-import { useMilitary } from './MilitaryContext'; // Importiere den MilitaryContext
+import { useMilitary } from './MilitaryContext';
 
 const MainContent = ({ getNetProductionRates }) => {
   const [netProduction, setNetProduction] = useState({});
-  const { units } = useMilitary(); // Hole die Einheiten aus dem MilitaryContext
+  const { units } = useMilitary();
 
   useEffect(() => {
     const updateNetProduction = () => {
@@ -16,6 +16,14 @@ const MainContent = ({ getNetProductionRates }) => {
 
     return () => clearInterval(intervalId);
   }, [getNetProductionRates]);
+
+  useEffect(() => {
+    console.log('Units from context:', units); // Debugging-Ausgabe
+  }, [units]);
+
+  // Berechnung der Gesamtwerte für Attack und Defense
+  const totalAttack = units.reduce((total, unit) => total + (unit.attack * (unit.count || 0)), 0);
+  const totalDefense = units.reduce((total, unit) => total + (unit.defense * (unit.count || 0)), 0);
 
   return (
     <div className="main-content">
@@ -38,6 +46,10 @@ const MainContent = ({ getNetProductionRates }) => {
             </li>
           ))}
         </ul>
+        <div className="total-stats">
+          <p>Total Attack: {totalAttack}</p>
+          <p>Total Defense: {totalDefense}</p>
+        </div>
       </div>
     </div>
   );
