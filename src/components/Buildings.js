@@ -102,6 +102,23 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     });
   };
 
+  const renderBuildingSection = (sectionTitle, buildingIds) => {
+    const sectionBuildings = buildings.filter(b => buildingIds.includes(b.id));
+    return (
+      <div className="building-section">
+        <h2 className="section-title">{sectionTitle}</h2>
+        <div className="circular-images">
+          {sectionBuildings.map((building) => (
+            <div key={building.id} className="circular-image-wrapper" onClick={() => handleBuildingClick(building)}>
+              <img src={building.image} alt={building.name} className="circular-image" />
+              <div className="level">{building.currentLevel}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className='main-content'>
       <div className="buildings">
@@ -167,14 +184,10 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
             </span>
           </div>
         </div>
-        <div className="circular-images">
-          {buildings.map((building) => (
-            <div key={building.id} className="circular-image-wrapper" onClick={() => handleBuildingClick(building)}>
-              <img src={building.image} alt={building.name} className="circular-image" />
-              <div className="level">{building.currentLevel}</div>
-            </div>
-          ))}
-        </div>
+
+        {renderBuildingSection('Civil Buildings', [4, 7])}
+        {renderBuildingSection('Industrial Buildings', [1, 2, 3, 5, 6, 8, 9])}
+        {renderBuildingSection('Military Buildings', [10])} {/* Füge hier die IDs der Militärgebäude hinzu */}
       </div>
     </div>
   );
