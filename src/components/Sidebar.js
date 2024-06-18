@@ -33,6 +33,8 @@ const Sidebar = () => {
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
   const isBarracksBuilt = buildings.some(building => building.name === 'Barracks' && building.currentLevel > 0);
   const isFortresBuilt = buildings.some(building => building.name === "Fortifications" && building.currentLevel > 0);
+  const isShipyardBuilt = buildings.some(building => building.name === "Harbor" && building.currentLevel > 0);
+  const isMerchantBuilt = buildings.some(building => building.name === "Merchant" && building.currentLevel > 0);
 
   return (
     <div>
@@ -53,13 +55,13 @@ const Sidebar = () => {
               <img src={researchImage} alt="Research" className="sidebar-icon" /> Research
             </Link>
           </li>
-          <li>
-            <Link to="/merchant" className="sidebar-link">
+          <li className={isMerchantBuilt ? '' : 'disabled'}>
+          <Link to="/merchant" className={`sidebar-link ${isMerchantBuilt ? '' : 'disabled-link'}`}>
               <img src={merchantImage} alt="Merchant" className="sidebar-icon" /> Merchant
             </Link>
           </li>
-          <li>
-            <Link to="/shipyard" className="sidebar-link">
+          <li className={isShipyardBuilt ? '' : 'disabled'}>
+            <Link to="/shipyard" className={`sidebar-link ${isShipyardBuilt ? '' : 'disabled-link'}`}>
               <img src={shipyardImage} alt="Shipyard" className="sidebar-icon" /> Shipyard
             </Link>
           </li>
@@ -112,18 +114,18 @@ const Sidebar = () => {
                   <img src={researchImage} alt="Research" className="sidebar-icon" />
                 </button>
               </li>
-              <li>
-                <button className="sidebar-link" onClick={() => handleMenuClick('/merchant')}>
+              <li className={isMerchantBuilt ? '' : 'disabled'}>
+              <button className={`sidebar-link ${isMerchantBuilt ? '' : 'disabled-link'}`} onClick={() => handleMenuClick('/merchant')}>
                   <img src={merchantImage} alt="Merchant" className="sidebar-icon" />
                 </button>
               </li>
-              <li>
-                <button className="sidebar-link" onClick={() => handleMenuClick('/shipyard')}>
+              <li className={isShipyardBuilt ? '' : 'disabled'}>
+                <button className={`sidebar-link ${isShipyardBuilt ? '' : 'disabled-link'}`} onClick={() => handleMenuClick('/shipyard')}>
                   <img src={shipyardImage} alt="Shipyard" className="sidebar-icon" />
                 </button>
               </li>
-              <li className={isBarracksBuilt ? '' : 'disabled'}>>
-                <button className="sidebar-link" onClick={() => handleMenuClick('/defence')}>
+              <li className={isFortresBuilt ? '' : 'disabled'}>
+                <button className={`sidebar-link ${isFortresBuilt ? '' : 'disabled-link'}`} onClick={() => handleMenuClick('/defence')}>
                   <img src={defenceImage} alt="Defence" className="sidebar-icon" />
                 </button>
               </li>

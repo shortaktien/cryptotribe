@@ -1,367 +1,365 @@
-/* src/App.css */
+src/App.css */
 .app {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+display: flex;
+flex-direction: column;
+height: 100vh;
 
 }
 
 .content {
-  display: flex;
-  flex: 1;
-  background-color: #eaeaea;
-  padding: 10px;
-  margin-top: 0px;
-  flex-wrap: wrap; /* Hinzugefügt für bessere Reaktionsfähigkeit */
+display: flex;
+flex: 1;
+background-color: #eaeaea;
+padding: 10px;
+margin-top: 0px;
+flex-wrap: wrap; /* Hinzugefügt für bessere Reaktionsfähigkeit */
 
 }
 
 /* App.css */
 .resource.highlight-green .resource-amount {
-  color: green;
-  font-weight: bold;
+color: green;
+font-weight: bold;
 }
 
 .resource.highlight-red .resource-amount {
-  color: red;
-  font-weight: bold;
+color: red;
+font-weight: bold;
 }
-
 
 /* Neue Media Query für kleinere Bildschirme */
 @media screen and (max-width: 768px) {
-  .content {
-    flex-direction: column;
-    align-items: center;
-  }
+.content {
+flex-direction: column;
+align-items: center;
 }
-
+}
 
 /* src/components/StartPage.css */
 .start-page {
-  text-align: center;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  max-width: 100%;
-  margin: 0 auto;
+text-align: center;
+padding: 20px;
+background-color: #fff;
+border-radius: 20px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+max-width: 100%;
+margin: 0 auto;
 }
-
 
 .connect-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+background-color: #4CAF50;
+color: white;
+padding: 10px 20px;
+border: none;
+cursor: pointer;
+margin-top: 20px;
+border-radius: 20px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-.connect-button:hover {
-  background-color: #45a049;
+.connect-button
+{
+background-color: #45a049;
 }
 
 /* src/components/Header.css */
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333333bd;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 20px;
-  /* Entferne position: sticky oder fixed */
-  position: relative; /* Standardwert */
-  top: auto; /* Stelle sicher, dass kein sticky oder fixed Verhalten vorhanden ist */
-  margin-bottom: 20px; /* Füge einen unteren Rand hinzu, um Abstand zu schaffen */
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #333333bd;
+color: #fff;
+padding: 10px 20px;
+border-radius: 20px;
+position: relative; 
+top: auto; 
+margin-bottom: 20px; 
 }
 
 .logo-icon {
-  display: flex;
-  margin-left: 10px;
-  width: 185px;
-  height: 45px;
+display: flex;
+margin-left: 10px;
+width: 185px;
+height: 45px;
 }
 
 .resources {
-  display: flex;
-  gap: 10px; /* Abstand zwischen den Ressourcen */
-  margin-right: 90px;
-  margin-left: 80px;
+display: flex;
+gap: 10px; /* Abstand zwischen den Ressourcen */
+margin-right: 90px;
+margin-left: 80px;
 }
 
 .resource {
-  display: flex;
-  align-items: center;
-  margin-right: 1px;
-  position: relative;
+display: flex;
+align-items: center;
+margin-right: 1px;
+position: relative;
 }
 
 .resource-container {
-  position: relative;
+position: relative;
 }
 
 .resource-icon {
-  width: 45px;
-  height: 45px;
-  margin-right: 5px;
+width: 45px;
+height: 45px;
+margin-right: 5px;
 }
 
 .resource-amount {
-  margin-left: 5px;
+margin-left: 5px;
 }
 
 .resource-tooltip {
-  visibility: hidden;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1000;
-  bottom: 125%; /* Position above the icon */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  opacity: 0;
-  transition: opacity 0.3s;
+visibility: hidden;
+background-color: black;
+color: #fff;
+text-align: center;
+border-radius: 5px;
+padding: 5px;
+position: absolute;
+z-index: 1000;
+bottom: 125%; /* Position above the icon */
+left: 50%;
+transform: translateX(-50%);
+width: 120px;
+opacity: 0;
+transition: opacity 0.3s;
 }
 
-.resource-container:hover .resource-tooltip {
-  visibility: visible;
-  opacity: 1;
+.resource-container
+.resource-tooltip {
+visibility: visible;
+opacity: 1;
 }
 
 .profile {
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
+display: flex;
+margin-left: auto;
+margin-right: auto;
+cursor: pointer;
+width: 30px;
+height: 30px;
 }
 
 .dropdown {
-  position: absolute;
-  right: 0;
-  top: 50px;
-  background-color: #fff;
-  color: #333;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+position: absolute;
+right: 0;
+top: 50px;
+background-color: #fff;
+color: #333;
+padding: 10px;
+border-radius: 5px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+z-index: 1000;
 }
 
 @media screen and (max-width: 768px) {
-  .header .logo-icon {
-    width: 120px; /* Logo wird kleiner */
-    height: 30px; /* Logo wird kleiner */
-    margin-left: 20px;
-  }
-  .resources {
-    display: none; /* Ressourcen werden ausgeblendet */
-  }
-  .resources .resource {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .resources .resource span {
-    display: block;
-    font-size: 12px;
-  }
-  .resources {
-    display: flex; /* Ressourcen werden wieder angezeigt */
-    flex-direction: row; /* Richtet die Ressourcen nebeneinander aus */
-    gap: 5px; /* Reduziert den Abstand zwischen den Ressourcen */
-  }
-  .resource span {
-    display: none; /* Blendet den Text aus */
-  }
-  .resource-icon {
-    width: 30px; /* Verkleinert das Icon */
-    height: 30px; /* Verkleinert das Icon */
-  }
-  .dropdown-content {
-    top: 40px; /* Dropdown-Position anpassen */
-  }
-  .profile {
-    margin-right: 20px;
-  }
+.header .logo-icon {
+width: 120px; /* Logo wird kleiner /
+height: 30px; / Logo wird kleiner /
+margin-left: 20px;
 }
-
+.resources {
+display: none; / Ressourcen werden ausgeblendet /
+}
+.resources .resource {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.resources .resource span {
+display: block;
+font-size: 12px;
+}
+.resources {
+display: flex; / Ressourcen werden wieder angezeigt /
+flex-direction: row; / Richtet die Ressourcen nebeneinander aus /
+gap: 5px; / Reduziert den Abstand zwischen den Ressourcen /
+}
+.resource span {
+display: none; / Blendet den Text aus /
+}
+.resource-icon {
+width: 30px; / Verkleinert das Icon /
+height: 30px; / Verkleinert das Icon /
+}
+.dropdown-content {
+top: 40px; / Dropdown-Position anpassen */
+}
+.profile {
+margin-right: 20px;
+}
+}
 
 /* src/components/Sidebar.css */
 .sidebar {
-  width: 200px;
-  background-color: #333333c5;
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-  height: 700px; /* Adjust for header height */
-  border-radius: 20px; /* Rounded corners */
+width: 200px;
+background-color: #333333c5;
+color: #fff;
+padding: 10px;
+text-align: center;
+height: 700px; 
+border-radius: 20px; 
 }
 
 .sidebar ul {
-  list-style-type: none;
-  padding: 0;
+list-style-type: none;
+padding: 0;
 }
 
 .sidebar li {
-  padding: 5px 0;
+padding: 5px 0;
 }
 
 .sidebar-link {
-  text-decoration: none;
-  color: #fff;
-  background-color: #444;
-  padding: 5px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center; /* Vertically center the icon and text */
-  transition: background-color 0.3s, color 0.3s;
+text-decoration: none;
+color: #fff;
+background-color: #444;
+padding: 5px;
+border-radius: 10px;
+display: flex;
+align-items: center; /* Vertically center the icon and text */
+transition: background-color 0.3s, color 0.3s;
 }
 
 .sidebar-link img.sidebar-icon {
-  width: 45px;
-  height: 45px;
-  margin-right: 8px;
+width: 45px;
+height: 45px;
+margin-right: 8px;
 }
 
-.sidebar-link:hover {
-  background-color: #555;
-  color: #f0f0f0;
+.sidebar-link
+{
+background-color: #555;
+color: #f0f0f0;
 }
 
 .dropdown-menu {
-  display: none;
+display: none;
 }
 
 .dropdown-toggle {
-  display: none;
-  background-color: #333;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  width: 100%;
-  cursor: pointer;
-  font-size: 16px;
-  margin: auto;
-  text-align: center;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+display: none;
+background-color: #333;
+color: #fff;
+border: none;
+padding: 10px;
+width: 100%;
+cursor: pointer;
+font-size: 16px;
+margin: auto;
+text-align: center;
+border-radius: 20px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-.dropdown-toggle:hover {
-  background-color: #494646;
+.dropdown-toggle
+{
+background-color: #494646;
 }
 
 .dropdown-content {
-  background-color: #333333d0;
-  color: #fff;
-  position: absolute;
-  top: 120px;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  display: flex;
-  flex-wrap: wrap; /* Allows wrapping to the next line */
-  justify-content: center; /* Center the items */
-  border-radius: 20px;
-  padding: 10px 0;
-  box-sizing: border-box; /* Ensure padding is included in the width */
-  z-index: 2;
+background-color: #333333d0;
+color: #fff;
+position: absolute;
+top: 120px;
+left: 0;
+width: 100%;
+text-align: center;
+display: flex;
+flex-wrap: wrap; /* Allows wrapping to the next line /
+justify-content: center; / Center the items /
+border-radius: 20px;
+padding: 10px 0;
+box-sizing: border-box; / Ensure padding is included in the width */
+z-index: 2;
 }
 
 .dropdown-content ul {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 0;
-  display: flex;
-  flex-wrap: wrap; /* Allows wrapping to the next line */
-  justify-content: center; /* Center the items */
-  width: 100%;
-  box-sizing: border-box; /* Ensure padding is included in the width */
+list-style-type: none;
+padding: 0;
+margin-top: 0;
+display: flex;
+flex-wrap: wrap; /* Allows wrapping to the next line /
+justify-content: center; / Center the items /
+width: 100%;
+box-sizing: border-box; / Ensure padding is included in the width */
 }
 
 .dropdown-content li {
-  padding: 5px;
-  flex: 1 1 auto; /* Allows items to grow and shrink */
-  min-width: 30px; /* Minimum width for each item */
+padding: 5px;
+flex: 1 1 auto; /* Allows items to grow and shrink /
+min-width: 30px; / Minimum width for each item */
 }
 
 .dropdown-content .sidebar-link {
-  text-decoration: none;
-  color: #fff;
-  display: block;
+text-decoration: none;
+color: #fff;
+display: block;
 }
 
 .icon-only .sidebar-link {
-  justify-content: center; /* Center the icon when there's no text */
+justify-content: center; /* Center the icon when there's no text */
 }
 
 .icon-only .sidebar-link span {
-  display: none; /* Hide the text in the dropdown */
+display: none; /* Hide the text in the dropdown */
 }
 
 @media screen and (max-width: 768px) {
-  .sidebar {
-    display: none;
-  }
-  .dropdown-menu {
-    display: block;
-  }
-  .dropdown-toggle {
-    display: block;
-  }
-  .dropdown-content {
-    display: block;
-  }
+.sidebar {
+display: none;
 }
-/*researchbutton wird disabled wenn gebäude nicht gebaut wurde*/
+.dropdown-menu {
+display: block;
+}
+.dropdown-toggle {
+display: block;
+}
+.dropdown-content {
+display: block;
+}
+}
+/researchbutton wird disabled wenn gebäude nicht gebaut wurde/
 .disabled {
-  pointer-events: none;
-  opacity: 0.5;
+pointer-events: none;
+opacity: 0.5;
 }
 
 .disabled-link {
-  pointer-events: none;
-  opacity: 0.5;
+pointer-events: none;
+opacity: 0.5;
 }
 
-/*militarybutton wird disabeld wenn gebäude nicht gebaut wird*/
+/militarybutton wird disabeld wenn gebäude nicht gebaut wird/
 .disabled {
-  pointer-events: none;
-  opacity: 0.5;
+pointer-events: none;
+opacity: 0.5;
 }
 
 .disabled-link {
-  pointer-events: none;
-  opacity: 0.5;
+pointer-events: none;
+opacity: 0.5;
 }
-
 
 /* src/components/ResourceCard.css */
 .resource-card {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  margin: 10px;
-  text-align: left;
+background-color: #fff;
+padding: 20px;
+border-radius: 10px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+margin: 10px;
+text-align: left;
 }
 
 /* src/components/Footer.css */
 .footer {
-  background-color: #333;
-  color: #fff;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  text-align: center;
+background-color: #333;
+color: #fff;
+padding: 30px;
+border-radius: 20px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+text-align: center;
 }

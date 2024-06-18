@@ -1,5 +1,4 @@
-/* Styles für die Building-Abschnitte */
-.buildings {
+.world {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -7,7 +6,7 @@
   padding: 20px;
 }
 
-.building-section {
+.map-section {
   width: 100%;
   margin-bottom: 20px;
 }
@@ -19,7 +18,7 @@
   text-align: left; /* Überschriften linksbündig */
 }
 
-.blue-rectangle {
+.map-container {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -30,130 +29,78 @@
   justify-content: center;
   position: relative;
   z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.blue-image {
-  width: 80%;
-  height: auto;
-  border-radius: 10px;
-  position: relative;
-  z-index: 1;
-}
-
-/* "Next Level Information Box" */
-.building-info {
+.target {
   position: absolute;
-  top: 40px;
-  right: 130px;
-  background-color: rgba(0, 0, 0, 0.685);
-  padding: 10px;
-  border-radius: 10px;
-  color: white;
-  z-index: 2;
-  transition: opacity 0.3s ease-in-out;
-  width: calc(300px); /* Ensure it fits within the parent */
-}
-
-.next-info {
-  bottom: 40px;
-  top: auto;
-}
-
-.overlapping {
-  opacity: 0;
-}
-
-.green-rectangle {
-  border-radius: 10px;
-  padding: 10px;
-  margin: 0 10px;
-  position: relative;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border: 2px solid black;
+  border-radius: 50%;
   cursor: pointer;
-  text-align: center;
-  width: 150px; /* Fixed width */
-  height: 150px; /* Fixed height */
-  display: flex;
-  justify-content: space-around;
+}
+
+.info-box {
+  border-radius: 10px;
+  padding: 20px;
+  background-color: yellow;
+  border: 2px solid black;
   width: 100%;
-}
-
-.green-image {
-  width: 100px; /* Set width of the image to 100px */
-  height: 100px; /* Set height of the image to 100px */
-  border-radius: 50px;
-}
-
-/*Actual Level in a orange box*/
-.level {
-  background-color: #ffa600e8; /* Red */
-  border-radius: 5px;
-  color: white;
-  padding: 5px;
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.circular-images {
+  max-width: 800px;
   display: flex;
-  justify-content: flex-start;
-  width: 100%;
-  padding: 20px 0;
-  flex-wrap: wrap;
-}
-
-.circular-image-wrapper {
-  width: 100px;
-  height: 100px;
-  border-radius: 15%;
-  overflow: hidden;
-  border: 2px solid #ccc; /* Optional: Border around the circles */
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  position: relative;
+  align-items: center;
+  margin-top: 20px;
 }
 
-.circular-image {
-  width: 180%;
-  height: auto;
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
+.attack-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: orange;
+  border: none;
   cursor: pointer;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
   border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%; /* Position above the icon */
-  left: 50%;
-  margin-left: -60px;
-  opacity: 0;
-  transition: opacity 0.3s;
 }
 
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-
-@media screen and (max-width: 368px) {
-  .tooltip {
-    display: block; /* Display on smaller screens */
+@media screen and (max-width: 768px) {
+  .map-container {
+    padding: 15px;
   }
-  
-  .building-info.current-info {
-    display: none; /* Hide on smaller screens */
+
+  .target {
+    width: 15px;
+    height: 15px;
+  }
+
+  .info-box {
+    padding: 15px;
+  }
+
+  .attack-button {
+    padding: 8px 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .map-container {
+    padding: 10px;
+  }
+
+  .target {
+    width: 10px;
+    height: 10px;
+  }
+
+  .info-box {
+    padding: 10px;
+  }
+
+  .attack-button {
+    padding: 6px 12px;
   }
 }

@@ -12,6 +12,7 @@ import goldmineImage from "../assets/goldMineBuildingImage.webp";
 import militaryImage from "../assets/barracksBuildingImage.webp";
 import fortImage from "../assets/barracksBuildingImage.webp";
 import harborImage from "../assets/barracksBuildingImage.webp";
+import merchantImage from "../assets/barracksBuildingImage.webp";
 
 const BuildingsContext = createContext();
 
@@ -158,6 +159,17 @@ const initialBuildingsData = [
     baseBuildTime: 3,
     currentLevel: 0,
     description: "A harbor is a key trade hub with docks, warehouses, and shipyards. It facilitates import, export, and naval operations"
+  },
+
+  //Merchant
+  {
+    id: 13,
+    name: "Merchant",
+    image: merchantImage,
+    baseCost: {wood: 50, stone: 50, population: 5},
+    baseBuildTime: 3,
+    currentLevel: 0,
+    description: "A merchant is someone who trades goods for profit, often found in marketplaces or trading posts"
   }
 ];
 
