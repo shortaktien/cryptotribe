@@ -10,9 +10,9 @@ import drawingWellImage from "../assets/drawingWellImage.webp";
 import kohlemineImage from "../assets/coalMineImage.webp";
 import goldmineImage from "../assets/goldMineBuildingImage.webp";
 import militaryImage from "../assets/barracksBuildingImage.webp";
-import fortImage from "../assets/barracksBuildingImage.webp";
-import harborImage from "../assets/barracksBuildingImage.webp";
-import merchantImage from "../assets/barracksBuildingImage.webp";
+import fortImage from "../assets/fortBuildingImage.webp";
+import harborImage from "../assets/ShipyardBuildingImage.webp";
+import merchantImage from "../assets/merchantBuildingImage.webp";
 
 const BuildingsContext = createContext();
 

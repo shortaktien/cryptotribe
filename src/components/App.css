@@ -157,12 +157,12 @@ z-index: 1000;
 
 @media screen and (max-width: 768px) {
 .header .logo-icon {
-width: 120px; /* Logo wird kleiner /
-height: 30px; / Logo wird kleiner /
+width: 120px; /* Logo wird kleiner */
+height: 30px; /* Logo wird kleiner */
 margin-left: 20px;
 }
 .resources {
-display: none; / Ressourcen werden ausgeblendet /
+display: none; /* Ressourcen werden ausgeblendet */
 }
 .resources .resource {
 display: flex;
@@ -174,19 +174,19 @@ display: block;
 font-size: 12px;
 }
 .resources {
-display: flex; / Ressourcen werden wieder angezeigt /
-flex-direction: row; / Richtet die Ressourcen nebeneinander aus /
-gap: 5px; / Reduziert den Abstand zwischen den Ressourcen /
+display: flex; /* Ressourcen werden wieder angezeigt */
+flex-direction: row; /* Richtet die Ressourcen nebeneinander aus */
+gap: 5px; /* Reduziert den Abstand zwischen den Ressourcen */
 }
 .resource span {
-display: none; / Blendet den Text aus /
+display: none; /* Blendet den Text aus */
 }
 .resource-icon {
-width: 30px; / Verkleinert das Icon /
-height: 30px; / Verkleinert das Icon /
+width: 30px; /* Verkleinert das Icon */
+height: 30px; /* Verkleinert das Icon */
 }
 .dropdown-content {
-top: 40px; / Dropdown-Position anpassen */
+top: 40px; /* Dropdown-Position anpassen */
 }
 .profile {
 margin-right: 20px;
@@ -269,11 +269,11 @@ left: 0;
 width: 100%;
 text-align: center;
 display: flex;
-flex-wrap: wrap; /* Allows wrapping to the next line /
-justify-content: center; / Center the items /
+flex-wrap: wrap; /* Allows wrapping to the next line */
+justify-content: center; /* Center the items */
 border-radius: 20px;
 padding: 10px 0;
-box-sizing: border-box; / Ensure padding is included in the width */
+box-sizing: border-box; /* Ensure padding is included in the width */
 z-index: 2;
 }
 
@@ -282,16 +282,16 @@ list-style-type: none;
 padding: 0;
 margin-top: 0;
 display: flex;
-flex-wrap: wrap; /* Allows wrapping to the next line /
-justify-content: center; / Center the items /
+flex-wrap: wrap; /* Allows wrapping to the next line */
+justify-content: center; /* Center the items */
 width: 100%;
-box-sizing: border-box; / Ensure padding is included in the width */
+box-sizing: border-box; /* Ensure padding is included in the width */
 }
 
 .dropdown-content li {
 padding: 5px;
-flex: 1 1 auto; /* Allows items to grow and shrink /
-min-width: 30px; / Minimum width for each item */
+flex: 1 1 auto; /* Allows items to grow and shrink */
+min-width: 30px; /* Minimum width for each item */
 }
 
 .dropdown-content .sidebar-link {
@@ -322,7 +322,7 @@ display: block;
 display: block;
 }
 }
-/researchbutton wird disabled wenn gebäude nicht gebaut wurde/
+/*researchbutton wird disabled wenn gebäude nicht gebaut wurde*/
 .disabled {
 pointer-events: none;
 opacity: 0.5;
@@ -333,7 +333,7 @@ pointer-events: none;
 opacity: 0.5;
 }
 
-/militarybutton wird disabeld wenn gebäude nicht gebaut wird/
+/*militarybutton wird disabeld wenn gebäude nicht gebaut wird*/
 .disabled {
 pointer-events: none;
 opacity: 0.5;

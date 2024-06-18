@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from 'react';
-import wallImage from "../assets/waterImage.webp"; // Füge das entsprechende Bild hinzu
-import towerImage from "../assets/waterImage.webp"; // Füge das entsprechende Bild hinzu
+import wallImage from "../assets/wallsUnitImage.webp"; // Füge das entsprechende Bild hinzu
+import towerImage from "../assets/towerUnitImage.webp"; // Füge das entsprechende Bild hinzu
 
 const DefenseContext = createContext();
 

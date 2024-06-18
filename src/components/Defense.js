@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDefense } from './DefenseContext';
-import defenseMainPage from "../assets/woodImage.webp"; // Füge das entsprechende Bild hinzu
+import defenseMainPage from "../assets/fortBuildingImage.webp"; // Füge das entsprechende Bild hinzu
 import './Defense.css';
 
 const defaultImage = {

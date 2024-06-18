@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from 'react';
-import shipImage1 from "../assets/waterImage.webp"; // Füge das entsprechende Bild hinzu
-import shipImage2 from "../assets/waterImage.webp"; // Füge das entsprechende Bild hinzu
+import shipImage1 from "../assets/frigateUnitImage.webp"; // Füge das entsprechende Bild hinzu
+import shipImage2 from "../assets/destroyerUnitImage.webp"; // Füge das entsprechende Bild hinzu
 
 const ShipyardContext = createContext();
 

@@ -75,8 +75,8 @@ const Sidebar = () => {
               <img src={militaryImage} alt="Military" className="sidebar-icon" /> Military
             </Link>
           </li>
-          <li>
-            <Link to="/world" className="sidebar-link">
+          <li className={isBarracksBuilt ? '' : 'disabled'}>
+            <Link to="/world" className={`sidebar-link ${isBarracksBuilt ? '' : 'disabled-link'}`}>
               <img src={worldImage} alt="World" className="sidebar-icon" /> World
             </Link>
           </li>

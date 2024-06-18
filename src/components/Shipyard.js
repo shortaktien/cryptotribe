@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useShipyard } from './ShipyardContext';
-import shipyardMainPage from "../assets/waterImage.webp"; // Füge das entsprechende Bild hinzu
+import shipyardMainPage from "../assets/ShipyardBuildingImage.webp"; // Füge das entsprechende Bild hinzu
 import './Shipyard.css';
 
 const defaultImage = {
