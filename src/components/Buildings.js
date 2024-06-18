@@ -187,7 +187,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
 
         {renderBuildingSection('Civil Buildings', [4, 7])}
         {renderBuildingSection('Industrial Buildings', [1, 2, 3, 5, 6, 8, 9])}
-        {renderBuildingSection('Military Buildings', [10])} {/* Füge hier die IDs der Militärgebäude hinzu */}
+        {renderBuildingSection('Military Buildings', [10,11,12])} 
       </div>
     </div>
   );

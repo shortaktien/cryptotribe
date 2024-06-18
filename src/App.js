@@ -19,6 +19,7 @@ import { connectMetaMask } from './components/MetaMask';
 import { BuildingsProvider } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
+import { DefenseProvider } from './components/DefenseContext'; // Importiere den DefenseProvider
 
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
@@ -122,6 +123,14 @@ function App() {
     console.log(`Disband unit with id ${unitId}`);
   };
 
+  const handleBuildDefense = async (structureId) => {
+    console.log(`Build defense structure with id ${structureId}`);
+  };
+
+  const handleDemolishDefense = async (structureId) => {
+    console.log(`Demolish defense structure with id ${structureId}`);
+  };
+
   console.log("Capacity Rates in App:", capacityRates);
 
   return (
@@ -143,70 +152,87 @@ function App() {
                 updateCapacityRates={updateCapacityRates}
                 refundResources={refundResources}
               >
-                <Header
-                  userAddress={userAddress}
-                  userAvatar={userAvatar}
-                  userName={userName}
-                  userBalance={userBalance}
-                  resources={resources}
-                  capacityRates={capacityRates}
-                />
-                <div className="content">
-                  <Sidebar />
-                  {contractError ? (
-                    <div className="error">
-                      <p>{contractError}</p>
-                    </div>
-                  ) : (
-                    <Routes>
-                      <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
-                      <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
-                      <Route
-                        path="/buildings"
-                        element={
-                          <Buildings
-                            resources={resources}
-                            spendResources={spendResources}
-                            updateProductionRate={updateProductionRate}
-                            updateCapacityRates={updateCapacityRates}
-                            handleUpgradeBuilding={handleUpgradeBuilding}
-                            handleDemolishBuilding={handleUpgradeResearch}
-                          />
-                        }
-                      />
-                      <Route
-                        path="/research"
-                        element={
-                          <Research
-                            resources={resources}
-                            spendResources={spendResources}
-                            updateResearchEffects={updateResearchEffects}
-                            handleUpgradeResearch={handleUpgradeResearch}
-                          />
-                        }
-                      />
-                      <Route path="/merchant" element={<Merchant />} />
-                      <Route path="/shipyard" element={<Shipyard />} />
-                      <Route path="/defence" element={<Defense />} />
-                      <Route
-                        path="/military"
-                        element={
-                          <Military
-                            resources={resources}
-                            spendResources={spendResources}
-                            updateCapacityRates={updateCapacityRates}
-                            handleTrainUnit={handleTrainUnit}
-                            handleDisbandUnit={handleDisbandUnit}
-                          />
-                        }
-                      />
-                      <Route path="/world" element={<World />} />
-                      <Route path="/alliance" element={<Alliance />} />
-                      <Route path="/shop" element={<Shop />} />
-                    </Routes>
-                  )}
-                </div>
-                <Footer />
+                <DefenseProvider
+                  spendResources={spendResources}
+                  updateCapacityRates={updateCapacityRates}
+                  refundResources={refundResources}
+                >
+                  <Header
+                    userAddress={userAddress}
+                    userAvatar={userAvatar}
+                    userName={userName}
+                    userBalance={userBalance}
+                    resources={resources}
+                    capacityRates={capacityRates}
+                  />
+                  <div className="content">
+                    <Sidebar />
+                    {contractError ? (
+                      <div className="error">
+                        <p>{contractError}</p>
+                      </div>
+                    ) : (
+                      <Routes>
+                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                        <Route
+                          path="/buildings"
+                          element={
+                            <Buildings
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateProductionRate={updateProductionRate}
+                              updateCapacityRates={updateCapacityRates}
+                              handleUpgradeBuilding={handleUpgradeBuilding}
+                              handleDemolishBuilding={handleUpgradeResearch}
+                            />
+                          }
+                        />
+                        <Route
+                          path="/research"
+                          element={
+                            <Research
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateResearchEffects={updateResearchEffects}
+                              handleUpgradeResearch={handleUpgradeResearch}
+                            />
+                          }
+                        />
+                        <Route path="/merchant" element={<Merchant />} />
+                        <Route path="/shipyard" element={<Shipyard />} />
+                        <Route
+                          path="/defence"
+                          element={
+                            <Defense
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateCapacityRates={updateCapacityRates}
+                              handleBuildDefense={handleBuildDefense}
+                              handleDemolishDefense={handleDemolishDefense}
+                            />
+                          }
+                        />
+                        <Route
+                          path="/military"
+                          element={
+                            <Military
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateCapacityRates={updateCapacityRates}
+                              handleTrainUnit={handleTrainUnit}
+                              handleDisbandUnit={handleDisbandUnit}
+                            />
+                          }
+                        />
+                        <Route path="/world" element={<World />} />
+                        <Route path="/alliance" element={<Alliance />} />
+                        <Route path="/shop" element={<Shop />} />
+                      </Routes>
+                    )}
+                  </div>
+                  <Footer />
+                </DefenseProvider>
               </MilitaryProvider>
             </ResearchProvider>
           </BuildingsProvider>

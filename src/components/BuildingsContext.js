@@ -10,6 +10,8 @@ import drawingWellImage from "../assets/drawingWellImage.webp";
 import kohlemineImage from "../assets/coalMineImage.webp";
 import goldmineImage from "../assets/goldMineBuildingImage.webp";
 import militaryImage from "../assets/barracksBuildingImage.webp";
+import fortImage from "../assets/barracksBuildingImage.webp";
+import harborImage from "../assets/barracksBuildingImage.webp";
 
 const BuildingsContext = createContext();
 
@@ -134,6 +136,28 @@ const initialBuildingsData = [
     baseBuildTime: 3,
     currentLevel: 0,
     description: 'Barracks to train soldiers.'
+  },
+
+  //Fortifications
+  {
+    id: 11,
+    name: "Fortifications",
+    image: fortImage,
+    baseCost: {wood: 50, stone: 50, population: 5},
+    baseBuildTime: 3,
+    currentLevel: 0,
+    description: "Includes all types of walls, towers, and gates used for defending a city or castle."
+  },
+
+  //Harbor
+  {
+    id: 12,
+    name: "Harbor",
+    image: harborImage,
+    baseCost: {wood: 50, stone: 50, population: 5},
+    baseBuildTime: 3,
+    currentLevel: 0,
+    description: "A harbor is a key trade hub with docks, warehouses, and shipyards. It facilitates import, export, and naval operations"
   }
 ];
 

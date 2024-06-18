@@ -29,8 +29,10 @@ const Sidebar = () => {
     navigate(path);
   };
 
+  //Disable Buttons if Buildings not Build
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
   const isBarracksBuilt = buildings.some(building => building.name === 'Barracks' && building.currentLevel > 0);
+  const isFortresBuilt = buildings.some(building => building.name === "Fortifications" && building.currentLevel > 0);
 
   return (
     <div>
@@ -61,8 +63,8 @@ const Sidebar = () => {
               <img src={shipyardImage} alt="Shipyard" className="sidebar-icon" /> Shipyard
             </Link>
           </li>
-          <li>
-            <Link to="/defence" className="sidebar-link">
+          <li className={isFortresBuilt ? '' : 'disabled'}>
+          <Link to="/defence" className={`sidebar-link ${isFortresBuilt ? '' : 'disabled-link'}`}>
               <img src={defenceImage} alt="Defence" className="sidebar-icon" /> Defence
             </Link>
           </li>
@@ -120,7 +122,7 @@ const Sidebar = () => {
                   <img src={shipyardImage} alt="Shipyard" className="sidebar-icon" />
                 </button>
               </li>
-              <li>
+              <li className={isBarracksBuilt ? '' : 'disabled'}>>
                 <button className="sidebar-link" onClick={() => handleMenuClick('/defence')}>
                   <img src={defenceImage} alt="Defence" className="sidebar-icon" />
                 </button>
