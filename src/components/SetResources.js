@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import Military from './Military';
+//import Military from './Military';
 
 const useResources = () => {
   const [resources, setResources] = useState({
