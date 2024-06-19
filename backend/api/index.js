@@ -18,36 +18,18 @@ app.use(bodyParser.json());
 
 app.post('/api/register', async (req, res) => {
   const { address } = req.body;
+  console.log('Registering player with address:', address); // Debugging-Information
   try {
-    const result = await pool.query('INSERT INTO players (address) VALUES ($1) RETURNING id', [address]);
-    res.status(201).json({ playerId: result.rows[0].id });
+    const result = await pool.query('INSERT INTO players (address) VALUES ($1) ON CONFLICT (address) DO NOTHING RETURNING id', [address]);
+    if (result.rows.length > 0) {
+      res.status(201).json({ playerId: result.rows[0].id });
+    } else {
+      // Spieler existiert bereits
+      const existingPlayer = await pool.query('SELECT id FROM players WHERE address = $1', [address]);
+      res.status(200).json({ playerId: existingPlayer.rows[0].id });
+    }
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post('/api/buildings', async (req, res) => {
-  const { playerId, type, level, position } = req.body;
-  try {
-    await pool.query(
-      'INSERT INTO buildings (player_id, type, level, position) VALUES ($1, $2, $3, $4)',
-      [playerId, type, level, position]
-    );
-    res.status(201).json({ message: 'Building saved' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post('/api/units', async (req, res) => {
-  const { playerId, type, count } = req.body;
-  try {
-    await pool.query(
-      'INSERT INTO units (player_id, type, count) VALUES ($1, $2, $3)',
-      [playerId, type, count]
-    );
-    res.status(201).json({ message: 'Units saved' });
-  } catch (error) {
+    console.error('Error registering player:', error); // Debugging-Information
     res.status(500).json({ error: error.message });
   }
 });
