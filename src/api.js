@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://cryptotribe.vercel.app/api'; // Ersetze <your-vercel-project> mit deinem Vercel-Projektnamen
+const API_URL = 'https://cryptotribe.vercel.app/api';
 
 export const registerPlayer = async (address) => {
   try {
