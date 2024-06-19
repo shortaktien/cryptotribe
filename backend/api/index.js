@@ -16,7 +16,12 @@ const pool = new Pool({
   }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: '*', // Erlaube alle Ursprünge, du kannst hier auch spezifische URLs angeben
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
 app.use(bodyParser.json());
 
 pool.connect((err, client, release) => {
