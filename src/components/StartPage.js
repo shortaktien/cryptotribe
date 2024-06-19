@@ -1,5 +1,4 @@
 import React from 'react';
-import { registerPlayer } from '../api';
 import './StartPage.css';
 import backgroundImage from '../assets/Backgroundimage.webp'; // Pfad zum hochgeladenen Bild
 
@@ -10,8 +9,6 @@ const StartPage = ({ onConnect }) => {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const address = accounts[0];
         console.log('MetaMask address:', address); // Debugging-Information
-        const playerId = await registerPlayer(address);
-        console.log('Player registered with ID:', playerId);
         onConnect(address); // Übergibt die Adresse an die App, um den Status zu aktualisieren
       } catch (error) {
         console.error('Error connecting to MetaMask:', error);
