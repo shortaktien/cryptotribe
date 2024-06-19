@@ -140,7 +140,7 @@ function App() {
     console.log(`Scrap ship with id ${shipId}`);
   };
 
-  console.log("Capacity Rates in App:", capacityRates);
+  //console.log("Capacity Rates in App:", capacityRates); 
 
   return (
     <Router>
