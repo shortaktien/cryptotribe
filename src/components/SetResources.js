@@ -112,7 +112,7 @@ const useResources = () => {
 
   useEffect(() => {
     const netProduction = calculateNetProduction(productionRates);
-    console.log("Current Net Production Rates:", netProduction);
+    //console.log("Current Net Production Rates:", netProduction);
   }, [productionRates, researchEffects, resources.population, calculateNetProduction]);
 
   const updateProductionRate = (resource, rate) => {

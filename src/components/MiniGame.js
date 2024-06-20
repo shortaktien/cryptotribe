@@ -13,17 +13,19 @@ const MiniGame = ({ target, onGameEnd }) => {
 
   const [myBaseHealth, setMyBaseHealth] = useState(5);
   const [enemyBaseHealth, setEnemyBaseHealth] = useState(5);
+  const [enemySpawnCount, setEnemySpawnCount] = useState(0);
 
   const gameInterval = useRef(null);
+  const enemySpawnInterval = useRef(null);
 
   // Einheiten anhalten, wenn sie die Basis erreichen
   const moveUnits = useCallback(() => {
     setMyUnits(prevUnits => {
       return prevUnits.map(unit => {
         const newPosition = unit.position + unit.speed / 10;
-        console.log(`MyUnit ${unit.id} moved to position ${newPosition}`);
+        //console.log(`MyUnit ${unit.id} moved to position ${newPosition}`);
 
-        if (newPosition >= 95) {
+        if (newPosition >= 100) {
           setEnemyBaseHealth(prevHealth => prevHealth - 1);
           return null; // Entfernt die Einheit, wenn sie die gegnerische Basis erreicht
         }
@@ -35,9 +37,9 @@ const MiniGame = ({ target, onGameEnd }) => {
     setEnemyUnits(prevUnits => {
       return prevUnits.map(unit => {
         const newPosition = unit.position - unit.speed / 10;
-        console.log(`EnemyUnit ${unit.id} moved to position ${newPosition}`);
+        //console.log(`EnemyUnit ${unit.id} moved to position ${newPosition}`);
 
-        if (newPosition <= 5) {
+        if (newPosition <= 0) {
           setMyBaseHealth(prevHealth => prevHealth - 1);
           return null; // Entfernt die Einheit, wenn sie die eigene Basis erreicht
         }
@@ -51,6 +53,7 @@ const MiniGame = ({ target, onGameEnd }) => {
     if (myBaseHealth <= 0 || enemyBaseHealth <= 0) {
       setGameOver(true);
       clearInterval(gameInterval.current);
+      clearInterval(enemySpawnInterval.current);
       onGameEnd(myBaseHealth > 0); // Ruft das onGameEnd Callback mit isVictory Parameter auf
     }
   }, [myBaseHealth, enemyBaseHealth, onGameEnd]);
@@ -59,22 +62,44 @@ const MiniGame = ({ target, onGameEnd }) => {
     if (gameInterval.current) {
       clearInterval(gameInterval.current);
     }
+    if (enemySpawnInterval.current) {
+      clearInterval(enemySpawnInterval.current);
+    }
+
     setMyUnits([]);
     setEnemyUnits([]);
     setGameOver(false);
     setMyBaseHealth(5); // Reset my base health
     setEnemyBaseHealth(5); // Reset enemy base health
+    setEnemySpawnCount(0); // Reset enemy spawn count
   
-    // Gegnerische Einheiten initialisieren
-    const initialEnemyUnits = [
-      { id: 1, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 40, attackCooldown: 1000, lastAttackTime: 0 }
-    ];
-  
-    setEnemyUnits(initialEnemyUnits);
-
     gameInterval.current = setInterval(() => {
       moveUnits();
     }, 1000); // Jede Sekunde die Einheiten bewegen
+
+    enemySpawnInterval.current = setInterval(() => {
+      setEnemySpawnCount(prevCount => {
+        if (prevCount < 10) {
+          const newEnemyUnit = {
+            id: prevCount + 1,
+            attack: 2,
+            defense: 1,
+            life: 10,
+            maxLife: 10,
+            position: 90,
+            speed: 40,
+            attackCooldown: 1000,
+            lastAttackTime: 0,
+          };
+          //console.log(`Spawning enemy unit ${prevCount + 1}/10`, newEnemyUnit);
+          setEnemyUnits(prevUnits => [...prevUnits, newEnemyUnit]);
+          return prevCount + 1;
+        } else {
+          clearInterval(enemySpawnInterval.current);
+          return prevCount;
+        }
+      });
+    }, 3000); // Jede 3 Sekunden einen Gegner generieren
   }, [moveUnits]);
 
   useEffect(() => {
@@ -85,8 +110,12 @@ const MiniGame = ({ target, onGameEnd }) => {
       if (gameInterval.current) {
         clearInterval(gameInterval.current);
       }
+      if (enemySpawnInterval.current) {
+        clearInterval(enemySpawnInterval.current);
+      }
     };
   }, [target, startGame]);
+  
 
   const spawnUnit = (type) => {
     if (!cooldown) {
@@ -112,7 +141,7 @@ const MiniGame = ({ target, onGameEnd }) => {
           </div>
         </div>
         {myUnits.map((unit, index) => (
-          <div key={index} className="unit my-unit" style={{ left: `${unit.position}%` }}>
+          <div key={index} className="unit my-unit" style={{ left: `${unit.position}%`, height: '20px', width: '20px' }}>
             <div className="health-bar">
               <div className="health" style={{ width: `${(unit.life / unit.maxLife) * 100}%` }}></div>
             </div>
@@ -124,7 +153,7 @@ const MiniGame = ({ target, onGameEnd }) => {
           </div>
         </div>
         {enemyUnits.map((unit, index) => (
-          <div key={index} className="unit enemy-unit" style={{ left: `${unit.position}%` }}>
+          <div key={index} className="unit enemy-unit" style={{ left: `${unit.position}%`, height: '20px', width: '20px' }}>
             <div className="health-bar">
               <div className="health" style={{ width: `${(unit.life / unit.maxLife) * 100}%` }}></div>
             </div>
