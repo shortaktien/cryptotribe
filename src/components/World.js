@@ -28,34 +28,38 @@ const World = () => {
   };
 
   return (
-    <div className="world-container">
-      <div className="map-section">
-        <div className="section-title">World Map</div>
-        <div className="map-container" style={{ backgroundImage: `url(${worldMap})` }}>
-          {targets.map((target) => (
-            <button
-              key={target.id}
-              className="target"
-              onClick={() => handleTargetClick(target)}
-              style={{ top: target.top, left: target.left }}
-            >
-              {target.id}
-            </button>
-          ))}
+    <div className="main-content">
+      <div className="world">
+        <div className="map-section">
+          <div className="section-title">World Map</div>
+          <div className="map-container" style={{ backgroundImage: `url(${worldMap})` }}>
+            {targets.map((target) => (
+              <button
+                key={target.id}
+                className="target"
+                onClick={() => handleTargetClick(target)}
+                style={{ top: target.top, left: target.left }}
+              >
+                {target.id}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="info-box">
-        {selectedTarget ? (
-          <>
-            <h2>{selectedTarget.name}</h2>
-            <p>Enemies: {selectedTarget.enemies}</p>
-            <p>Attack: {selectedTarget.attack}</p>
-            <p>Defense: {selectedTarget.defense}</p>
-            <button className="attack-button" onClick={handleAttack}>Attack</button>
-          </>
-        ) : (
-          <p>Select a target to see details</p>
-        )}
+        <div className="info-box">
+          {selectedTarget ? (
+            <div className="info-content">
+              <h2>{selectedTarget.name}</h2>
+              <p>Enemies: {selectedTarget.enemies}</p>
+              <p>Attack: {selectedTarget.attack}</p>
+              <p>Defense: {selectedTarget.defense}</p>
+              <button className="attack-button" onClick={handleAttack}>Attack</button>
+            </div>
+          ) : (
+            <div className="info-content">
+              <p>Select a target to see details</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

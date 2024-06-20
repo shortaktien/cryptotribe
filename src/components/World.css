@@ -1,103 +1,106 @@
 .world {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    width: 100%;
-    padding: 20px;
-  }
-  
-  .map-section {
-    flex: 20; /* Flex-Wert für die Kartensektion */
-    margin-right: 20px;
-  }
-  
-  .section-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-align: left; /* Überschriften linksbündig */
-  }
-  
-  .map-container {
-    position: relative;
-    width: 100%;
-    padding-top: 50%; /* Verhältnis 16:9 */
-    background-size: cover;
-    background-position: center;
-    border: 2px solid black;
-    border-radius: 10px;
-  }
-  
-  .target {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: red;
-    border: 2px solid black;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  
-  .info-box {
-    flex: 1; /* Flex-Wert für die Infobox */
-    background-color: yellow;
-    border: 2px solid black;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  padding: 20px;
+}
+
+/*white background*/
+.map-section {
+  flex: 1; /* Flex-Wert für die Kartensektion */
+  margin-right: 20px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: left; /* Überschriften linksbündig */
+}
+
+/*MAP*/
+.map-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* Verhältnis 16:9 */
+  background-size: cover;
+  background-position: center;
+  border: 2px solid black;
+  border-radius: 10px;
+  margin-right: 520px;
+}
+
+.target {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border: 2px solid black;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/*Info box with Informations*/
+.info-box {
+  flex: 0.4; 
+  background-color: rgba(179, 179, 165, 0.589);
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 42px;
+}
+
+.info-content {
+  background-color: rgba(0, 0, 0, 0.685);
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.attack-button {
+  padding: 10px 20px;
+  background-color: orange;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 768px) {
+  .world {
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    position: relative;
   }
-  
-  .info-content {
-    background-color: rgba(0, 0, 0, 0.685);
-    padding: 10px;
-    border-radius: 10px;
-    color: white;
+
+  .map-section, .info-box {
     width: 100%;
-    text-align: center;
-    margin-bottom: 20px;
+    margin-right: 0;
   }
-  
+
+  .target {
+    width: 15px;
+    height: 15px;
+  }
+
   .attack-button {
-    padding: 10px 20px;
-    background-color: orange;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
+    padding: 8px 16px;
   }
-  
-  @media screen and (max-width: 768px) {
-    .world {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .map-section, .info-box {
-      width: 100%;
-      margin-right: 0;
-    }
-  
-    .target {
-      width: 15px;
-      height: 15px;
-    }
-  
-    .attack-button {
-      padding: 8px 16px;
-    }
+}
+
+@media screen and (max-width: 480px) {
+  .target {
+    width: 10px;
+    height: 10px;
   }
-  
-  @media screen and (max-width: 480px) {
-    .target {
-      width: 10px;
-      height: 10px;
-    }
-  
-    .attack-button {
-      padding: 6px 12px;
-    }
+
+  .attack-button {
+    padding: 6px 12px;
   }
-  
+}

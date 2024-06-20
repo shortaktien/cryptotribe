@@ -13,6 +13,7 @@ const initialUnitsData = [
     buildTime: 3,
     attack: 2,
     defense: 1,
+    life: 10,
     capacity: 1, // Kapazität, die diese Einheit benötigt
     description: 'Basic infantry unit.',
     count: 0 // Initialisiere die Anzahl der Einheiten
@@ -25,6 +26,7 @@ const initialUnitsData = [
     buildTime: 5,
     attack: 1,
     defense: 2,
+    life: 15,
     capacity: 2, // Kapazität, die diese Einheit benötigt
     description: 'Basic cavalry unit.',
     count: 0 // Initialisiere die Anzahl der Einheiten
