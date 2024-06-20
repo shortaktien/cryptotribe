@@ -81,8 +81,7 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
   const disbandUnit = (unitId) => {
     setUnits(prevUnits =>
       prevUnits.map(unit => {
-        if (unit.id === unitId) {
-          refundResources(unit.cost);
+        if (unit.id === unitId && unit.count > 0) {
           updateCapacityRates('military', -unit.capacity);
           return {
             ...unit,

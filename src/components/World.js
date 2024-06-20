@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './World.css';
-import worldMap from '../assets/warehouseImage.webp'; // Pfad zum hochgeladenen Bild
+import worldMap from '../assets/wallsUnitImage.webp'; // Pfad zum hochgeladenen Bild
+import MiniGame from './MiniGame';
+import useResources from './SetResources'; // Verwendet den existierenden Hook
 
 const targets = [
   { id: 1, name: 'Target 1', enemies: 10, attack: 50, defense: 40, top: '20%', left: '30%' },
@@ -15,16 +17,14 @@ const targets = [
 
 const World = () => {
   const [selectedTarget, setSelectedTarget] = useState(null);
+  const { updateCapacityRates } = useResources();
 
   const handleTargetClick = (target) => {
     setSelectedTarget(target);
   };
 
-  const handleAttack = () => {
-    if (selectedTarget) {
-      console.log(`Attacking ${selectedTarget.name}`);
-      // Hier könnte die Angriffsfunktion aufgerufen werden
-    }
+  const updateMilitaryCount = (amount) => {
+    updateCapacityRates('military', amount);
   };
 
   return (
@@ -45,21 +45,7 @@ const World = () => {
             ))}
           </div>
         </div>
-        <div className="info-box">
-          {selectedTarget ? (
-            <div className="info-content">
-              <h2>{selectedTarget.name}</h2>
-              <p>Enemies: {selectedTarget.enemies}</p>
-              <p>Attack: {selectedTarget.attack}</p>
-              <p>Defense: {selectedTarget.defense}</p>
-              <button className="attack-button" onClick={handleAttack}>Attack</button>
-            </div>
-          ) : (
-            <div className="info-content">
-              <p>Select a target to see details</p>
-            </div>
-          )}
-        </div>
+        {selectedTarget && <MiniGame target={selectedTarget} updateMilitaryCount={updateMilitaryCount} onGameEnd={() => setSelectedTarget(null)} />}
       </div>
     </div>
   );

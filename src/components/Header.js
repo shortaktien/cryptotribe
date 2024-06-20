@@ -8,8 +8,8 @@ import waterImage from '../assets/waterImage.webp';
 import woodImage from '../assets/woodImage.webp';
 import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
-import coalImage from "../assets/coalRessourceImage.webp";
-import goldImage from "../assets/goldRessourceImage.webp";
+import coalImage from '../assets/coalRessourceImage.webp';
+import goldImage from '../assets/goldRessourceImage.webp';
 import militaryImage from "../assets/militaryRessourceImage.webp"; // BILD ÄNDERN!!!
 
 import "./App.css";
