@@ -39,21 +39,25 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
   ], [resources, capacityRates]);
 
   useEffect(() => {
-    const newHighlightedResources = {};
-    Object.keys(resourceChanges).forEach(key => {
-      if (resourceChanges[key] !== undefined && resourceChanges[key] !== 0) {
-        newHighlightedResources[key] = resourceChanges[key] > 0 ? 'highlight-green' : 'highlight-red';
-      }
-    });
+    const interval = setInterval(() => {
+      const newHighlightedResources = {};
+      Object.keys(resourceChanges).forEach(key => {
+        if (resourceChanges[key] !== undefined && resourceChanges[key] !== 0) {
+          newHighlightedResources[key] = resourceChanges[key] > 0 ? 'highlight-green' : 'highlight-red';
+        }
+      });
 
-    setHighlightedResources(newHighlightedResources);
+      setHighlightedResources(newHighlightedResources);
 
-    const timer = setTimeout(() => {
-      setHighlightedResources({});
+      const timer = setTimeout(() => {
+        setHighlightedResources({});
+      }, 1000);
+
+      return () => clearTimeout(timer);
     }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [resourceChanges]); // Verwenden Sie hier nur `resourceChanges` als Abhängigkeit
+    return () => clearInterval(interval);
+  }, [resourceChanges]);
 
   return (
     <div className="header">
