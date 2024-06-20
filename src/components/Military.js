@@ -12,6 +12,9 @@ const defaultImage = {
 
 const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, handleDisbandUnit }) => {
   const [selectedUnit, setSelectedUnit] = useState(defaultImage);
+  const [cooldownProgress, setCooldownProgress] = useState(0);
+  const [isCooldownActive, setIsCooldownActive] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
   const { units, trainUnit, disbandUnit } = useMilitary();
 
   const handleUnitClick = (unit) => {
@@ -38,6 +41,7 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
       console.log('Resources spent successfully:', cost);
       await handleTrainUnit(unitId);
       trainUnit(unitId);
+      startCooldown(selectedUnit.buildTime);
     } else {
       console.log('Not enough resources:', cost);
     }
@@ -46,6 +50,27 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
   const handleDisband = async () => {
     const unitId = selectedUnit.id;
     disbandUnit(unitId);
+  };
+
+  const startCooldown = (duration) => {
+    setIsCooldownActive(true);
+    setCooldownProgress(0);
+    setRemainingTime(duration);
+
+    const interval = setInterval(() => {
+      setCooldownProgress(prev => {
+        const newProgress = prev + 100 / duration;
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          setIsCooldownActive(false);
+          setCooldownProgress(0); // Reset cooldown progress
+          setRemainingTime(0);
+          return 0; // Ensure the progress is reset
+        }
+        return newProgress;
+      });
+      setRemainingTime(prevTime => prevTime - 1);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -99,8 +124,9 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
 
           {selectedUnit.id !== 0 && (
             <div className={`unit-info next-info next-info-${selectedUnit.id}`}>
-              <button onClick={handleTrain} disabled={!canTrain(selectedUnit.cost) || selectedUnit.isTraining}>
-                {selectedUnit.isTraining ? `Training... ${selectedUnit.buildProgress}/${selectedUnit.buildTime}` : `Train Unit`}
+              <button onClick={handleTrain} disabled={!canTrain(selectedUnit.cost) || isCooldownActive}>
+                {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
+                {isCooldownActive ? `Training... ${remainingTime}s` : `Train Unit`}
               </button>
               <button onClick={handleDisband} disabled={selectedUnit.isTraining}>
                 Disband Unit

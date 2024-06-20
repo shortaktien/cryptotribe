@@ -12,6 +12,9 @@ const defaultImage = {
 
 const Research = ({ resources, spendResources, updateResearchEffects, handleUpgradeResearch }) => {
   const [selectedResearch, setSelectedResearch] = useState(defaultImage);
+  const [cooldownProgress, setCooldownProgress] = useState(0);
+  const [isCooldownActive, setIsCooldownActive] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
   const { researches, upgradeResearch } = useResearch();
 
   const handleResearchClick = (research) => {
@@ -39,9 +42,31 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
       console.log('Resources spent successfully:', cost);
       await handleUpgradeResearch(researchId, cost);
       upgradeResearch(researchId, spendResources, updateResearchEffects);
+      startCooldown(nextLevelData.buildTime);
     } else {
       console.log('Not enough resources:', cost);
     }
+  };
+
+  const startCooldown = (duration) => {
+    setIsCooldownActive(true);
+    setCooldownProgress(0);
+    setRemainingTime(duration);
+
+    const interval = setInterval(() => {
+      setCooldownProgress(prev => {
+        const newProgress = prev + 100 / duration;
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          setIsCooldownActive(false);
+          setCooldownProgress(0); // Reset cooldown progress
+          setRemainingTime(0);
+          return 0; // Ensure the progress is reset
+        }
+        return newProgress;
+      });
+      setRemainingTime(prevTime => prevTime - 1);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -114,8 +139,9 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
                   <p>Cost: {renderResourceCost(getNextLevelData(selectedResearch).cost, true)}</p>
                   <p>Effect: {getNextLevelData(selectedResearch).effect}</p>
                   <p>{getNextLevelData(selectedResearch).description}</p>
-                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || selectedResearch.isResearching}>
-                    {selectedResearch.isResearching ? `Researching... ${selectedResearch.researchProgress}/${getNextLevelData(selectedResearch).buildTime}` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
+                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedResearch).cost) || isCooldownActive}>
+                    {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
+                    {isCooldownActive ? `Researching... ${remainingTime}s` : `Upgrade to Level ${selectedResearch.currentLevel + 1}`}
                   </button>
                 </>
               )}

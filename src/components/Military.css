@@ -37,6 +37,7 @@
   color: white;
   z-index: 2;
   transition: opacity 0.3s ease-in-out;
+  width: calc(300px); /* Ensure it fits within the parent */
 }
 
 .next-info {
@@ -147,6 +148,13 @@
   }
 }
 
+.button-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: rgba(0, 128, 0, 0.5);
+}
 
 .total-stats {
   margin-top: 10px;
