@@ -75,7 +75,8 @@ const MiniGame = ({ target, onGameEnd }) => {
   
     gameInterval.current = setInterval(() => {
       moveUnits();
-    }, 1000); // Jede Sekunde die Einheiten bewegen
+      updateCooldowns();
+    }, 1000); // Jede Sekunde die Einheiten bewegen und Cooldown aktualisieren
 
     enemySpawnInterval.current = setInterval(() => {
       setEnemySpawnCount(prevCount => {
@@ -87,9 +88,9 @@ const MiniGame = ({ target, onGameEnd }) => {
             life: 10,
             maxLife: 10,
             position: 90,
-            speed: 40,
-            attackCooldown: 1000,
-            lastAttackTime: 0,
+            speed: 25,
+            attackCooldown: 3000, // Beispiel-Cooldown von 3 Sekunden
+            lastAttackTime: Date.now(),
           };
           //console.log(`Spawning enemy unit ${prevCount + 1}/10`, newEnemyUnit);
           setEnemyUnits(prevUnits => [...prevUnits, newEnemyUnit]);
@@ -123,13 +124,50 @@ const MiniGame = ({ target, onGameEnd }) => {
       if (unitType && unitType.count > 0) {
         const speed = unitType.speed;
         const attackCooldown = unitType.attackCooldown;
-        setMyUnits(prevUnits => [...prevUnits, { ...unitType, position: 10, maxLife: unitType.life, speed, attackCooldown, lastAttackTime: 0 }]);
+        setMyUnits(prevUnits => [...prevUnits, { ...unitType, position: 10, maxLife: unitType.life, speed, attackCooldown, lastAttackTime: Date.now() }]);
         updateCapacityRates('military', -1); // Reduziere die Militärkapazität
         disbandUnit(unitType.id);
         setCooldown(true);
         setTimeout(() => setCooldown(false), 3000);
       }
     }
+  };
+
+  const updateCooldowns = () => {
+    setMyUnits(prevUnits => prevUnits.map(unit => {
+      const currentTime = Date.now();
+      if (currentTime - unit.lastAttackTime >= unit.attackCooldown) {
+        return { ...unit, cooldownProgress: 100 }; // Cooldown erreicht 100%
+      } else {
+        const cooldownProgress = (currentTime - unit.lastAttackTime) / unit.attackCooldown * 100;
+        return { ...unit, cooldownProgress };
+      }
+    }));
+
+    setEnemyUnits(prevUnits => prevUnits.map(unit => {
+      const currentTime = Date.now();
+      if (currentTime - unit.lastAttackTime >= unit.attackCooldown) {
+        return { ...unit, cooldownProgress: 100 }; // Cooldown erreicht 100%
+      } else {
+        const cooldownProgress = (currentTime - unit.lastAttackTime) / unit.attackCooldown * 100;
+        return { ...unit, cooldownProgress };
+      }
+    }));
+  };
+
+  const renderUnits = (units, type) => {
+    return units.map((unit, index) => {
+      return (
+        <div key={index} className={`unit ${type}-unit`} style={{ left: `${unit.position}%`, height: '20px', width: '20px' }}>
+          <div className="health-bar">
+            <div className="health" style={{ width: `${(unit.life / unit.maxLife) * 100}%` }}></div>
+          </div>
+          <div className="cooldown-bar">
+            <div className="cooldown" style={{ width: `${unit.cooldownProgress || 0}%` }}></div>
+          </div>
+        </div>
+      );
+    });
   };
 
   return (
@@ -140,25 +178,13 @@ const MiniGame = ({ target, onGameEnd }) => {
             <div className="health" style={{ width: `${(myBaseHealth / 5) * 100}%` }}></div>
           </div>
         </div>
-        {myUnits.map((unit, index) => (
-          <div key={index} className="unit my-unit" style={{ left: `${unit.position}%`, height: '20px', width: '20px' }}>
-            <div className="health-bar">
-              <div className="health" style={{ width: `${(unit.life / unit.maxLife) * 100}%` }}></div>
-            </div>
-          </div>
-        ))}
+        {renderUnits(myUnits, 'my')}
         <div className="base enemy-base" style={{ left: '95%' }}>
           <div className="health-bar">
             <div className="health" style={{ width: `${(enemyBaseHealth / 5) * 100}%` }}></div>
           </div>
         </div>
-        {enemyUnits.map((unit, index) => (
-          <div key={index} className="unit enemy-unit" style={{ left: `${unit.position}%`, height: '20px', width: '20px' }}>
-            <div className="health-bar">
-              <div className="health" style={{ width: `${(unit.life / unit.maxLife) * 100}%` }}></div>
-            </div>
-          </div>
-        ))}
+        {renderUnits(enemyUnits, 'enemy')}
       </div>
       <div className="info-box">
         <div className="info-content">

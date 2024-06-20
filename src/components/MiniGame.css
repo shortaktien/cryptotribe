@@ -59,6 +59,20 @@
   .enemy-unit .health {
     background-color: red;
   }
+
+  .cooldown-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #ccc;
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+  }
+  
+  .cooldown {
+    height: 100%;
+    background-color: blue;
+  }
   
   .info-box {
     background-color: yellow;
