@@ -12,6 +12,9 @@ const defaultImage = {
 
 const Shipyard = ({ resources, capacityRates, spendResources, handleBuildShip, handleScrapShip }) => {
   const [selectedShip, setSelectedShip] = useState(defaultImage);
+  const [cooldownProgress, setCooldownProgress] = useState(0);
+  const [isCooldownActive, setIsCooldownActive] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
   const { ships, buildShip, scrapShip } = useShipyard();
 
   const handleShipClick = (ship) => {
@@ -38,6 +41,7 @@ const Shipyard = ({ resources, capacityRates, spendResources, handleBuildShip, h
       console.log('Resources spent successfully:', cost);
       await handleBuildShip(shipId);
       buildShip(shipId);
+      startCooldown(selectedShip.buildTime);
     } else {
       console.log('Not enough resources:', cost);
     }
@@ -46,6 +50,27 @@ const Shipyard = ({ resources, capacityRates, spendResources, handleBuildShip, h
   const handleScrap = async () => {
     const shipId = selectedShip.id;
     scrapShip(shipId);
+  };
+
+  const startCooldown = (duration) => {
+    setIsCooldownActive(true);
+    setCooldownProgress(0);
+    setRemainingTime(duration);
+
+    const interval = setInterval(() => {
+      setCooldownProgress(prev => {
+        const newProgress = prev + 100 / duration;
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          setIsCooldownActive(false);
+          setCooldownProgress(0); // Reset cooldown progress
+          setRemainingTime(0);
+          return 0; // Ensure the progress is reset
+        }
+        return newProgress;
+      });
+      setRemainingTime(prevTime => prevTime - 1);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -99,8 +124,9 @@ const Shipyard = ({ resources, capacityRates, spendResources, handleBuildShip, h
 
           {selectedShip.id !== 0 && (
             <div className={`ship-info next-info next-info-${selectedShip.id}`}>
-              <button onClick={handleBuild} disabled={!canBuild(selectedShip.cost) || selectedShip.isBuilding}>
-                {selectedShip.isBuilding ? `Building... ${selectedShip.buildProgress}/${selectedShip.buildTime}` : `Build Ship`}
+              <button onClick={handleBuild} disabled={!canBuild(selectedShip.cost) || isCooldownActive}>
+                {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
+                {isCooldownActive ? `Building... ${remainingTime}s` : `Build Ship`}
               </button>
               <button onClick={handleScrap} disabled={selectedShip.isBuilding}>
                 Scrap Ship

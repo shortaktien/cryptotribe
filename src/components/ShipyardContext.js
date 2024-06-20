@@ -9,7 +9,7 @@ const initialShipsData = [
     id: 1,
     name: 'Frigate',
     image: shipImage1,
-    cost: { metal: 100, crystal: 50 }, //test
+    cost: { wood: 10 }, //test
     buildTime: 10,
     attack: 5,
     defense: 3,
@@ -21,7 +21,7 @@ const initialShipsData = [
     id: 2,
     name: 'Destroyer',
     image: shipImage2,
-    cost: { metal: 200, crystal: 100 }, //test
+    cost: { wood: 20 }, //test
     buildTime: 20,
     attack: 10,
     defense: 5,
