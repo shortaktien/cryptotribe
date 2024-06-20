@@ -6,9 +6,20 @@
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     padding: 20px;
-    margin: 20px auto; /* Center content with automatic margins */
-    max-width: 1250px; /* Limit the maximum width for readability */
+    margin: 10px auto; /* Center content with automatic margins */
     text-align: center; /* Center align text */
+  }
+
+  .statistic {
+    display: flex;
+    justify-content: space-around; /* Space out the boxes */
+    background-color: #f8f9fa; /* Light background color for better readability */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 10px;
+    margin: 10px auto; /* Center content with automatic margins */
+    text-align: center; /* Center align text */
+    width: 80%;
   }
   
   .box {

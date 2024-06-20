@@ -2,29 +2,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px; /* Beispielhafte Padding-Einstellung für den Abstand vom Rand */
 }
 
-.blue-rectangle {
-  background-color: rgba(235, 227, 227, 0.8); /* Light gray background */
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 20px;
-  width: 90%;
-  max-width: 1800px; /* Ensure max width */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
+/*Building Image*/ 
 .blue-image {
-  width: 80%;
+  background-color: aqua;
+  max-width: 100%; /* Bild skaliert sich auf die Containerbreite */
   height: auto;
   border-radius: 10px;
-  position: relative;
-  z-index: 1;
 }
 
 .building-info {
@@ -49,32 +35,6 @@
   opacity: 0;
 }
 
-.green-rectangles {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-}
-
-.green-rectangle {
-  background-color: rgba(235, 227, 227, 0.8); /* Green */
-  border-radius: 10px;
-  padding: 10px;
-  margin: 0 10px;
-  position: relative;
-  cursor: pointer;
-  text-align: center;
-  width: 150px; /* Fixed width */
-  height: 150px; /* Fixed height */
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-}
-
-.green-image {
-  width: 100px; /* Set width of the image to 100px */
-  height: 100px; /* Set height of the image to 100px */
-  border-radius: 50px;
-}
 
 .level {
   background-color: #ffa600e8; /* Red */
@@ -90,28 +50,23 @@
 .circular-images {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
   width: 100%;
   padding: 20px 0;
-  flex-wrap: wrap;
 }
 
 .circular-image-wrapper {
   width: 100px;
   height: 100px;
-  border-radius: 15%;
-  overflow: hidden;
-  border: 2px solid #ccc; /* Optional: Border around the circles */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff; /* Optional: Background color */
-  position: relative;
+  margin: 10px; /* Beispielhafte Margin-Einstellung für Abstand zwischen den Bildern */
+  /* Weitere Stile für die runden Bilder */
 }
 
 .circular-image {
-  width: 180%;
+  width: 100%;
   height: auto;
 }
+
 
 .tooltip {
   position: relative;
@@ -142,12 +97,14 @@
 }
 
 @media screen and (max-width: 768px) {
-  .tooltip {
-    display: block; /* Display on smaller screens */
-  }
-  
-  .building-info.current-info {
-    display: none; /* Hide on smaller screens */
+  .building-info {
+    /* Anpassungen für kleinere Bildschirme */
+    position: relative; /* Stellt die Position wieder auf relativ */
+    width: 100%; /* Nimmt die volle Breite des Bildschirms ein */
+    max-width: none; /* Aufheben der maximalen Breite */
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.685); /* Beispielhafte Farbe */
   }
 }
 

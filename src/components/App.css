@@ -2,19 +2,27 @@
 .app {
 display: flex;
 flex-direction: column;
-height: 100vh;
+height: 1000px;
 
 }
 
 .content {
-display: flex;
-flex: 1;
-background-color: #eaeaea;
-padding: 10px;
-margin-top: 0px;
-flex-wrap: wrap; /* Hinzugefügt für bessere Reaktionsfähigkeit */
+    display: flex;
+    flex: 1;
+    background-color: #f3e8e879;
+    padding: 5px;
+    flex-wrap: wrap; /* Hinzugefügt für bessere Reaktionsfähigkeit */
+    }
 
-}
+/* Neue Media Query für kleinere Bildschirme */
+@media screen and (max-width: 768px) {
+    .content {
+    flex-direction: column;
+    align-items: center;
+    }
+    }
+
+
 
 /* App.css */
 .resource.highlight-green .resource-amount {
@@ -27,24 +35,7 @@ color: red;
 font-weight: bold;
 }
 
-/* Neue Media Query für kleinere Bildschirme */
-@media screen and (max-width: 768px) {
-.content {
-flex-direction: column;
-align-items: center;
-}
-}
 
-/* src/components/StartPage.css */
-.start-page {
-text-align: center;
-padding: 20px;
-background-color: #fff;
-border-radius: 20px;
-box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-max-width: 100%;
-margin: 0 auto;
-}
 
 .connect-button {
 background-color: #4CAF50;
@@ -61,6 +52,10 @@ box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 {
 background-color: #45a049;
 }
+
+.connect-button:hover {
+    background-color: #45a049;
+  }
 
 /* src/components/Header.css */
 .header {
@@ -308,7 +303,7 @@ justify-content: center; /* Center the icon when there's no text */
 display: none; /* Hide the text in the dropdown */
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1286px) {
 .sidebar {
 display: none;
 }
@@ -348,8 +343,8 @@ opacity: 0.5;
 .resource-card {
 background-color: #fff;
 padding: 20px;
-border-radius: 10px;
-box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+border-radius: 100px;
+box-shadow: 0 0 20px rgba(230, 54, 54, 0.966);
 margin: 10px;
 text-align: left;
 }

@@ -35,7 +35,7 @@ const MainContent = ({ getNetProductionRates }) => {
                     + ships.reduce((total, ship) => total + (ship.defense * (ship.count || 0)), 0);
 
   return (
-    <div className="main-content">
+    <div className="statistic">
       <div className="box">
         <h2 className="title">Net Production Rates per Second</h2>
         <ul className="production-list">
