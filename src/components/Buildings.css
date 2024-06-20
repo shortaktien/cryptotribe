@@ -150,3 +150,18 @@
     display: none; /* Hide on smaller screens */
   }
 }
+
+.button-progress {
+  background-color: rgba(0, 255, 0, 0.3); /* Green with some transparency */
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+button {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
