@@ -16,23 +16,44 @@ const MiniGame = ({ target, onGameEnd }) => {
 
   const gameInterval = useRef(null);
 
+  // Einheiten anhalten, wenn sie die Basis erreichen
   const moveUnits = useCallback(() => {
     setMyUnits(prevUnits => {
       return prevUnits.map(unit => {
         const newPosition = unit.position + unit.speed / 10;
         console.log(`MyUnit ${unit.id} moved to position ${newPosition}`);
+
+        if (newPosition >= 95) {
+          setEnemyBaseHealth(prevHealth => prevHealth - 1);
+          return null; // Entfernt die Einheit, wenn sie die gegnerische Basis erreicht
+        }
+
         return { ...unit, position: newPosition };
-      }).filter(unit => unit.position < 100); // Entfernt die Einheit, wenn sie die gegnerische Basis erreicht
+      }).filter(Boolean);
     });
 
     setEnemyUnits(prevUnits => {
       return prevUnits.map(unit => {
         const newPosition = unit.position - unit.speed / 10;
         console.log(`EnemyUnit ${unit.id} moved to position ${newPosition}`);
+
+        if (newPosition <= 5) {
+          setMyBaseHealth(prevHealth => prevHealth - 1);
+          return null; // Entfernt die Einheit, wenn sie die eigene Basis erreicht
+        }
+
         return { ...unit, position: newPosition };
-      }).filter(unit => unit.position > 0); // Entfernt die Einheit, wenn sie die eigene Basis erreicht
+      }).filter(Boolean);
     });
   }, []);
+
+  useEffect(() => {
+    if (myBaseHealth <= 0 || enemyBaseHealth <= 0) {
+      setGameOver(true);
+      clearInterval(gameInterval.current);
+      onGameEnd(myBaseHealth > 0); // Ruft das onGameEnd Callback mit isVictory Parameter auf
+    }
+  }, [myBaseHealth, enemyBaseHealth, onGameEnd]);
 
   const startGame = useCallback(() => {
     if (gameInterval.current) {
@@ -50,14 +71,15 @@ const MiniGame = ({ target, onGameEnd }) => {
     ];
   
     setEnemyUnits(initialEnemyUnits);
-  }, []);
+
+    gameInterval.current = setInterval(() => {
+      moveUnits();
+    }, 1000); // Jede Sekunde die Einheiten bewegen
+  }, [moveUnits]);
 
   useEffect(() => {
     if (target) {
       startGame();
-      gameInterval.current = setInterval(() => {
-        moveUnits();
-      }, 1000); // Jede Sekunde die Einheiten bewegen
     }
     return () => {
       if (gameInterval.current) {
@@ -84,7 +106,7 @@ const MiniGame = ({ target, onGameEnd }) => {
   return (
     <div className="mini-game">
       <div className="map-container">
-        <div className="base my-base">
+        <div className="base my-base" style={{ left: '0%' }}>
           <div className="health-bar">
             <div className="health" style={{ width: `${(myBaseHealth / 5) * 100}%` }}></div>
           </div>
@@ -96,7 +118,7 @@ const MiniGame = ({ target, onGameEnd }) => {
             </div>
           </div>
         ))}
-        <div className="base enemy-base">
+        <div className="base enemy-base" style={{ left: '95%' }}>
           <div className="health-bar">
             <div className="health" style={{ width: `${(enemyBaseHealth / 5) * 100}%` }}></div>
           </div>
@@ -131,7 +153,7 @@ const MiniGame = ({ target, onGameEnd }) => {
           </button>
         </div>
       </div>
-      {gameOver && <div className="game-over">Looser</div>}
+      {gameOver && <div className="game-over">{myBaseHealth > 0 ? 'Winner' : 'Loser'}</div>}
     </div>
   );
 };
