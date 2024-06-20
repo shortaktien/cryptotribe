@@ -12,6 +12,68 @@ const MiniGame = ({ target, onGameEnd }) => {
 
   const gameInterval = useRef(null);
 
+  const moveUnits = useCallback(() => {
+    setMyUnits(prevUnits => {
+      const updatedUnits = prevUnits.map(unit => {
+        const newPosition = unit.position + unit.speed / 10;
+        console.log(`MyUnit ${unit.id} moved to position ${newPosition}`);
+        return { ...unit, position: newPosition };
+      });
+      return updatedUnits;
+    });
+
+    setEnemyUnits(prevUnits => {
+      const updatedUnits = prevUnits.map(unit => {
+        const newPosition = unit.position - unit.speed / 10;
+        console.log(`EnemyUnit ${unit.id} moved to position ${newPosition}`);
+        return { ...unit, position: newPosition };
+      });
+      return updatedUnits;
+    });
+  }, []);
+
+  // Kommentiere die Kollisionserkennung aus
+  /*
+  const checkCollisions = useCallback(() => {
+    const now = Date.now();
+    let newMyUnits = [...myUnits];
+    let newEnemyUnits = [...enemyUnits];
+
+    newMyUnits = newMyUnits.map(myUnit => {
+      const enemy = newEnemyUnits.find(enemyUnit => Math.abs(enemyUnit.position - myUnit.position) < 5);
+      if (enemy) {
+        console.log('Attack! MyUnit:', myUnit, 'Enemy:', enemy);
+        const myUnitAttack = Math.max(myUnit.attack - enemy.defense, 0);
+        const enemyAttack = Math.max(enemy.attack - myUnit.defense, 0);
+
+        if (now - myUnit.lastAttackTime >= myUnit.attackCooldown) {
+          myUnit.life -= enemyAttack;
+          myUnit.lastAttackTime = now;
+        }
+
+        if (now - enemy.lastAttackTime >= enemy.attackCooldown) {
+          enemy.life -= myUnitAttack;
+          enemy.lastAttackTime = now;
+        }
+
+        console.log('After Attack: MyUnit Life:', myUnit.life, 'Enemy Life:', enemy.life);
+
+        if (enemy.life <= 0) {
+          newEnemyUnits = newEnemyUnits.filter(e => e !== enemy);
+        }
+
+        if (myUnit.life <= 0) {
+          return null; // Entferne die Einheit, wenn keine Leben mehr
+        }
+      }
+      return myUnit;
+    }).filter(unit => unit !== null);
+
+    setMyUnits(newMyUnits);
+    setEnemyUnits(newEnemyUnits);
+  }, [myUnits, enemyUnits]);
+  */
+
   const startGame = useCallback(() => {
     if (gameInterval.current) {
       clearInterval(gameInterval.current);
@@ -21,19 +83,18 @@ const MiniGame = ({ target, onGameEnd }) => {
 
     // Gegnerische Einheiten initialisieren
     const initialEnemyUnits = [
-      { id: 1, attack: 2, defense: 1, life: 10, position: 90 },
-      { id: 2, attack: 2, defense: 1, life: 10, position: 90 },
-      { id: 3, attack: 2, defense: 1, life: 10, position: 90 },
+      { id: 1, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 5, attackCooldown: 1000, lastAttackTime: 0 },
+      { id: 2, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 0.5, attackCooldown: 1000, lastAttackTime: 0 },
+      { id: 3, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 0.5, attackCooldown: 1000, lastAttackTime: 0 },
     ];
 
     setEnemyUnits(initialEnemyUnits);
 
     gameInterval.current = setInterval(() => {
-      setMyUnits(prevUnits => prevUnits.map(unit => ({ ...unit, position: unit.position + 1 })));
-      setEnemyUnits(prevUnits => prevUnits.map(unit => ({ ...unit, position: unit.position - 1 })));
-      checkCollisions();
-    }, 100);
-  }, []);
+      moveUnits();
+      // checkCollisions(); // Kommentiere dies vorübergehend aus
+    }, 1000);
+  }, [moveUnits]);
 
   useEffect(() => {
     if (target) {
@@ -50,37 +111,15 @@ const MiniGame = ({ target, onGameEnd }) => {
     if (!cooldown) {
       const unitType = units.find(unit => unit.name.toLowerCase() === type);
       if (unitType && unitType.count > 0) {
-        setMyUnits([...myUnits, { ...unitType, position: 10 }]);
+        const speed = unitType.speed;
+        const attackCooldown = unitType.attackCooldown;
+        setMyUnits(prevUnits => [...prevUnits, { ...unitType, position: 10, maxLife: unitType.life, speed, attackCooldown, lastAttackTime: 0 }]);
         updateCapacityRates('military', -1); // Reduziere die Militärkapazität
         disbandUnit(unitType.id);
         setCooldown(true);
         setTimeout(() => setCooldown(false), 3000);
       }
     }
-  };
-
-  const checkCollisions = () => {
-    setMyUnits(prevMyUnits => {
-      return prevMyUnits.map(myUnit => {
-        const enemy = enemyUnits.find(enemyUnit => Math.abs(enemyUnit.position - myUnit.position) < 5);
-        if (enemy) {
-          const myUnitAttack = Math.max(myUnit.attack - enemy.defense, 0);
-          const enemyAttack = Math.max(enemy.attack - myUnit.defense, 0);
-
-          myUnit.life -= enemyAttack;
-          enemy.life -= myUnitAttack;
-
-          if (enemy.life <= 0) {
-            setEnemyUnits(prevEnemies => prevEnemies.filter(e => e !== enemy));
-          }
-
-          if (myUnit.life <= 0) {
-            return null; // Entferne die Einheit, wenn keine Leben mehr
-          }
-        }
-        return myUnit;
-      }).filter(unit => unit !== null);
-    });
   };
 
   return (

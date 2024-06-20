@@ -17,7 +17,7 @@ const initialUnitsData = [
     capacity: 1, // Kapazität, die diese Einheit benötigt
     description: 'Basic infantry unit.',
     count: 0, // Initialisiere die Anzahl der Einheiten
-    speed: 0.5, // Bewegungsgeschwindigkeit
+    speed: 10, // Bewegungsgeschwindigkeit
     attackCooldown: 1000 // Angriffstempo (1 Angriff pro Sekunde)
   },
   {
