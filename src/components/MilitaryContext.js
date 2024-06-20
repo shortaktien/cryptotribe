@@ -32,7 +32,7 @@ const initialUnitsData = [
     capacity: 2, // Kapazität, die diese Einheit benötigt
     description: 'Basic cavalry unit.',
     count: 0, // Initialisiere die Anzahl der Einheiten
-    speed: 1, // Bewegungsgeschwindigkeit
+    speed: 20, // Bewegungsgeschwindigkeit
     attackCooldown: 2000 // Angriffstempo (1 Angriff alle 2 Sekunden)
   }
 ];

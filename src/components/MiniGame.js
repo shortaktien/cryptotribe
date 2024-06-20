@@ -18,7 +18,7 @@ const MiniGame = ({ target, onGameEnd }) => {
         const newPosition = unit.position + unit.speed / 10;
         console.log(`MyUnit ${unit.id} moved to position ${newPosition}`);
         return { ...unit, position: newPosition };
-      });
+      }).filter(unit => unit.position < 95); // Entfernt die Einheit, wenn sie die gegnerische Basis erreicht
       return updatedUnits;
     });
 
@@ -27,7 +27,7 @@ const MiniGame = ({ target, onGameEnd }) => {
         const newPosition = unit.position - unit.speed / 10;
         console.log(`EnemyUnit ${unit.id} moved to position ${newPosition}`);
         return { ...unit, position: newPosition };
-      });
+      }).filter(unit => unit.position > 5); // Entfernt die Einheit, wenn sie die eigene Basis erreicht
       return updatedUnits;
     });
   }, []);
@@ -83,7 +83,7 @@ const MiniGame = ({ target, onGameEnd }) => {
 
     // Gegnerische Einheiten initialisieren
     const initialEnemyUnits = [
-      { id: 1, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 5, attackCooldown: 1000, lastAttackTime: 0 },
+      { id: 1, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 30, attackCooldown: 1000, lastAttackTime: 0 },
       { id: 2, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 0.5, attackCooldown: 1000, lastAttackTime: 0 },
       { id: 3, attack: 2, defense: 1, life: 10, maxLife: 10, position: 90, speed: 0.5, attackCooldown: 1000, lastAttackTime: 0 },
     ];
