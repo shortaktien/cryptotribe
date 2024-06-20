@@ -22,6 +22,15 @@
     border-radius: 50%;
   }
   
+  .my-unit, .enemy-unit {
+    width: 20px; /* Breite der Einheiten */
+    height: 20px; /* Höhe der Einheiten */
+    border-radius: 50%; /* Macht die Einheiten zu Kreisen */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* Zentriert die Kreise vertikal */
+  }
+  
   .my-unit {
     background-color: green;
   }
@@ -30,21 +39,21 @@
     background-color: red;
   }
   
-  .health-bar {
+  .unit .health-bar, .base .health-bar {
     position: absolute;
-    top: -10px;
+    top: -10px; /* Position der Gesundheitsleiste über der Einheit/der Basis */
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    height: 4px;
-    background-color: gray;
-    border-radius: 2px;
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
   }
   
-  .health {
+  .unit .health, .base .health {
     height: 100%;
-    background-color: green;
-    border-radius: 2px;
+    background-color: rgb(205, 50, 50);
+    border-radius: 5px;
   }
   
   .enemy-unit .health {
@@ -106,5 +115,26 @@
     .attack-button {
       padding: 6px 12px;
     }
+  }
+
+  .base {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 50px; /* Höhe der Basen */
+    border-radius: 5px;
+    z-index: 1;
+  }
+  
+  
+  .my-base {
+    background-color: green;
+    left: 0;
+  }
+  
+  .enemy-base {
+    background-color: red;
+    right: 0;
   }
   

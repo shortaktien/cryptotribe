@@ -18,13 +18,23 @@ const targets = [
 const World = () => {
   const [selectedTarget, setSelectedTarget] = useState(null);
   const { updateCapacityRates } = useResources();
+  const [unlockedTargets, setUnlockedTargets] = useState([1]);
 
   const handleTargetClick = (target) => {
-    setSelectedTarget(target);
+    if (unlockedTargets.includes(target.id)) {
+      setSelectedTarget(target);
+    }
   };
 
   const updateMilitaryCount = (amount) => {
     updateCapacityRates('military', amount);
+  };
+
+  const handleGameEnd = (target) => {
+    setSelectedTarget(null);
+    if (target.id < targets.length) {
+      setUnlockedTargets((prev) => [...prev, target.id + 1]);
+    }
   };
 
   return (
@@ -39,16 +49,18 @@ const World = () => {
                 className="target"
                 onClick={() => handleTargetClick(target)}
                 style={{ top: target.top, left: target.left }}
+                disabled={!unlockedTargets.includes(target.id)}
               >
                 {target.id}
               </button>
             ))}
           </div>
         </div>
-        {selectedTarget && <MiniGame target={selectedTarget} updateMilitaryCount={updateMilitaryCount} onGameEnd={() => setSelectedTarget(null)} />}
+        {selectedTarget && <MiniGame target={selectedTarget} updateMilitaryCount={updateMilitaryCount} onGameEnd={() => handleGameEnd(selectedTarget)} />}
       </div>
     </div>
   );
 };
+
 
 export default World;
