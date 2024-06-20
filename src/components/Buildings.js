@@ -14,6 +14,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
   const [selectedBuilding, setSelectedBuilding] = useState(defaultImage);
   const [cooldownProgress, setCooldownProgress] = useState(0);
   const [isCooldownActive, setIsCooldownActive] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
   const { buildings, upgradeBuilding, demolishBuilding } = useBuildings();
 
   const handleBuildingClick = (building) => {
@@ -65,16 +66,21 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
   const startCooldown = (duration) => {
     setIsCooldownActive(true);
     setCooldownProgress(0);
+    setRemainingTime(duration);
 
     const interval = setInterval(() => {
       setCooldownProgress(prev => {
-        if (prev >= 100) {
+        const newProgress = prev + 100 / duration;
+        if (newProgress >= 100) {
           clearInterval(interval);
           setIsCooldownActive(false);
-          return 100;
+          setCooldownProgress(0); // Reset cooldown progress
+          setRemainingTime(0);
+          return 0; // Ensure the progress is reset
         }
-        return prev + 100 / duration;
+        return newProgress;
       });
+      setRemainingTime(prevTime => prevTime - 1);
     }, 1000);
   };
 
@@ -171,10 +177,11 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                   {getNextLevelData(selectedBuilding).capacity && (
                     <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                   )}
+                  <p>Build Time: {getNextLevelData(selectedBuilding).buildTime} seconds</p>
                   <p>{getNextLevelData(selectedBuilding).description}</p>
                   <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost) || isCooldownActive}>
-                    <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>
-                    {isCooldownActive ? `Building...` : `Upgrade to Level ${selectedBuilding.currentLevel + 1}`}
+                    {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
+                    {isCooldownActive ? `Building... ${remainingTime}s` : `Upgrade to Level ${selectedBuilding.currentLevel + 1}`}
                   </button>
                   <button onClick={handleDemolish} disabled={selectedBuilding.currentLevel === 0}>
                     Demolish to Level {selectedBuilding.currentLevel - 1}

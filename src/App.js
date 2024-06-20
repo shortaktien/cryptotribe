@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import Buildings from './components/Buildings';
 import Alliance from './components/Alliance';
-import Defense from './components/Defense';
+import Defence from './components/Defence';
 import Merchant from './components/Merchant';
 import Military from './components/Military';
 import Research from './components/Research';
@@ -230,9 +230,9 @@ function App() {
                             />
                           } />
                           <Route
-                            path="/defense"
+                            path="/defence"
                             element={
-                              <Defense
+                              <Defence
                                 resources={resources}
                                 spendResources={spendResources}
                                 updateCapacityRates={updateCapacityRates}

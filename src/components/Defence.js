@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDefense } from './DefenseContext';
 import defenseMainPage from "../assets/fortBuildingImage.webp"; // Füge das entsprechende Bild hinzu
-import './Defense.css';
+import './Defence.css';
 
 const defaultImage = {
   id: 0,
@@ -12,6 +12,9 @@ const defaultImage = {
 
 const Defense = ({ resources, capacityRates, spendResources, handleBuildDefense, handleDemolishDefense }) => {
   const [selectedStructure, setSelectedStructure] = useState(defaultImage);
+  const [cooldownProgress, setCooldownProgress] = useState(0);
+  const [isCooldownActive, setIsCooldownActive] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
   const { structures, buildStructure, demolishStructure } = useDefense();
 
   const handleStructureClick = (structure) => {
@@ -38,6 +41,7 @@ const Defense = ({ resources, capacityRates, spendResources, handleBuildDefense,
       console.log('Resources spent successfully:', cost);
       await handleBuildDefense(structureId);
       buildStructure(structureId);
+      startCooldown(selectedStructure.buildTime);
     } else {
       console.log('Not enough resources:', cost);
     }
@@ -46,6 +50,27 @@ const Defense = ({ resources, capacityRates, spendResources, handleBuildDefense,
   const handleDemolish = async () => {
     const structureId = selectedStructure.id;
     demolishStructure(structureId);
+  };
+
+  const startCooldown = (duration) => {
+    setIsCooldownActive(true);
+    setCooldownProgress(0);
+    setRemainingTime(duration);
+
+    const interval = setInterval(() => {
+      setCooldownProgress(prev => {
+        const newProgress = prev + 100 / duration;
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          setIsCooldownActive(false);
+          setCooldownProgress(0); // Reset cooldown progress
+          setRemainingTime(0);
+          return 0; // Ensure the progress is reset
+        }
+        return newProgress;
+      });
+      setRemainingTime(prevTime => prevTime - 1);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -98,8 +123,9 @@ const Defense = ({ resources, capacityRates, spendResources, handleBuildDefense,
 
           {selectedStructure.id !== 0 && (
             <div className={`structure-info next-info next-info-${selectedStructure.id}`}>
-              <button onClick={handleBuild} disabled={!canBuild(selectedStructure.cost) || selectedStructure.isBuilding}>
-                {selectedStructure.isBuilding ? `Building... ${selectedStructure.buildProgress}/${selectedStructure.buildTime}` : `Build Structure`}
+              <button onClick={handleBuild} disabled={!canBuild(selectedStructure.cost) || isCooldownActive}>
+                {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
+                {isCooldownActive ? `Building... ${remainingTime}s` : `Build Structure`}
               </button>
               <button onClick={handleDemolish} disabled={selectedStructure.isBuilding}>
                 Demolish Structure
