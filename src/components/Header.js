@@ -73,7 +73,6 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
             <span className="resource-amount">{resource.value}/{resource.capacity}</span>
           </div>
         ))}
-        <div>Tribe [0:0:0]</div>
       </div>
       <div className="profile">
         {userAvatar ? (

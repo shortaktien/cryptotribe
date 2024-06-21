@@ -155,7 +155,6 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
               <div className={`building-info current-info current-info-${selectedBuilding.id} ${isOverlapping(selectedBuilding) ? 'overlapping' : ''}`}>
                 <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
                 <h3>Current Level Information:</h3>
-                <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
                 {getCurrentLevelData(selectedBuilding).production && (
                   <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate.toFixed(2)} ${resource}/s`).join(', ')}</p>
                 )}
@@ -179,7 +178,6 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                       <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                     )}
                     <p>Build Time: {getNextLevelData(selectedBuilding).buildTime} seconds</p>
-                    <p>{getNextLevelData(selectedBuilding).description}</p>
                     <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost) || isCooldownActive}>
                       {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
                       {isCooldownActive ? `Building... ${remainingTime}s` : `Upgrade to Level ${selectedBuilding.currentLevel + 1}`}
@@ -198,16 +196,15 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
             <span className="tooltiptext">
               {selectedBuilding.id !== 0 && (
                 <>
-                  <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
-                  <h3>Current Level Information:</h3>
+                  <h2>{selectedBuilding.name} - Level: {selectedBuilding.currentLevel}</h2>
                   <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
                   {getCurrentLevelData(selectedBuilding).production && (
-                    <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                    <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate.toFixed(2)} ${resource}/s`).join(', ')}</p>
                   )}
                   {getCurrentLevelData(selectedBuilding).capacity && (
                     <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                   )}
-                  <p>{getCurrentLevelData(selectedBuilding).description}</p>
+                  
                 </>
               )}
             </span>
