@@ -27,7 +27,6 @@ const MainContent = ({ getNetProductionRates }) => {
     console.log('Ships:', ships);
   }, [militaryUnits, defenseStructures, ships]);
 
-  // Berechnung der Gesamtwerte für Attack und Defense
   const totalAttack = militaryUnits.reduce((total, unit) => total + (unit.attack * (unit.count || 0)), 0)
                     + ships.reduce((total, ship) => total + (ship.attack * (ship.count || 0)), 0);
   const totalDefense = militaryUnits.reduce((total, unit) => total + (unit.defense * (unit.count || 0)), 0)
@@ -35,51 +34,53 @@ const MainContent = ({ getNetProductionRates }) => {
                     + ships.reduce((total, ship) => total + (ship.defense * (ship.count || 0)), 0);
 
   return (
-    <div className="statistic">
-      <div className="box">
-        <h2 className="title">Net Production Rates per Second</h2>
-        <ul className="production-list">
-          {Object.entries(netProduction).map(([resource, rate]) => (
-            <li key={resource} className="production-item">
-              <span className="resource-name">{resource}</span>: <span className="resource-rate">{rate.toFixed(3)}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="box">
-        <h2 className="title">Units</h2>
-        <ul className="unit-list">
-          {militaryUnits.map(unit => (
-            <li key={unit.id} className="unit-item">
-              <span className="unit-name">{unit.name}</span>: <span className="unit-count">{unit.count || 0}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="box">
-        <h2 className="title">Defense Structures</h2>
-        <ul className="unit-list">
-          {defenseStructures.map(structure => (
-            <li key={structure.id} className="unit-item">
-              <span className="unit-name">{structure.name}</span>: <span className="unit-count">{structure.count || 0}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="box">
-        <h2 className="title">Ships</h2>
-        <ul className="unit-list">
-          {ships.map(ship => (
-            <li key={ship.id} className="unit-item">
-              <span className="unit-name">{ship.name}</span>: <span className="unit-count">{ship.count || 0}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="box">
-        <div className="total-stats">
-          <p>Total Attack: {totalAttack}</p>
-          <p>Total Defense: {totalDefense}</p>
+    <div className="main-content">
+      <div className="statistic">
+        <div className="box">
+          <h2 className="title">Net Production Rates per Second</h2>
+          <ul className="production-list">
+            {Object.entries(netProduction).map(([resource, rate]) => (
+              <li key={resource} className="production-item">
+                <span className="resource-name">{resource}</span>: <span className="resource-rate">{rate.toFixed(3)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="box">
+          <h2 className="title">Units</h2>
+          <ul className="unit-list">
+            {militaryUnits.map(unit => (
+              <li key={unit.id} className="unit-item">
+                <span className="unit-name">{unit.name}</span>: <span className="unit-count">{unit.count || 0}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="box">
+          <h2 className="title">Defense Structures</h2>
+          <ul className="unit-list">
+            {defenseStructures.map(structure => (
+              <li key={structure.id} className="unit-item">
+                <span className="unit-name">{structure.name}</span>: <span className="unit-count">{structure.count || 0}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="box">
+          <h2 className="title">Ships</h2>
+          <ul className="unit-list">
+            {ships.map(ship => (
+              <li key={ship.id} className="unit-item">
+                <span className="unit-name">{ship.name}</span>: <span className="unit-count">{ship.count || 0}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="box">
+          <div className="total-stats">
+            <p>Total Attack: {totalAttack}</p>
+            <p>Total Defense: {totalDefense}</p>
+          </div>
         </div>
       </div>
     </div>
