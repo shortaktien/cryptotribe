@@ -154,7 +154,6 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
             {selectedBuilding.id !== 0 && (
               <div className={`building-info current-info current-info-${selectedBuilding.id} ${isOverlapping(selectedBuilding) ? 'overlapping' : ''}`}>
                 <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
-                <h3>Current Level Information:</h3>
                 {getCurrentLevelData(selectedBuilding).production && (
                   <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate.toFixed(2)} ${resource}/s`).join(', ')}</p>
                 )}

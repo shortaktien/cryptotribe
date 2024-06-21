@@ -124,8 +124,6 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
           {selectedResearch.id !== 0 && (
             <div className={`research-info current-info current-info-${selectedResearch.id} ${isOverlapping(selectedResearch) ? 'overlapping' : ''}`}>
               <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
-              <h3>Current Level Information:</h3>
-              <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
               <p>Effect: {getCurrentLevelData(selectedResearch).effect}</p>
               <p>{getCurrentLevelData(selectedResearch).description}</p>
             </div>
@@ -154,8 +152,6 @@ const Research = ({ resources, spendResources, updateResearchEffects, handleUpgr
               {selectedResearch.id !== 0 && (
                 <>
                   <h2>{selectedResearch.name} - Current Level: {selectedResearch.currentLevel}</h2>
-                  <h3>Current Level Information:</h3>
-                  <p>Cost: {renderResourceCost(getCurrentLevelData(selectedResearch).cost)}</p>
                   <p>Effect: {getCurrentLevelData(selectedResearch).effect}</p>
                   <p>{getCurrentLevelData(selectedResearch).description}</p>
                 </>
