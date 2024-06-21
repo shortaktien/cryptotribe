@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-//import Military from './Military';
 
 const useResources = () => {
   const [resources, setResources] = useState({
@@ -110,11 +109,6 @@ const useResources = () => {
     return () => clearInterval(interval);
   }, [productionRates, capacityRates, researchEffects, resources.population, calculateNetProduction]);
 
-  useEffect(() => {
-    const netProduction = calculateNetProduction(productionRates);
-    //console.log("Current Net Production Rates:", netProduction);
-  }, [productionRates, researchEffects, resources.population, calculateNetProduction]);
-
   const updateProductionRate = (resource, rate) => {
     setProductionRates(prevRates => ({
       ...prevRates,
@@ -131,7 +125,7 @@ const useResources = () => {
     if (resource === 'military') {
       setResources(prevResources => ({
         ...prevResources,
-        military: Math.min(prevResources.military + amount, capacityRates.maxMilitaryCapacity)
+        military: Math.min(prevResources.military + amount, capacityRates.maxMilitaryCapacity + amount)
       }));
     }
   };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './World.css';
 import worldMap from '../assets/wallsUnitImage.webp'; // Pfad zum hochgeladenen Bild
 import MiniGame from './MiniGame';
