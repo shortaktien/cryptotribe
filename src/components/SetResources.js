@@ -125,7 +125,7 @@ const useResources = () => {
     if (resource === 'military') {
       setResources(prevResources => ({
         ...prevResources,
-        military: Math.min(prevResources.military + amount, capacityRates.maxMilitaryCapacity + amount)
+        military: Math.min(prevResources.military + amount, capacityRates.maxMilitaryCapacity)
       }));
     }
   };

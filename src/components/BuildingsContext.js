@@ -59,7 +59,7 @@ const initialBuildingsData = [
     name: 'House',
     image: houseImage,
     baseCost: { wood: 50 },
-    baseProduction: { population: 5 /3600 }, // pro Sekunde
+    baseProduction: { population: 50000 /3600 }, // pro Sekunde
     baseCapacity: { population: 30 },
     baseBuildTime: 3,
     currentLevel: 0,
