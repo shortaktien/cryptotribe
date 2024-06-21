@@ -155,6 +155,7 @@ z-index: 1000;
 width: 120px; /* Logo wird kleiner */
 height: 30px; /* Logo wird kleiner */
 margin-left: 20px;
+display: none;
 }
 .resources {
 display: none; /* Ressourcen werden ausgeblendet */
