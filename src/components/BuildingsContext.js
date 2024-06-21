@@ -26,7 +26,7 @@ const initialBuildingsData = [
     baseProduction: { wood: 33 /3600 }, // pro Sekunde
     baseBuildTime: 5,
     currentLevel: 0,
-    description: 'Wood is the resource Number 1.'
+    description: 'A sturdy structure where wood is harvested, vital for building and maintaining your realm. The legendary lumberjack Tharok, wielding twin battle axes, achieved great feats in the dense forests of Ealdoria.'
   },
 
   // Stonemason
@@ -38,7 +38,7 @@ const initialBuildingsData = [
     baseProduction: { stone: 29 /3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
-    description: 'Stone is the resource Number 2'
+    description: 'A workshop where skilled craftsmen shape stone, crucial for constructing resilient buildings. Ealdorias unique Eldarite stones, imbued with the hidden power of the Threads of Continuity, provide unmatched strength and durability to your structures.'
   },
 
   // Warehouse
@@ -50,7 +50,7 @@ const initialBuildingsData = [
     baseCapacity: { water: 500, food: 500, wood: 500, stone: 500 },
     baseBuildTime: 3,
     currentLevel: 0,
-    description: 'A Warehouse to store Resources'
+    description: 'A fortified storage facility to safeguard your resources. Protecting your supplies from the marauding Skarn Raiders is crucial for sustaining your realms growth and ensuring a steady flow of materials.'
   },
 
   // House
@@ -63,7 +63,7 @@ const initialBuildingsData = [
     baseCapacity: { population: 30 },
     baseBuildTime: 3,
     currentLevel: 0,
-    description: 'Every good Tribe needs Population'
+    description: 'A humble dwelling where citizens live, fostering a sense of community and providing shelter for your growing population. Essential for maintaining happiness and productivity. King Eldran of the Ehra insisted on these houses for all.'
   },
 
   // Farm
@@ -75,7 +75,7 @@ const initialBuildingsData = [
     baseProduction: { food: 35 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
-    description: 'Population need food, so build farms'
+    description: 'A fertile plot where crops are cultivated, ensuring food for your populace. The mighty farmer Brina, blessed by the Gleam of Eternity, enhanced harvests and secured abundant yields for the realm.'
   },
 
   // Drawing well
@@ -87,7 +87,7 @@ const initialBuildingsData = [
     baseProduction: { water: 40 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
-    description: 'Population need water, so build wells'
+    description: 'A deep well providing fresh water, vital for sustaining life in your realm. During the Festival of the Silver Moon, the water is believed to possess potent healing powers, revered by all.'
   },
 
   // Science
@@ -100,7 +100,7 @@ const initialBuildingsData = [
     baseCapacity: { knowledge: 200 },
     baseBuildTime: 3,
     currentLevel: 0,
-    description: 'Science is important'
+    description: 'A center of knowledge and innovation, driving progress in your realm. Beware the risk of scholars turning mad, corrupted by the Dark Veils influence, requiring them to be dealt with repeatedly to protect your kingdom.'
   },
 
   // Coalmine
@@ -112,7 +112,7 @@ const initialBuildingsData = [
     baseProduction: { coal: 15 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
-    description: 'Coal is important for energy production.'
+    description: 'A grimy pit where coal is extracted, crucial for powering your industry. The filthy mines of Grimscar are plagued daily by goblins and the wretched Skulkin, making every shift a hazardous endeavor.'
   },
 
   // Goldmine
@@ -124,7 +124,7 @@ const initialBuildingsData = [
     baseProduction: { gold: 0.01 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
-    description: 'Gold is valuable for trading.'
+    description: 'A glittering mine yielding precious gold, enabling wealth and opulence like the grand capital of Aurumspire. However, it also attracts the dangers of envious rival nations seeking to plunder your riches.'
   },
 
   // Barracks
@@ -136,7 +136,7 @@ const initialBuildingsData = [
     baseCapacity: { military: 10 },
     baseBuildTime: 3,
     currentLevel: 0,
-    description: 'Barracks to train soldiers.'
+    description: 'A fortified building where soldiers are trained, known as the birthplace of the Tarnished Warriors. Here, legends are forged, and the might of your army is built to defend and conquer.'
   },
 
   //Fortifications
@@ -147,7 +147,7 @@ const initialBuildingsData = [
     baseCost: {wood: 50, stone: 50, population: 5},
     baseBuildTime: 3,
     currentLevel: 0,
-    description: "Includes all types of walls, towers, and gates used for defending a city or castle."
+    description: "Massive, robust walls forming the backbone of your realm's defenses. The Great Bastions must be constantly manned by the stalwart giants of Tharundor, for defense is paramount in the struggle for survival."
   },
 
   //Harbor
@@ -158,7 +158,7 @@ const initialBuildingsData = [
     baseCost: {wood: 50, stone: 50, population: 5},
     baseBuildTime: 3,
     currentLevel: 0,
-    description: "A harbor is a key trade hub with docks, warehouses, and shipyards. It facilitates import, export, and naval operations"
+    description: "A bustling port providing access to the vast world of Ealdoria. Who knows what mysteries and opportunities lie beyond the horizon, waiting to be discovered by intrepid sailors?"
   },
 
   //Merchant
@@ -169,7 +169,7 @@ const initialBuildingsData = [
     baseCost: {wood: 50, stone: 50, population: 5},
     baseBuildTime: 3,
     currentLevel: 0,
-    description: "A merchant is someone who trades goods for profit, often found in marketplaces or trading posts"
+    description: "A peculiar man gazes at you, his eyes filled with secrets. He knows all the hidden truths of Ealdoria. Where did he acquire all these mysterious wares? Only he knows."
   }
 ];
 

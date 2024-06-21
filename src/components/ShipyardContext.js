@@ -14,7 +14,7 @@ const initialShipsData = [
     attack: 5,
     defense: 3,
     capacity: 2, // Kapazität, die dieses Schiff benötigt
-    description: 'Basic combat frigate.',
+    description: 'The sails appear tattered, and the crew is unwilling to engage in conversation. The sea transforms everyone into a somber puppet, their spirits weighed down by endless waves and unspoken sorrows, as they navigate the desolate waters.',
     count: 0 // Initialisiere die Anzahl der Schiffe
   },
   {
@@ -26,7 +26,7 @@ const initialShipsData = [
     attack: 10,
     defense: 5,
     capacity: 3, // Kapazität, die dieses Schiff benötigt
-    description: 'Advanced combat destroyer.',
+    description: 'The name says it all—a terror of the seas. Those who enlist aboard seek death. These ships are notorious, with daily prayers to the Threads of Continuity, their decks echoing with a dread reverence for their inevitable doom.',
     count: 0 // Initialisiere die Anzahl der Schiffe
   }
 ];

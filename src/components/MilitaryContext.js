@@ -15,7 +15,7 @@ const initialUnitsData = [
     defense: 1,
     life: 10,
     capacity: 1, // Kapazität, die diese Einheit benötigt
-    description: 'Basic infantry unit.',
+    description: 'Trained in the shadow of the Tarnished Warriors grim tradition, these soldiers would sacrifice everything for the power of the Threads of Continuity. Each one harbors a dark ambition to become the next ruler, their hearts slowly succumbing to corruption.',
     count: 0, // Initialisiere die Anzahl der Einheiten
     speed: 60, // Bewegungsgeschwindigkeit
     attackCooldown: 1000 // Angriffstempo (1 Angriff pro Sekunde)
@@ -30,7 +30,7 @@ const initialUnitsData = [
     defense: 2,
     life: 15,
     capacity: 2, // Kapazität, die diese Einheit benötigt
-    description: 'Basic cavalry unit.',
+    description: 'These soldiers water their brutal steeds outside the city, where the Gleam of Eternity is believed to be stronger. Their horses are fierce beasts, capable of smashing through house walls with ease, instilling fear and chaos wherever they charge.',
     count: 0, // Initialisiere die Anzahl der Einheiten
     speed: 20, // Bewegungsgeschwindigkeit
     attackCooldown: 2000 // Angriffstempo (1 Angriff alle 2 Sekunden)
