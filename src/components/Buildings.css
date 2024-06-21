@@ -5,7 +5,11 @@
   padding: 20px; /* Beispielhafte Padding-Einstellung für den Abstand vom Rand */
 }
 
-/*Building Image*/ 
+/* Building Image */ 
+.image-container {
+  position: relative;
+}
+
 .blue-image {
   background-color: aqua;
   max-width: 100%; /* Bild skaliert sich auf die Containerbreite */
@@ -13,28 +17,53 @@
   border-radius: 10px;
 }
 
+.building-info-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+
 .building-info {
   position: absolute;
-  top: 40px;
-  right: 130px;
-  background-color: rgba(0, 0, 0, 0.685);
+  top: 58px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
   padding: 10px;
   border-radius: 10px;
   color: white;
   z-index: 2;
-  transition: opacity 0.3s ease-in-out;
-  width: calc(300px); /* Ensure it fits within the parent */
+  width: calc(100% - 500px); /* Ensure it fits within the parent */
 }
 
 .next-info {
-  bottom: 40px;
   top: auto;
+  bottom: 15px;
+  left: 390px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  z-index: 2;
+  width: calc(100% - 500px); /* Ensure it fits within the parent */
 }
 
 .overlapping {
   opacity: 0;
 }
 
+@media screen and (max-width: 1071px) {
+  .building-info {
+    visibility: hidden;
+  }
+}
+
+@media screen and (max-width: 1071px) {
+  .next-info {
+    visibility: visible;
+  }
+}
 
 .level {
   background-color: #ffa600e8; /* Red */
@@ -67,7 +96,6 @@
   height: auto;
 }
 
-
 .tooltip {
   position: relative;
   display: inline-block;
@@ -97,14 +125,12 @@
 }
 
 @media screen and (max-width: 768px) {
+  .building-info-container {
+    flex-direction: column; /* Stellt die Position wieder auf Spalte für kleinere Bildschirme */
+  }
   .building-info {
-    /* Anpassungen für kleinere Bildschirme */
-    position: relative; /* Stellt die Position wieder auf relativ */
     width: 100%; /* Nimmt die volle Breite des Bildschirms ein */
-    max-width: none; /* Aufheben der maximalen Breite */
-    top: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.685); /* Beispielhafte Farbe */
+    margin-bottom: 10px; /* Abstand zwischen den beiden Boxen */
   }
 }
 

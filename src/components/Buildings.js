@@ -148,48 +148,50 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     <div className='main-content'>
       <div className="buildings">
         <div className="blue-rectangle">
-          <img src={selectedBuilding.image} alt={selectedBuilding.name} className="blue-image" />
-          
-          {selectedBuilding.id !== 0 && (
-            <div className={`building-info current-info current-info-${selectedBuilding.id} ${isOverlapping(selectedBuilding) ? 'overlapping' : ''}`}>
-              <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
-              <h3>Current Level Information:</h3>
-              <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
-              {getCurrentLevelData(selectedBuilding).production && (
-                <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate.toFixed(2)} ${resource}/s`).join(', ')}</p>
-              )}
-              {getCurrentLevelData(selectedBuilding).capacity && (
-                <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
-              )}
-              <p>{getCurrentLevelData(selectedBuilding).description}</p>
-            </div>
-          )}
+          <div className="image-container">
+            <img src={selectedBuilding.image} alt={selectedBuilding.name} className="blue-image" />
+            
+            {selectedBuilding.id !== 0 && (
+              <div className={`building-info current-info current-info-${selectedBuilding.id} ${isOverlapping(selectedBuilding) ? 'overlapping' : ''}`}>
+                <h2>{selectedBuilding.name} - Current Level: {selectedBuilding.currentLevel}</h2>
+                <h3>Current Level Information:</h3>
+                <p>Cost: {renderResourceCost(getCurrentLevelData(selectedBuilding).cost)}</p>
+                {getCurrentLevelData(selectedBuilding).production && (
+                  <p>Production: {Object.entries(getCurrentLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate.toFixed(2)} ${resource}/s`).join(', ')}</p>
+                )}
+                {getCurrentLevelData(selectedBuilding).capacity && (
+                  <p>Capacity: {Object.entries(getCurrentLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                )}
+                <p>{getCurrentLevelData(selectedBuilding).description}</p>
+              </div>
+            )}
 
-          {selectedBuilding.id !== 0 && (
-            <div className={`building-info next-info next-info-${selectedBuilding.id}`}>
-              {getNextLevelData(selectedBuilding) && (
-                <>
-                  <h3>Next Level Information:</h3>
-                  <p>Cost: {renderResourceCost(getNextLevelData(selectedBuilding).cost, true)}</p>
-                  {getNextLevelData(selectedBuilding).production && (
-                    <p>Production: {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
-                  )}
-                  {getNextLevelData(selectedBuilding).capacity && (
-                    <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
-                  )}
-                  <p>Build Time: {getNextLevelData(selectedBuilding).buildTime} seconds</p>
-                  <p>{getNextLevelData(selectedBuilding).description}</p>
-                  <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost) || isCooldownActive}>
-                    {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
-                    {isCooldownActive ? `Building... ${remainingTime}s` : `Upgrade to Level ${selectedBuilding.currentLevel + 1}`}
-                  </button>
-                  <button onClick={handleDemolish} disabled={selectedBuilding.currentLevel === 0}>
-                    Demolish to Level {selectedBuilding.currentLevel - 1}
-                  </button>
-                </>
-              )}
-            </div>
-          )}
+            {selectedBuilding.id !== 0 && (
+              <div className={`building-info next-info next-info-${selectedBuilding.id}`}>
+                {getNextLevelData(selectedBuilding) && (
+                  <>
+                    <h3>Next Level Information:</h3>
+                    <p>Cost: {renderResourceCost(getNextLevelData(selectedBuilding).cost, true)}</p>
+                    {getNextLevelData(selectedBuilding).production && (
+                      <p>Production: {Object.entries(getNextLevelData(selectedBuilding).production).map(([resource, rate]) => `${rate} ${resource}/s`).join(', ')}</p>
+                    )}
+                    {getNextLevelData(selectedBuilding).capacity && (
+                      <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
+                    )}
+                    <p>Build Time: {getNextLevelData(selectedBuilding).buildTime} seconds</p>
+                    <p>{getNextLevelData(selectedBuilding).description}</p>
+                    <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost) || isCooldownActive}>
+                      {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
+                      {isCooldownActive ? `Building... ${remainingTime}s` : `Upgrade to Level ${selectedBuilding.currentLevel + 1}`}
+                    </button>
+                    <button onClick={handleDemolish} disabled={selectedBuilding.currentLevel === 0}>
+                      Demolish to Level {selectedBuilding.currentLevel - 1}
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="tooltip">
             <button>?</button>
