@@ -201,14 +201,22 @@ margin-right: 20px;
 
 /* src/components/Sidebar.css */
 .sidebar {
-width: 200px;
-background-color: #333333c5;
-color: #fff;
-padding: 10px;
-text-align: center;
-height: 700px; 
-border-radius: 20px; 
-}
+    width: 200px;
+    background-color: #333333c5;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    height: 700px; 
+    border-radius: 20px; 
+  }
+  
+  @media (min-width: 720px) {
+    .sidebar {
+      position: sticky;
+      top: 70px; /* Adjust this value based on your header height */
+      z-index: 10;
+    }
+  }
 
 .sidebar ul {
 list-style-type: none;
