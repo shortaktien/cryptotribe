@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './MiniGame.css';
 import { useMilitary } from './MilitaryContext';
 import useResources from './SetResources'; // Verwendet den existierenden Hook
-import { checkCollisions } from './CollisionHandler'; // Import der Kollisionserkennung
 
 const MiniGame = ({ target, onGameEnd }) => {
   const { units, disbandUnit } = useMilitary();
@@ -14,7 +13,6 @@ const MiniGame = ({ target, onGameEnd }) => {
 
   const [myBaseHealth, setMyBaseHealth] = useState(5);
   const [enemyBaseHealth, setEnemyBaseHealth] = useState(5);
-  const [enemySpawnCount, setEnemySpawnCount] = useState(0);
 
   const gameInterval = useRef(null);
   const enemySpawnInterval = useRef(null);
@@ -83,23 +81,17 @@ const MiniGame = ({ target, onGameEnd }) => {
     setGameOver(false);
     setMyBaseHealth(5); // Reset my base health
     setEnemyBaseHealth(5); // Reset enemy base health
-    setEnemySpawnCount(0); // Reset enemy spawn count
 
     gameInterval.current = setInterval(() => {
       moveUnits();
       updateCooldowns();
-      setMyUnits(prevMyUnits => {
-        const { updatedMyUnits, updatedEnemyUnits } = checkCollisions(prevMyUnits, enemyUnits);
-        setEnemyUnits(updatedEnemyUnits);
-        return updatedMyUnits;
-      });
     }, 1000); // Jede Sekunde die Einheiten bewegen und Cooldown aktualisieren
 
     enemySpawnInterval.current = setInterval(() => {
-      setEnemySpawnCount(prevCount => {
-        if (prevCount < 10) {
+      setEnemyUnits(prevUnits => {
+        if (prevUnits.length < 10) {
           const newEnemyUnit = {
-            id: prevCount + 1,
+            id: prevUnits.length + 1,
             attack: 2,
             defense: 1,
             life: 10,
@@ -109,16 +101,15 @@ const MiniGame = ({ target, onGameEnd }) => {
             attackCooldown: 3000, // Beispiel-Cooldown von 3 Sekunden
             lastAttackTime: Date.now(),
           };
-          console.log(`Spawning enemy unit ${prevCount + 1}/10`, newEnemyUnit);
-          setEnemyUnits(prevUnits => [...prevUnits, newEnemyUnit]);
-          return prevCount + 1;
+          console.log(`Spawning enemy unit ${prevUnits.length + 1}/10`, newEnemyUnit);
+          return [...prevUnits, newEnemyUnit];
         } else {
           clearInterval(enemySpawnInterval.current);
-          return prevCount;
+          return prevUnits;
         }
       });
     }, 3000); // Jede 3 Sekunden einen Gegner generieren
-  }, [moveUnits, updateCooldowns, checkCollisions, enemyUnits]);
+  }, [moveUnits, updateCooldowns]);
 
   useEffect(() => {
     if (target) {
