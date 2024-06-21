@@ -1,10 +1,12 @@
-/*src/App.css */
+/* src/App.css */
 .app {
-display: flex;
-flex-direction: column;
-height: 1000px;
-
-}
+    display: flex;
+    flex-direction: column;
+    height: 1000px;
+    background-image: url('../assets/sidebar-background.webp'); /* Path to your background image */
+    background-attachment: fixed; /* Fixes the background image in place */
+  }
+  
 
 .content {
     display: flex;
@@ -70,6 +72,14 @@ position: relative;
 top: auto; 
 margin-bottom: 20px; 
 }
+
+@media (min-width: 720px) {
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+  }
 
 .logo-icon {
 display: flex;

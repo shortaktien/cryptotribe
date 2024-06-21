@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap; /* Allows items to wrap onto multiple lines */
   justify-content: space-around;
-  background-color: #f8f9fa;
+  
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -10,6 +10,7 @@
   text-align: center;
   width: 75%;
 }
+
 
 .main-content-statistic {
   display: flex;
@@ -22,6 +23,7 @@
   margin: 10px auto;
   text-align: center;
   width: 75%;
+  
 }
 
 .statistic {
@@ -35,6 +37,7 @@
   margin: 10px auto;
   text-align: center;
   width: 90%;
+  
 }
 
 .box {
