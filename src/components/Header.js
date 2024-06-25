@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
+import axios from 'axios';
 
 import foodImage from '../assets/foodImage.webp';
 import populationImage from '../assets/populationImage.webp';
@@ -10,7 +11,7 @@ import cryptotribeImage from "../assets/cryptotribeImage.webp";
 import knowledgeImage from "../assets/knowledgeImage.webp";
 import coalImage from '../assets/coalRessourceImage.webp';
 import goldImage from '../assets/goldRessourceImage.webp';
-import militaryImage from "../assets/militaryRessourceImage.webp"; // BILD ÄNDERN!!!
+import militaryImage from "../assets/militaryRessourceImage.webp"; 
 
 import "./App.css";
 
@@ -59,6 +60,26 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     return () => clearInterval(interval);
   }, [resourceChanges]);
 
+  const saveData = async () => {
+    const data = {
+      address: userAddress,
+      name: userName,
+      balance: userBalance,
+      resources: resourcesData.map(resource => ({
+        name: resource.name,
+        value: resource.value,
+        capacity: resource.capacity
+      }))
+    };
+
+    try {
+      const response = await axios.post('/api/saveData', data);
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
   return (
     <div className="header">
       <div className="logo"></div>
@@ -88,6 +109,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
           </div>
         )}
       </div>
+      <button onClick={saveData}>Save Data</button>
     </div>
   );
 };
