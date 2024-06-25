@@ -1,4 +1,4 @@
-// /pages/api/saveData.js
+// /api/saveData.js
 import { Client } from 'pg';
 
 const client = new Client({

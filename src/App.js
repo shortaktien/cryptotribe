@@ -20,7 +20,7 @@ import { BuildingsProvider } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
 import { DefenseProvider } from './components/DefenseContext';
-import { ShipyardProvider } from './components/ShipyardContext'; // Importiere den ShipyardProvider
+import { ShipyardProvider } from './components/ShipyardContext';
 
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
