@@ -73,12 +73,12 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     };
 
     try {
-      const response = await axios.post('/api/saveData', data);
+      const response = await axios.post('https://cryptotribe.vercel.app/api/saveData', data);
       console.log(response.data);
-    } catch (error) {
+  } catch (error) {
       console.error('Error saving data:', error);
-    }
-  };
+  }
+};
 
   return (
     <div className="header">
