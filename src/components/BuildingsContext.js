@@ -5,7 +5,7 @@ import stonemasonImage from "../assets/stonemasonImage.webp";
 import warehouseImage from "../assets/warehouseImage.webp";
 import houseImage from "../assets/houseImage.webp";
 import farmImage from "../assets/farmImage.webp";
-import scienceBuildingImage from "../assets/scienceBuildingImage.webp"
+import scienceBuildingImage from "../assets/scienceBuildingImage.webp";
 import drawingWellImage from "../assets/drawingWellImage.webp";
 import kohlemineImage from "../assets/coalMineImage.webp";
 import goldmineImage from "../assets/goldMineBuildingImage.webp";
@@ -23,7 +23,7 @@ const initialBuildingsData = [
     name: 'Lumberjack',
     image: lamberjackImage,
     baseCost: { wood: 50, population: 1 },
-    baseProduction: { wood: 33 /3600 }, // pro Sekunde
+    baseProduction: { wood: 33 / 3600 }, // pro Sekunde
     baseBuildTime: 5,
     currentLevel: 0,
     description: 'A sturdy structure where wood is harvested, vital for building and maintaining your realm. The legendary lumberjack Tharok, wielding twin battle axes, achieved great feats in the dense forests of Ealdoria.'
@@ -35,7 +35,7 @@ const initialBuildingsData = [
     name: 'Stonemason',
     image: stonemasonImage,
     baseCost: { wood: 50, population: 1 },
-    baseProduction: { stone: 29 /3600 }, // pro Sekunde
+    baseProduction: { stone: 29 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
     description: 'A workshop where skilled craftsmen shape stone, crucial for constructing resilient buildings. Ealdorias unique Eldarite stones, imbued with the hidden power of the Threads of Continuity, provide unmatched strength and durability to your structures.'
@@ -59,7 +59,7 @@ const initialBuildingsData = [
     name: 'House',
     image: houseImage,
     baseCost: { wood: 50 },
-    baseProduction: { population: 50000 /3600 }, // pro Sekunde
+    baseProduction: { population: 50000 / 3600 }, // pro Sekunde
     baseCapacity: { population: 30 },
     baseBuildTime: 3,
     currentLevel: 0,
@@ -139,41 +139,39 @@ const initialBuildingsData = [
     description: 'A fortified building where soldiers are trained, known as the birthplace of the Tarnished Warriors. Here, legends are forged, and the might of your army is built to defend and conquer.'
   },
 
-  //Fortifications
+  // Fortifications
   {
     id: 11,
     name: "Fortifications",
     image: fortImage,
-    baseCost: {wood: 50, stone: 50, population: 5},
+    baseCost: { wood: 50, stone: 50, population: 5 },
     baseBuildTime: 3,
     currentLevel: 0,
     description: "Massive, robust walls forming the backbone of your realm's defenses. The Great Bastions must be constantly manned by the stalwart giants of Tharundor, for defense is paramount in the struggle for survival."
   },
 
-  //Harbor
+  // Harbor
   {
     id: 12,
     name: "Harbor",
     image: harborImage,
-    baseCost: {wood: 50, stone: 50, population: 5},
+    baseCost: { wood: 50, stone: 50, population: 5 },
     baseBuildTime: 3,
     currentLevel: 0,
     description: "A bustling port providing access to the vast world of Ealdoria. Who knows what mysteries and opportunities lie beyond the horizon, waiting to be discovered by intrepid sailors?"
   },
 
-  //Merchant
+  // Merchant
   {
     id: 13,
     name: "Merchant",
     image: merchantImage,
-    baseCost: {wood: 50, stone: 50, population: 5},
+    baseCost: { wood: 50, stone: 50, population: 5 },
     baseBuildTime: 3,
     currentLevel: 0,
     description: "A peculiar man gazes at you, his eyes filled with secrets. He knows all the hidden truths of Ealdoria. Where did he acquire all these mysterious wares? Only he knows."
   }
 ];
-
-
 
 const calculateCost = (baseCost, level, multiplier) => {
   const cost = {};
@@ -219,20 +217,31 @@ const generateLevels = (building, maxLevel = 20) => {
   return levels;
 };
 
-export const BuildingsProvider = ({
+const BuildingsProvider = ({
   children,
+  initialBuildings,
   spendResources,
   updateProductionRate,
   updateCapacityRates,
   refundResources
 }) => {
   const [buildings, setBuildings] = useState(
-    initialBuildingsData.map(building => ({
+    (initialBuildings || initialBuildingsData).map(building => ({
       ...building,
       levels: generateLevels(building),
-      currentLevel: 0
+      currentLevel: building.currentLevel || 0
     }))
   );
+
+  useEffect(() => {
+    if (initialBuildings) {
+      setBuildings(initialBuildings.map(building => ({
+        ...building,
+        levels: generateLevels(building),
+        currentLevel: building.currentLevel || 0
+      })));
+    }
+  }, [initialBuildings]);
 
   const upgradeBuilding = (buildingId, spendResources, updateProductionRate, updateCapacityRates) => {
     setBuildings(prevBuildings =>
@@ -347,3 +356,4 @@ export const BuildingsProvider = ({
 };
 
 export const useBuildings = () => useContext(BuildingsContext);
+export { BuildingsProvider };

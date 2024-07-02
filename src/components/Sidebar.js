@@ -32,8 +32,8 @@ const Sidebar = ({ userAddress, resources }) => {
   };
 
   const handleSaveGame = async () => {
-    console.log('Saving game with:', { userAddress, resources }); // Debugging-Informationen
-    await saveGameProgress(userAddress, resources);
+    console.log('Saving game with:', { userAddress, resources, buildings });
+    await saveGameProgress(userAddress, resources, buildings);
   };
 
   //Disable Buttons if Buildings not Build

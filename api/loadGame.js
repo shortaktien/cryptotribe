@@ -17,15 +17,23 @@ module.exports = async (req, res) => {
   try {
     await client.connect();
 
-    const query = 'SELECT resources FROM player_progress WHERE user_name = $1';
-    const values = [user_name];
-    const result = await client.query(query, values);
+    const query1 = 'SELECT resources FROM player_progress WHERE user_name = $1';
+    const values1 = [user_name];
+    const result1 = await client.query(query1, values1);
 
-    if (result.rows.length === 0) {
+    if (result1.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json({ resources: result.rows[0].resources });
+    const query2 = 'SELECT buildings FROM building_progress WHERE user_name = $1';
+    const values2 = [user_name];
+    const result2 = await client.query(query2, values2);
+
+    if (result2.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ resources: result1.rows[0].resources, buildings: result2.rows[0].buildings });
   } catch (error) {
     console.error('Error loading game progress:', error);
     res.status(500).json({ error: 'Internal Server Error' });

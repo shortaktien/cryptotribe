@@ -32,7 +32,7 @@ function App() {
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
 
-  const handleLogin = async (address, loadedResources) => {
+  const handleLogin = async (address, loadedResources, loadedBuildings) => {
     if (loadedResources) {
       const defaultResources = {
         water: 250,
@@ -46,12 +46,15 @@ function App() {
         military: 0,
       };
       const updatedResources = { ...defaultResources, ...loadedResources };
-      setResources(updatedResources);
-      setIsConnected(true);
-    } else {
-      setIsConnected(true);
-    }
-  };
+    setResources(updatedResources);
+  }
+
+  if (loadedBuildings) {
+    setBuildings(loadedBuildings); // Set the loaded buildings state
+  }
+
+  setIsConnected(true);
+};
 
   const handleConnect = async (address) => {
     setUserAddress(address);
