@@ -24,6 +24,13 @@ module.exports = async (req, res) => {
        RETURNING *`,
       [address, new Date()]
     );
+
+    if (result.rows.length > 0) {
+      console.log('Address saved or updated successfully');
+    } else {
+      console.log('Failed to save or update address');
+    }
+
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error saving address:', error);

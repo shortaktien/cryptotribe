@@ -10,7 +10,7 @@ const StartPage = ({ onConnect }) => {
         console.log('MetaMask address:', address);
 
         // API-Call zum Speichern der Adresse
-        const response = await fetch('api/saveData.js', {
+        const saveResponse = await fetch('/api/saveData', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -18,13 +18,23 @@ const StartPage = ({ onConnect }) => {
           body: JSON.stringify({ address }),
         });
 
-        if (response.ok) {
-          console.log('Address saved successfully');
-          onConnect(address); // Aktualisierung der App nach erfolgreichem Speichern
-        } else {
-          console.error('Failed to save address:', response.statusText);
-        }
+        if (saveResponse.ok) {
+          const saveMessage = await saveResponse.text();
+          console.log(saveMessage);
 
+          // API-Call zum Laden der Spieldaten
+          const loadResponse = await fetch(`/api/loadGame?user_name=${address}`);
+          if (loadResponse.ok) {
+            const resources = await loadResponse.json();
+            console.log('Game progress loaded:', resources);
+            onConnect(address, resources); // Aktualisierung der App nach erfolgreichem Laden
+          } else {
+            console.log('User not found, starting new game');
+            onConnect(address, null); // Start with new game
+          }
+        } else {
+          console.error('Failed to save address:', saveResponse.statusText);
+        }
       } catch (error) {
         console.error('Error connecting to MetaMask:', error);
       }

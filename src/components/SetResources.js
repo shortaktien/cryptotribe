@@ -6,11 +6,11 @@ const useResources = () => {
     food: 250,
     wood: 300,
     stone: 100,
-    knowledge: 0, // Wissenschaftsressourcen
-    population: 15,  // Anfangspopulation
-    coal: 0, // Kohleresourcen
-    gold: 0, // Goldresourcen
-    military: 0, //Kapazitäten für das Militär
+    knowledge: 0,
+    population: 15,
+    coal: 0,
+    gold: 0,
+    military: 0,
   });
 
   const [productionRates, setProductionRates] = useState({
@@ -29,7 +29,7 @@ const useResources = () => {
     food: 500,
     wood: 500,
     stone: 500,
-    knowledge: 100, // Wissenschaftskapazität
+    knowledge: 100,
     population: 15,
     coal: 500,
     gold: 500,
@@ -42,7 +42,7 @@ const useResources = () => {
     food: 0,
     wood: 0,
     stone: 0,
-    knowledge: 0, 
+    knowledge: 0,
     population: 0,
     coal: 0,
     gold: 0,
@@ -63,17 +63,15 @@ const useResources = () => {
   const calculateNetProduction = useCallback((baseProduction) => {
     const netProduction = { ...baseProduction };
 
-    // Apply research effects
     Object.entries(researchEffects).forEach(([resource, multiplier]) => {
       if (netProduction[resource] !== undefined) {
         netProduction[resource] += netProduction[resource] * multiplier;
       }
     });
 
-    // Subtract population consumption
     const population = resources.population;
-    netProduction.food -= (population * 0.2) / 3600; // Population consumption of food
-    netProduction.water -= (population * 0.1) / 3600; // Population consumption of water
+    netProduction.food -= (population * 0.2) / 3600;
+    netProduction.water -= (population * 0.1) / 3600;
 
     return netProduction;
   }, [researchEffects, resources.population]);
@@ -94,7 +92,6 @@ const useResources = () => {
           military: Math.min(prevResources.military, capacityRates.military)
         };
 
-        // Set the changes in resources
         const changes = {};
         Object.keys(newResources).forEach(resource => {
           changes[resource] = newResources[resource] - prevResources[resource];
@@ -141,7 +138,7 @@ const useResources = () => {
     const updatedResources = { ...resources };
     for (const [resource, amount] of Object.entries(cost)) {
       if (updatedResources[resource] < amount) {
-        return false;  // Nicht genug Ressourcen
+        return false;
       }
       updatedResources[resource] -= amount;
     }
@@ -163,6 +160,7 @@ const useResources = () => {
 
   return { 
     resources, 
+    setResources,
     resourceChanges,
     updateProductionRate, 
     spendResources, 
