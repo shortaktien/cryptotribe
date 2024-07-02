@@ -21,7 +21,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
 
   // Konsolenausgabe, um die geladenen Ressourcen zu überprüfen
   useEffect(() => {
-    console.log('Loaded resources in Header:', resources);
+    //console.log('Loaded resources in Header:', resources);
   }, [resources]);
 
   const toggleDropdown = () => {

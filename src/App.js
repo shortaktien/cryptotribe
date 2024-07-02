@@ -15,7 +15,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import StartPage from './components/StartPage';
 import useResources from './components/SetResources';
-import { connectMetaMask } from './components/MetaMask';
 import { BuildingsProvider } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
@@ -29,19 +28,12 @@ function App() {
   const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources } = useResources();
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userBalance, setUserBalance] = useState('');
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
 
-  const handleLogin = async (address) => {
-  try {
-    const response = await fetch(`/api/loadGame?user_name=${address}`);
-    if (response.ok) {
-      const data = await response.json();
-      // Sicherstellen, dass alle erforderlichen Ressourcen vorhanden sind
+  const handleLogin = async (address, loadedResources) => {
+    if (loadedResources) {
       const defaultResources = {
         water: 250,
         food: 250,
@@ -53,21 +45,23 @@ function App() {
         gold: 0,
         military: 0,
       };
-      const updatedResources = { ...defaultResources, ...data.resources };
-      setResources(updatedResources); // Update resources in the context
+      const updatedResources = { ...defaultResources, ...loadedResources };
+      setResources(updatedResources);
       setIsConnected(true);
     } else {
-      console.log("User not found, starting new game");
       setIsConnected(true);
     }
-  } catch (error) {
-    console.error("Error loading game data:", error);
-  }
-};
+  };
 
   const handleConnect = async (address) => {
     setUserAddress(address);
-    await handleLogin(address);
+    const response = await fetch(`/api/loadGame?user_name=${address}`);
+    if (response.ok) {
+      const data = await response.json();
+      handleLogin(address, data.resources);
+    } else {
+      handleLogin(address, null);
+    }
   };
 
   useEffect(() => {
@@ -79,9 +73,9 @@ function App() {
         setUserAddress(accounts[0]);
         const contractInstance = await getContract(web3Instance);
         setContract(contractInstance);
-        //console.log('Web3 and contract initialized:', { web3Instance, contractInstance });
+        console.log('Web3 and contract initialized:', { web3Instance, contractInstance });
       } catch (error) {
-        //console.error('Error initializing web3 or contract:', error);
+        console.error('Error initializing web3 or contract:', error);
         setContractError(error.message);
       }
     };
@@ -90,12 +84,12 @@ function App() {
 
   const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts) => {
     if (!contract) {
-      //console.error('Contract not initialized');
+      console.error('Contract not initialized');
       return;
     }
 
     if (!userAddress) {
-      //console.error('User address not initialized');
+      console.error('User address not initialized');
       return;
     }
 
@@ -104,15 +98,15 @@ function App() {
     });
 
     if (!hasEnoughResources) {
-      //console.error('Not enough resources');
+      console.error('Not enough resources');
       return;
     }
 
     try {
-      //console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
+      console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
       await sendTransaction(web3, userAddress, contract, 'upgradeBuilding', [buildingId, resourceNames, resourceCosts]);
     } catch (error) {
-      //console.error('Error upgrading building:', error);
+      console.error('Error upgrading building:', error);
       if (error.data) {
         console.error('Error data: ', error.data);
       }
@@ -121,12 +115,12 @@ function App() {
 
   const handleUpgradeResearch = async (researchId, cost) => {
     if (!contract) {
-      //console.error('Contract not initialized');
+      console.error('Contract not initialized');
       return;
     }
 
     if (!userAddress) {
-      //console.error('User address not initialized');
+      console.error('User address not initialized');
       return;
     }
 
@@ -135,46 +129,44 @@ function App() {
     });
 
     if (!hasEnoughResources) {
-      //console.error('Not enough resources');
+      console.error('Not enough resources');
       return;
     }
 
     try {
-      //console.log('Sending transaction with the following parameters:', { researchId, cost });
+      console.log('Sending transaction with the following parameters:', { researchId, cost });
       await sendTransaction(web3, userAddress, contract, 'upgradeResearch', [researchId, Object.keys(cost), Object.values(cost)]);
     } catch (error) {
-      //console.error('Error upgrading research:', error);
+      console.error('Error upgrading research:', error);
       if (error.data) {
-        //console.error('Error data: ', error.data);
+        console.error('Error data: ', error.data);
       }
     }
   };
 
   const handleTrainUnit = async (unitId) => {
-    //console.log(`Train unit with id ${unitId}`);
+    console.log(`Train unit with id ${unitId}`);
   };
 
   const handleDisbandUnit = async (unitId) => {
-    //console.log(`Disband unit with id ${unitId}`);
+    console.log(`Disband unit with id ${unitId}`);
   };
 
   const handleBuildDefense = async (structureId) => {
-    //console.log(`Build defense structure with id ${structureId}`);
+    console.log(`Build defense structure with id ${structureId}`);
   };
 
   const handleDemolishDefense = async (structureId) => {
-    //console.log(`Demolish defense structure with id ${structureId}`);
+    console.log(`Demolish defense structure with id ${structureId}`);
   };
 
   const handleBuildShip = async (shipId) => {
-    //console.log(`Build ship with id ${shipId}`);
+    console.log(`Build ship with id ${shipId}`);
   };
 
   const handleScrapShip = async (shipId) => {
-    //console.log(`Scrap ship with id ${shipId}`);
+    console.log(`Scrap ship with id ${shipId}`);
   };
-
-  //console.log("Capacity Rates in App:", capacityRates); 
 
   return (
     <Router>
@@ -207,9 +199,6 @@ function App() {
                   >
                     <Header
                       userAddress={userAddress}
-                      userAvatar={userAvatar}
-                      userName={userName}
-                      userBalance={userBalance}
                       resources={resources}
                       capacityRates={capacityRates}
                     />
