@@ -7,8 +7,24 @@ const StartPage = ({ onConnect }) => {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const address = accounts[0];
-        console.log('MetaMask address:', address); // Debugging-Information
-        onConnect(address); // Übergibt die Adresse an die App, um den Status zu aktualisieren
+        console.log('MetaMask address:', address);
+
+        // API-Call zum Speichern der Adresse
+        const response = await fetch('api/saveData.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ address }),
+        });
+
+        if (response.ok) {
+          console.log('Address saved successfully');
+          onConnect(address); // Aktualisierung der App nach erfolgreichem Speichern
+        } else {
+          console.error('Failed to save address:', response.statusText);
+        }
+
       } catch (error) {
         console.error('Error connecting to MetaMask:', error);
       }
