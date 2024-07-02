@@ -1,6 +1,8 @@
+// src/components/Sidebar.js
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { useBuildings } from './BuildingsContext';
+import saveGameProgress from '../utils/saveGameButton';
 
 import allianceImage from "../assets/allianceImage.webp";
 import buildingsImage from "../assets/buildingsImage.webp";
@@ -15,7 +17,7 @@ import worldImage from "../assets/worldImage.webp";
 
 import './App.css';
 
-const Sidebar = () => {
+const Sidebar = ({ userAddress, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const { buildings } = useBuildings();
   const navigate = useNavigate();
@@ -27,6 +29,11 @@ const Sidebar = () => {
   const handleMenuClick = (path) => {
     setDropdownVisible(false);
     navigate(path);
+  };
+
+  const handleSaveGame = async () => {
+    console.log('Saving game with:', { userAddress, resources }); // Debugging-Informationen
+    await saveGameProgress(userAddress, resources);
   };
 
   //Disable Buttons if Buildings not Build
@@ -56,7 +63,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className={isMerchantBuilt ? '' : 'disabled'}>
-          <Link to="/merchant" className={`sidebar-link ${isMerchantBuilt ? '' : 'disabled-link'}`}>
+            <Link to="/merchant" className={`sidebar-link ${isMerchantBuilt ? '' : 'disabled-link'}`}>
               <img src={merchantImage} alt="Merchant" className="sidebar-icon" /> Merchant
             </Link>
           </li>
@@ -66,7 +73,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className={isFortresBuilt ? '' : 'disabled'}>
-          <Link to="/defence" className={`sidebar-link ${isFortresBuilt ? '' : 'disabled-link'}`}>
+            <Link to="/defence" className={`sidebar-link ${isFortresBuilt ? '' : 'disabled-link'}`}>
               <img src={defenceImage} alt="Defence" className="sidebar-icon" /> Defence
             </Link>
           </li>
@@ -91,6 +98,9 @@ const Sidebar = () => {
             </Link>
           </li>
         </ul>
+        <button className="save-game-button" onClick={handleSaveGame}>
+          Save Game
+        </button>
       </div>
       <div className="dropdown-menu">
         <button className="dropdown-toggle" onClick={toggleDropdown}>
@@ -115,7 +125,7 @@ const Sidebar = () => {
                 </button>
               </li>
               <li className={isMerchantBuilt ? '' : 'disabled'}>
-              <button className={`sidebar-link ${isMerchantBuilt ? '' : 'disabled-link'}`} onClick={() => handleMenuClick('/merchant')}>
+                <button className={`sidebar-link ${isMerchantBuilt ? '' : 'disabled-link'}`} onClick={() => handleMenuClick('/merchant')}>
                   <img src={merchantImage} alt="Merchant" className="sidebar-icon" />
                 </button>
               </li>

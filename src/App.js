@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
@@ -180,7 +181,7 @@ function App() {
                       capacityRates={capacityRates}
                     />
                     <div className="content">
-                      <Sidebar />
+                      <Sidebar userAddress={userAddress} resources={resources} />
                       {contractError ? (
                         <div className="error">
                           <p>{contractError}</p>
