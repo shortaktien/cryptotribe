@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 import lamberjackImage from "../assets/lamberjackImage.webp";
 import stonemasonImage from "../assets/stonemasonImage.webp";
@@ -173,6 +173,8 @@ const initialBuildingsData = [
   }
 ];
 
+
+
 const calculateCost = (baseCost, level, multiplier) => {
   const cost = {};
   Object.keys(baseCost).forEach(resource => {
@@ -330,6 +332,12 @@ export const BuildingsProvider = ({
       })
     );
   };
+
+  useEffect(() => {
+    buildings.forEach(building => {
+      console.log(`${building.name}: Level ${building.currentLevel}`);
+    });
+  }, [buildings]);
 
   return (
     <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding }}>
