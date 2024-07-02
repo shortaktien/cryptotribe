@@ -31,6 +31,7 @@ function App() {
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
+  const [loadedBuildings, setLoadedBuildings] = useState([]);
 
   const handleLogin = async (address, loadedResources, loadedBuildings) => {
     if (loadedResources) {
@@ -46,24 +47,24 @@ function App() {
         military: 0,
       };
       const updatedResources = { ...defaultResources, ...loadedResources };
-    setResources(updatedResources);
-  }
+      setResources(updatedResources);
+    }
 
-  if (loadedBuildings) {
-    setBuildings(loadedBuildings); // Set the loaded buildings state
-  }
+    if (loadedBuildings) {
+      setLoadedBuildings(loadedBuildings); // Set the loaded buildings state
+    }
 
-  setIsConnected(true);
-};
+    setIsConnected(true);
+  };
 
   const handleConnect = async (address) => {
     setUserAddress(address);
     const response = await fetch(`/api/loadGame?user_name=${address}`);
     if (response.ok) {
       const data = await response.json();
-      handleLogin(address, data.resources);
+      handleLogin(address, data.resources, data.buildings);
     } else {
-      handleLogin(address, null);
+      handleLogin(address, null, null);
     }
   };
 
@@ -176,6 +177,7 @@ function App() {
       <div className="app">
         {isConnected ? (
           <BuildingsProvider
+            initialBuildings={loadedBuildings}
             spendResources={spendResources}
             updateProductionRate={updateProductionRate}
             updateCapacityRates={updateCapacityRates}
