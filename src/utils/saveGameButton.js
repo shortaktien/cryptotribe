@@ -1,4 +1,3 @@
-// src/utils/saveGameButton.js
 const saveGameProgress = async (userAddress, resources) => {
   try {
     console.log('Saving game progress with:', { userAddress, resources }); // Debugging-Informationen
