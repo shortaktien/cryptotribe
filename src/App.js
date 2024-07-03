@@ -32,31 +32,50 @@ function App() {
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
   const [loadedBuildings, setLoadedBuildings] = useState([]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
 
-  const handleLogin = async (address, loadedResources, loadedBuildings) => {
-    if (loadedResources) {
-      const defaultResources = {
-        water: 250,
-        food: 250,
-        wood: 300,
-        stone: 100,
-        knowledge: 0,
-        population: 15,
-        coal: 0,
-        gold: 0,
-        military: 0,
-      };
-      const updatedResources = { ...defaultResources, ...loadedResources };
-      setResources(updatedResources);
-    }
+  const formatTimeDifference = (seconds) => {
+    if (seconds < 60) return `${seconds} seconds`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours`;
+    return `${Math.floor(seconds / 86400)} days`;
+  };
+
+  const handleLogin = (address, loadedResources, loadedBuildings, timeDifferenceInSeconds = 0, gainedResources = {}) => {
+    console.log('handleLogin called with:', { address, loadedResources, loadedBuildings, timeDifferenceInSeconds, gainedResources });
+
+    const defaultResources = {
+      water: 250,
+      food: 250,
+      wood: 300,
+      stone: 100,
+      knowledge: 0,
+      population: 15,
+      coal: 0,
+      gold: 0,
+      military: 0,
+    };
+
+    const updatedResources = { ...defaultResources, ...(loadedResources || {}) };
+    setResources(updatedResources);
 
     if (!loadedBuildings) {
-      // Verwende initialBuildingsData aus BuildingsContext, wenn keine geladenen Gebäude vorhanden sind
       loadedBuildings = initialBuildingsData;
     }
 
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
+
+    const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
+    const formattedResources = Object.keys(gainedResources).length > 0
+      ? Object.entries(gainedResources).map(([resource, amount]) => `${Math.ceil(amount)} ${resource}`).join(', ')
+      : 'no resources';
+
+    console.log(`You were away for ${formattedTime} and produced ${formattedResources}.`);
+    setNotificationMessage(`You were away for ${formattedTime} and produced ${formattedResources}.`);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 10000);
   };
 
   const handleConnect = async (address) => {
@@ -64,9 +83,12 @@ function App() {
     const response = await fetch(`/api/loadGame?user_name=${address}`);
     if (response.ok) {
       const data = await response.json();
-      handleLogin(address, data.resources, data.buildings);
+      console.log('API response:', data);
+      console.log(`User ${address} was away for ${data.timeDifferenceInSeconds || 0} seconds.`);
+      console.log(`Resources gained by user ${address} during absence:`, data.gainedResources || {});
+      handleLogin(address, data.resources, data.buildings, data.timeDifferenceInSeconds || 0, data.gainedResources || {});
     } else {
-      handleLogin(address, null, null);
+      handleLogin(address, null, null, 0, {});
     }
   };
 
@@ -211,6 +233,11 @@ function App() {
                     />
                     <div className="content">
                       <Sidebar userAddress={userAddress} resources={resources} />
+                      {showNotification && (
+                        <div className="notification">
+                          {notificationMessage}
+                        </div>
+                      )}
                       {contractError ? (
                         <div className="error">
                           <p>{contractError}</p>

@@ -22,7 +22,7 @@ const initialBuildingsData = [
     id: 1,
     name: 'Lumberjack',
     image: lamberjackImage,
-    baseCost: { wood: 50, population: 1 },
+    baseCost: { wood: 50, stone: 10, coal: 10, population: 1 },
     baseProduction: { wood: 33 / 3600 }, // pro Sekunde
     baseBuildTime: 5,
     currentLevel: 0,
@@ -34,7 +34,7 @@ const initialBuildingsData = [
     id: 2,
     name: 'Stonemason',
     image: stonemasonImage,
-    baseCost: { wood: 50, population: 1 },
+    baseCost: { wood: 50, stone: 50, population: 1 },
     baseProduction: { stone: 29 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
@@ -46,7 +46,7 @@ const initialBuildingsData = [
     id: 3,
     name: 'Warehouse',
     image: warehouseImage,
-    baseCost: { wood: 50 },
+    baseCost: { wood: 60, stone: 150, population: 2 },
     baseCapacity: { water: 500, food: 500, wood: 500, stone: 500 },
     baseBuildTime: 3,
     currentLevel: 0,
@@ -58,7 +58,7 @@ const initialBuildingsData = [
     id: 4,
     name: 'House',
     image: houseImage,
-    baseCost: { wood: 50 },
+    baseCost: { wood: 50, stone: 50 },
     baseProduction: { population: 5 / 3600 }, // pro Sekunde
     baseCapacity: { population: 30 },
     baseBuildTime: 3,
@@ -83,7 +83,7 @@ const initialBuildingsData = [
     id: 6,
     name: 'Drawing well',
     image: drawingWellImage,
-    baseCost: { wood: 50, population: 1 },
+    baseCost: { wood: 50, stone: 35, population: 1 },
     baseProduction: { water: 40 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
@@ -95,8 +95,8 @@ const initialBuildingsData = [
     id: 7,
     name: 'Science',
     image: scienceBuildingImage,
-    baseCost: { wood: 1, population: 1 },
-    baseProduction: { knowledge: 10000 / 3600 }, // pro Sekunde
+    baseCost: { wood: 100, stone: 150, population: 1 },
+    baseProduction: { knowledge: 10 / 3600 }, // pro Sekunde
     baseCapacity: { knowledge: 200 },
     baseBuildTime: 3,
     currentLevel: 0,
@@ -108,7 +108,7 @@ const initialBuildingsData = [
     id: 8,
     name: 'Kohlemine',
     image: kohlemineImage,
-    baseCost: { wood: 50, population: 1 },
+    baseCost: { wood: 250, stone: 500, population: 5 },
     baseProduction: { coal: 15 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
@@ -120,7 +120,7 @@ const initialBuildingsData = [
     id: 9,
     name: 'Goldmine',
     image: goldmineImage,
-    baseCost: { wood: 50, population: 1 },
+    baseCost: { wood: 500, stone: 1000, population: 10 },
     baseProduction: { gold: 0.01 / 3600 }, // pro Sekunde
     baseBuildTime: 6,
     currentLevel: 0,
@@ -132,7 +132,7 @@ const initialBuildingsData = [
     id: 10,
     name: 'Barracks',
     image: militaryImage,
-    baseCost: { wood: 50, population: 5 },
+    baseCost: { wood: 50, stone: 50, population: 5 },
     baseCapacity: { military: 10 },
     baseBuildTime: 3,
     currentLevel: 0,
@@ -155,7 +155,7 @@ const initialBuildingsData = [
     id: 12,
     name: "Harbor",
     image: harborImage,
-    baseCost: { wood: 50, stone: 50, population: 5 },
+    baseCost: { wood: 150, stone: 150, population: 5 },
     baseBuildTime: 3,
     currentLevel: 0,
     description: "A bustling port providing access to the vast world of Ealdoria. Who knows what mysteries and opportunities lie beyond the horizon, waiting to be discovered by intrepid sailors?"
@@ -166,7 +166,7 @@ const initialBuildingsData = [
     id: 13,
     name: "Merchant",
     image: merchantImage,
-    baseCost: { wood: 50, stone: 50, population: 5 },
+    baseCost: { wood: 50, stone: 50, population: 1 },
     baseBuildTime: 3,
     currentLevel: 0,
     description: "A peculiar man gazes at you, his eyes filled with secrets. He knows all the hidden truths of Ealdoria. Where did he acquire all these mysterious wares? Only he knows."
@@ -204,6 +204,11 @@ const generateLevels = (building, maxLevel = 20) => {
     const production = building.baseProduction ? calculateProduction(building.baseProduction, level, 1.8) : null;
     const capacity = building.baseCapacity ? calculateCapacity(building.baseCapacity, level, 1.4) : null;
     const buildTime = Math.ceil(building.baseBuildTime * Math.pow(1.8, level));
+
+    // Füge spezielle Logik für Kohleproduktion hinzu
+    if (production && level >= 5 && building.baseProduction.coal) {
+      production.coal = building.baseProduction.coal * Math.pow(1.9, level - 5); // Beginne die Kohleproduktion ab Level 5
+    }
 
     levels.push({
       level,
