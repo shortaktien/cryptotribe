@@ -15,7 +15,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import StartPage from './components/StartPage';
 import useResources from './components/SetResources';
-import { BuildingsProvider } from './components/BuildingsContext';
+import { BuildingsProvider, initialBuildingsData } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
 import { DefenseProvider } from './components/DefenseContext';
@@ -50,10 +50,12 @@ function App() {
       setResources(updatedResources);
     }
 
-    if (loadedBuildings) {
-      setLoadedBuildings(loadedBuildings); // Set the loaded buildings state
+    if (!loadedBuildings) {
+      // Verwende initialBuildingsData aus BuildingsContext, wenn keine geladenen Gebäude vorhanden sind
+      loadedBuildings = initialBuildingsData;
     }
 
+    setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
   };
 

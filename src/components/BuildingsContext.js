@@ -356,4 +356,4 @@ const BuildingsProvider = ({
 };
 
 export const useBuildings = () => useContext(BuildingsContext);
-export { BuildingsProvider };
+export { BuildingsProvider, initialBuildingsData };
