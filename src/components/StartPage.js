@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './StartPage.css';
 
 const StartPage = ({ onConnect }) => {
+  const [loading, setLoading] = useState(false);
+
   const connectMetaMask = async () => {
     if (window.ethereum) {
       try {
+        setLoading(true); // Ladeanzeige anzeigen
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const address = accounts[0];
         console.log('MetaMask address:', address);
-  
+
         const saveResponse = await fetch('/api/saveData', {
           method: 'POST',
           headers: {
@@ -16,11 +19,11 @@ const StartPage = ({ onConnect }) => {
           },
           body: JSON.stringify({ address }),
         });
-  
+
         if (saveResponse.ok) {
           const saveMessage = await saveResponse.text();
           console.log(saveMessage);
-  
+
           const loadResponse = await fetch(`/api/loadGame?user_name=${address}`);
           if (loadResponse.ok) {
             const { resources, buildings } = await loadResponse.json();
@@ -35,6 +38,8 @@ const StartPage = ({ onConnect }) => {
         }
       } catch (error) {
         console.error('Error connecting to MetaMask:', error);
+      } finally {
+        setLoading(false); // Ladeanzeige ausblenden
       }
     } else {
       alert('MetaMask is not installed. Please install it to use this app.');
@@ -47,7 +52,10 @@ const StartPage = ({ onConnect }) => {
         <h1>Welcome to Cryptotribe</h1>
       </div>
       <div className="button-container">
-        <button onClick={connectMetaMask} className="connect-button">Mit MetaMask verbinden</button>
+        <button onClick={connectMetaMask} className={`connect-button ${loading ? 'loading' : ''}`}>
+          {loading ? 'Loading...' : 'Login with MetaMask'}
+          {loading && <div className="progress-bar"></div>}
+        </button>
         <button className="other-button">Button 2</button>
         <button className="other-button">Button 3</button>
         <button className="other-button">Button 4</button>

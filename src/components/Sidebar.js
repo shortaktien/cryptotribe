@@ -1,4 +1,3 @@
-// src/components/Sidebar.js
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { useBuildings } from './BuildingsContext';
@@ -19,6 +18,7 @@ import './App.css';
 
 const Sidebar = ({ userAddress, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [saving, setSaving] = useState(false); // Zustand für Ladeanimation
   const { buildings } = useBuildings();
   const navigate = useNavigate();
 
@@ -32,11 +32,13 @@ const Sidebar = ({ userAddress, resources }) => {
   };
 
   const handleSaveGame = async () => {
+    setSaving(true); // Ladeanimation anzeigen
     console.log('Saving game with:', { userAddress, resources, buildings });
     await saveGameProgress(userAddress, resources, buildings);
+    setSaving(false); // Ladeanimation ausblenden
   };
 
-  //Disable Buttons if Buildings not Build
+  // Disable Buttons if Buildings not Built
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
   const isBarracksBuilt = buildings.some(building => building.name === 'Barracks' && building.currentLevel > 0);
   const isFortresBuilt = buildings.some(building => building.name === "Fortifications" && building.currentLevel > 0);
@@ -98,8 +100,9 @@ const Sidebar = ({ userAddress, resources }) => {
             </Link>
           </li>
         </ul>
-        <button className="save-game-button" onClick={handleSaveGame}>
-          Save Game
+        <button className={`save-game-button ${saving ? 'saving' : ''}`} onClick={handleSaveGame}>
+          {saving ? 'Saving...' : 'Save Game'}
+          {saving && <div className="progress-bar"></div>}
         </button>
       </div>
       <div className="dropdown-menu">
