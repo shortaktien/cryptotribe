@@ -4,7 +4,7 @@ import { useMilitary } from './MilitaryContext';
 import { useDefense } from './DefenseContext';
 import { useShipyard } from './ShipyardContext';
 
-const MainContent = ({ getNetProductionRates }) => {
+const MainContent = ({ getNetProductionRates, capacityRates = {} }) => {
   const [netProduction, setNetProduction] = useState({});
   const { units: militaryUnits } = useMilitary();
   const { structures: defenseStructures } = useDefense();
@@ -13,7 +13,7 @@ const MainContent = ({ getNetProductionRates }) => {
   useEffect(() => {
     const updateNetProduction = () => {
       const rates = getNetProductionRates();
-      setNetProduction(rates);
+      setNetProduction(rates || {});
     };
 
     const intervalId = setInterval(updateNetProduction, 1000);
@@ -33,6 +33,11 @@ const MainContent = ({ getNetProductionRates }) => {
                     + defenseStructures.reduce((total, structure) => total + (structure.defense * (structure.count || 0)), 0)
                     + ships.reduce((total, ship) => total + (ship.defense * (ship.count || 0)), 0);
 
+                    useEffect(() => {
+                      console.log('Net Production:', netProduction);
+                      console.log('Capacity Rates:', capacityRates);
+                    }, [netProduction, capacityRates]);
+
   return (
     <div className="main-content-statistic">
       <div className="statistic">
@@ -42,6 +47,16 @@ const MainContent = ({ getNetProductionRates }) => {
             {Object.entries(netProduction).map(([resource, rate]) => (
               <li key={resource} className="production-item">
                 <span className="resource-name">{resource}</span>: <span className="resource-rate">{rate.toFixed(3)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="box">
+          <h2 className="title">Resource Capacities</h2>
+          <ul className="production-list">
+            {Object.entries(capacityRates).map(([resource, capacity]) => (
+              <li key={resource} className="production-item">
+                <span className="resource-name">{resource}</span>: <span className="resource-rate">{capacity}</span>
               </li>
             ))}
           </ul>

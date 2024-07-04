@@ -278,8 +278,8 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                       </div>
                     ) : (
                       <Routes>
-                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
-                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} />} />
+                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} />} />
                         <Route
                           path="/buildings"
                           element={

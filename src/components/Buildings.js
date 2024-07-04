@@ -109,6 +109,11 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     return Object.entries(cost).every(([resource, amount]) => resources[resource] >= amount);
   };
 
+  const canBuildBuilding = (building) => {
+    const nextLevelData = building.levels[building.currentLevel + 1];
+    return nextLevelData && canUpgrade(nextLevelData.cost);
+  };
+
   const renderResourceCost = (cost, highlight = false) => {
     return Object.entries(cost).map(([resource, amount], index, array) => {
       const hasEnough = resources[resource] >= amount;
@@ -134,7 +139,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
         <h2 className="section-title">{sectionTitle}</h2>
         <div className="circular-images">
           {sectionBuildings.map((building) => (
-            <div key={building.id} className="circular-image-wrapper" onClick={() => handleBuildingClick(building)}>
+            <div key={building.id} className={`circular-image-wrapper ${!canBuildBuilding(building) ? 'grayscale' : ''}`} onClick={() => handleBuildingClick(building)}>
               <img src={building.image} alt={building.name} className="circular-image" />
               <div className="level">{building.currentLevel}</div>
             </div>

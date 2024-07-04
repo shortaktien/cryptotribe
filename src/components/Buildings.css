@@ -19,6 +19,11 @@
   border-radius: 10px;
 }
 
+.grayscale {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}
+
 @media (min-width: 720px) {
   .blue-rectangle {
     position: sticky;

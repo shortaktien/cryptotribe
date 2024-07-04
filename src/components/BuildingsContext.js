@@ -184,7 +184,7 @@ const calculateCost = (baseCost, level, multiplier) => {
 const calculateProduction = (baseProduction, level, multiplier) => {
   const production = {};
   Object.keys(baseProduction).forEach(resource => {
-    production[resource] = baseProduction[resource] * Math.pow(multiplier, level); // Gebrochene Zahlen beibehalten
+    production[resource] = baseProduction[resource] * Math.pow(multiplier, level);
   });
   return production;
 };
@@ -204,19 +204,6 @@ const generateLevels = (building, maxLevel = 20) => {
     const production = building.baseProduction ? calculateProduction(building.baseProduction, level, 1.8) : null;
     const capacity = building.baseCapacity ? calculateCapacity(building.baseCapacity, level, 1.4) : null;
     const buildTime = Math.ceil(building.baseBuildTime * Math.pow(1.8, level));
-
-    // Entferne Kohlekosten und -produktion für Level unter 5
-    if (cost.coal && level < 5) {
-      delete cost.coal;
-    }
-
-    if (production && building.baseProduction.coal && level < 5) {
-      delete production.coal; // Entfernt Kohleproduktion für Levels unter 5
-    }
-
-    if (production && building.baseProduction.coal && level >= 5) {
-      production.coal = building.baseProduction.coal * Math.pow(1.9, level - 5); // Beginne die Kohleproduktion ab Level 5
-    }
 
     levels.push({
       level,
@@ -315,12 +302,6 @@ const BuildingsProvider = ({
     );
   };
 
-  useEffect(() => {
-    buildings.forEach(building => {
-      console.log(`${building.name}: Level ${building.currentLevel}`);
-    });
-  }, [buildings]);
-
   const demolishBuilding = (buildingId, resourceNames, resourceCosts) => {
     setBuildings(prevBuildings =>
       prevBuildings.map(building => {
@@ -333,21 +314,19 @@ const BuildingsProvider = ({
               currentLevel: prevLevel
             };
 
-            // Ressourcen zurückerstatten
             resourceNames.forEach((resource, index) => {
               refundResources({ [resource]: resourceCosts[index] });
             });
 
-            // Produktionsrate und Kapazität reduzieren
             if (currentLevelData.production) {
               Object.entries(currentLevelData.production).forEach(([resource, rate]) => {
-                updateProductionRate(resource, -rate); // Reduzierung der Produktionsrate
+                updateProductionRate(resource, -rate);
               });
             }
 
             if (currentLevelData.capacity) {
               Object.entries(currentLevelData.capacity).forEach(([resource, capacity]) => {
-                updateCapacityRates(resource, -capacity); // Reduzierung der Kapazitätsrate
+                updateCapacityRates(resource, -capacity);
               });
             }
 
@@ -360,32 +339,24 @@ const BuildingsProvider = ({
       })
     );
   };
-/*
+
   useEffect(() => {
-    buildings.forEach(building => {
-      console.log(`${building.name}: Level ${building.currentLevel}`);
-    });
+    const intervalId = setInterval(() => {
+      buildings.forEach(building => {
+        if (building.baseCapacity) {
+          console.log(`${building.name} Capacities:`, building.levels[building.currentLevel].capacity);
+        }
+      });
+    }, 2000);
+
+    return () => clearInterval(intervalId);
   }, [buildings]);
-*/
 
-useEffect(() => {
-  const intervalId = setInterval(() => {
-    buildings.forEach(building => {
-      if (building.baseCapacity) {
-        console.log(`${building.name} Capacities:`, building.levels[building.currentLevel].capacity);
-      }
-    });
-  }, 2000);
-
-  return () => clearInterval(intervalId);
-}, [buildings]);
-
-
-return (
-  <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding }}>
-    {children}
-  </BuildingsContext.Provider>
-);
+  return (
+    <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding }}>
+      {children}
+    </BuildingsContext.Provider>
+  );
 };
 
 export const useBuildings = () => useContext(BuildingsContext);

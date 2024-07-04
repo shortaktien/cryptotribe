@@ -18,6 +18,11 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [highlightedResources, setHighlightedResources] = useState({});
 
+  useEffect(() => {
+    // Konsolenausgabe, um die geladenen Ressourcen zu überprüfen
+    //console.log('Loaded resources in Header:', resources);
+  }, [resources]);
+
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
@@ -68,9 +73,11 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
           <div key={index} className={`resource ${highlightedResources[resource.name.toLowerCase()] || ''}`}>
             <div className="resource-container">
               <img src={resource.image} alt={resource.name} className="resource-icon" />
-              <div className="resource-tooltip">{resource.name}: {resource.value}/{resource.capacity}</div>
+              <div className="resource-tooltip">{resource.name}</div>
             </div>
-            <span className="resource-amount">{resource.value}/{resource.capacity}</span>
+            <span className={`resource-amount ${resource.value >= resource.capacity ? 'full' : ''}`}>
+              {resource.value}
+            </span>
           </div>
         ))}
       </div>

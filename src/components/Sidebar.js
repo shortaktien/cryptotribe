@@ -19,7 +19,7 @@ import './App.css';
 
 const Sidebar = ({ userAddress, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [saving, setSaving] = useState(false); // Zustand für Ladeanimation
+  const [saving, setSaving] = useState(false);
   const { buildings } = useBuildings();
   const { capacityRates } = useResources(); // Hier sicherstellen, dass capacityRates verwendet wird
   const navigate = useNavigate();
@@ -34,17 +34,14 @@ const Sidebar = ({ userAddress, resources }) => {
   };
 
   const handleSaveGame = async () => {
-    setSaving(true); // Ladeanimation anzeigen
+    setSaving(true); 
     const currentCapacities = capacityRates;
     console.log('Current capacities:', currentCapacities); // Hier die aktuellen Kapazitäten protokollieren
     console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities });
     await saveGameProgress(userAddress, resources, buildings, currentCapacities);
-    setSaving(false); // Ladeanimation ausblenden
+    setSaving(false);
   };
-  
-  
 
-  // Disable Buttons if Buildings not Built
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
   const isBarracksBuilt = buildings.some(building => building.name === 'Barracks' && building.currentLevel > 0);
   const isFortresBuilt = buildings.some(building => building.name === "Fortifications" && building.currentLevel > 0);
