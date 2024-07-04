@@ -47,7 +47,7 @@ const initialBuildingsData = [
     name: 'Warehouse',
     image: warehouseImage,
     baseCost: { wood: 60, stone: 150, population: 2 },
-    baseCapacity: { water: 500, food: 500, wood: 500, stone: 500 },
+    baseCapacity: { water: 500, food: 500, wood: 500, stone: 500, coal: 500, gold: 500 },
     baseBuildTime: 3,
     currentLevel: 0,
     description: 'A fortified storage facility to safeguard your resources. Protecting your supplies from the marauding Skarn Raiders is crucial for sustaining your realms growth and ensuring a steady flow of materials.'
@@ -281,11 +281,11 @@ const BuildingsProvider = ({
                         }
                         if (nextLevelData.capacity) {
                           Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
-                            updateCapacityRates(resource, capacity);
+                            updateCapacityRates(resource, capacity, true);
                           });
                         }
                         if (building.name === 'Barracks') {
-                          updateCapacityRates('maxMilitaryCapacity', nextLevelData.capacity.military);
+                          updateCapacityRates('maxMilitaryCapacity', nextLevelData.capacity.military, true);
                         }
                         return newBuilding;
                       }

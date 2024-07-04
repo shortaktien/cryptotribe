@@ -25,7 +25,7 @@ import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
 
 function App() {
-  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources } = useResources();
+  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates } = useResources(); // Hier sicherstellen, dass setCapacityRates importiert wird
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [web3, setWeb3] = useState(null);
@@ -42,9 +42,9 @@ function App() {
     return `${Math.floor(seconds / 86400)} days`;
   };
 
-  const handleLogin = (address, loadedResources, loadedBuildings, timeDifferenceInSeconds = 0, gainedResources = {}) => {
-    console.log('handleLogin called with:', { address, loadedResources, loadedBuildings, timeDifferenceInSeconds, gainedResources });
-
+  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}) => {
+    console.log('handleLogin called with:', { address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds, gainedResources });
+  
     const defaultResources = {
       water: 250,
       food: 250,
@@ -56,28 +56,44 @@ function App() {
       gold: 0,
       military: 0,
     };
-
+  
     const updatedResources = { ...defaultResources, ...(loadedResources || {}) };
     setResources(updatedResources);
-
+  
+    if (!loadedCapacities) {
+      loadedCapacities = {
+        water: 500,
+        food: 500,
+        wood: 500,
+        stone: 500,
+        knowledge: 100,
+        population: 15,
+        coal: 500,
+        gold: 500,
+        military: 0,
+        maxMilitaryCapacity: 0
+      };
+    }
+    setCapacityRates(loadedCapacities);
+  
     if (!loadedBuildings) {
       loadedBuildings = initialBuildingsData;
     }
-
+  
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
-
+  
     const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
     const formattedResources = Object.keys(gainedResources).length > 0
       ? Object.entries(gainedResources).map(([resource, amount]) => `${Math.ceil(amount)} ${resource}`).join(', ')
       : 'no resources';
-
+  
     console.log(`You were away for ${formattedTime} and produced ${formattedResources}.`);
     setNotificationMessage(`You were away for ${formattedTime} and produced ${formattedResources}.`);
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 10000);
   };
-
+  
   const handleConnect = async (address) => {
     setUserAddress(address);
     const response = await fetch(`/api/loadGame?user_name=${address}`);
@@ -86,9 +102,9 @@ function App() {
       console.log('API response:', data);
       console.log(`User ${address} was away for ${data.timeDifferenceInSeconds || 0} seconds.`);
       console.log(`Resources gained by user ${address} during absence:`, data.gainedResources || {});
-      handleLogin(address, data.resources, data.buildings, data.timeDifferenceInSeconds || 0, data.gainedResources || {});
+      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {});
     } else {
-      handleLogin(address, null, null, 0, {});
+      handleLogin(address, null, null, null, 0, {});
     }
   };
 

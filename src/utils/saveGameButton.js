@@ -1,12 +1,12 @@
-const saveGameProgress = async (userAddress, resources, buildings) => {
+const saveGameProgress = async (userAddress, resources, buildings, capacities) => {
   try {
-    console.log('Saving game progress with:', { userAddress, resources, buildings }); // Debugging-Informationen
+    console.log('Saving game progress with:', { userAddress, resources, buildings, capacities }); // Debugging-Informationen
     const response = await fetch('/api/saveGame', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user_name: userAddress, resources, buildings }),
+      body: JSON.stringify({ user_name: userAddress, resources, buildings, capacities }),
     });
 
     if (response.ok) {

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { useBuildings } from './BuildingsContext';
+import useResources from './SetResources';
 import saveGameProgress from '../utils/saveGameButton';
 
 import allianceImage from "../assets/allianceImage.webp";
@@ -20,6 +21,7 @@ const Sidebar = ({ userAddress, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [saving, setSaving] = useState(false); // Zustand für Ladeanimation
   const { buildings } = useBuildings();
+  const { capacityRates } = useResources(); // Hier sicherstellen, dass capacityRates verwendet wird
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -33,10 +35,12 @@ const Sidebar = ({ userAddress, resources }) => {
 
   const handleSaveGame = async () => {
     setSaving(true); // Ladeanimation anzeigen
-    console.log('Saving game with:', { userAddress, resources, buildings });
-    await saveGameProgress(userAddress, resources, buildings);
+    const currentCapacities = capacityRates;
+    console.log('Current capacities:', currentCapacities); // Hier Konsolenausgabe zur Überprüfung
+    await saveGameProgress(userAddress, resources, buildings, currentCapacities);
     setSaving(false); // Ladeanimation ausblenden
   };
+  
 
   // Disable Buttons if Buildings not Built
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
@@ -84,8 +88,8 @@ const Sidebar = ({ userAddress, resources }) => {
               <img src={militaryImage} alt="Military" className="sidebar-icon" /> Military
             </Link>
           </li>
-          <li className={isBarracksBuilt ? '' : 'disabled'}>
-            <Link to="/world" className={`sidebar-link ${isBarracksBuilt ? '' : 'disabled-link'}`}>
+          <li>
+            <Link to="/world" className="sidebar-link">
               <img src={worldImage} alt="World" className="sidebar-icon" /> World
             </Link>
           </li>

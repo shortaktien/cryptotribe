@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
     }
     console.log('Resources query result:', resourcesResult.rows[0]);
 
-    const buildingsQuery = 'SELECT buildings FROM building_progress WHERE user_name = $1';
+    const buildingsQuery = 'SELECT buildings, capacities FROM building_progress WHERE user_name = $1';
     const buildingsValues = [user_name];
     const buildingsResult = await client.query(buildingsQuery, buildingsValues);
 
@@ -37,10 +37,10 @@ module.exports = async (req, res) => {
       console.log('User not found in building_progress');
       return res.status(404).json({ error: 'User not found in building_progress' });
     }
-    console.log('Buildings query result:', buildingsResult.rows[0]);
+    console.log('Buildings and capacities query result:', buildingsResult.rows[0]);
 
     const { resources, updated_at } = resourcesResult.rows[0];
-    const buildings = buildingsResult.rows[0].buildings;
+    const { buildings, capacities } = buildingsResult.rows[0];
 
     const currentTime = new Date();
     const lastUpdateTime = new Date(updated_at);
@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
     // Ausgabe der gewonnenen Ressourcen in der Konsole
     console.log(`Resources gained by user ${user_name} during absence:`, gainedResources);
 
-    res.status(200).json({ resources: updatedResources, buildings });
+    res.status(200).json({ resources: updatedResources, buildings, capacities, timeDifferenceInSeconds, gainedResources });
   } catch (error) {
     console.error('Error loading game progress:', error);
     res.status(500).json({ error: 'Internal Server Error' });
