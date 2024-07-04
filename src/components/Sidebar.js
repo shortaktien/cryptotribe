@@ -36,10 +36,12 @@ const Sidebar = ({ userAddress, resources }) => {
   const handleSaveGame = async () => {
     setSaving(true); // Ladeanimation anzeigen
     const currentCapacities = capacityRates;
-    console.log('Current capacities:', currentCapacities); // Hier Konsolenausgabe zur Überprüfung
+    console.log('Current capacities:', currentCapacities); // Hier die aktuellen Kapazitäten protokollieren
+    console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities });
     await saveGameProgress(userAddress, resources, buildings, currentCapacities);
     setSaving(false); // Ladeanimation ausblenden
   };
+  
   
 
   // Disable Buttons if Buildings not Built

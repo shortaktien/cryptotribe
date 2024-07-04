@@ -116,7 +116,7 @@ const useResources = () => {
   const updateCapacityRates = (resource, amount) => {
     setCapacityRates(prevCapacityRates => ({
       ...prevCapacityRates,
-      [resource]: (prevCapacityRates[resource] || 0) + amount
+      [resource]: amount // Direkt auf den neuen Wert setzen
     }));
 
     if (resource === 'military') {

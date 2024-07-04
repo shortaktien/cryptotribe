@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import Buildings from './components/Buildings';
@@ -24,8 +24,30 @@ import { ShipyardProvider } from './components/ShipyardContext';
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
 
-function App() {
-  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates } = useResources(); // Hier sicherstellen, dass setCapacityRates importiert wird
+function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAddressChange = async () => {
+      if (window.ethereum) {
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        const currentAddress = accounts[0];
+
+        if (currentAddress !== userAddress) {
+          setIsConnected(false);
+          setUserAddress('');
+          navigate('/');
+        }
+      }
+    };
+
+    const interval = setInterval(checkAddressChange, 1000); // Überprüft die Adresse alle 1 Sekunde
+
+    return () => clearInterval(interval); // Bereinigt das Intervall beim Unmounting der Komponente
+  }, [userAddress, navigate, setIsConnected, setUserAddress]);
+}
+
+function AppContent({ resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates }) {
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [web3, setWeb3] = useState(null);
@@ -34,6 +56,8 @@ function App() {
   const [loadedBuildings, setLoadedBuildings] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
+  
+  useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
   const formatTimeDifference = (seconds) => {
     if (seconds < 60) return `${seconds} seconds`;
@@ -213,135 +237,155 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="app">
-        {isConnected ? (
-          <BuildingsProvider
-            initialBuildings={loadedBuildings}
+    <div className="app">
+      {isConnected ? (
+        <BuildingsProvider
+          initialBuildings={loadedBuildings}
+          spendResources={spendResources}
+          updateProductionRate={updateProductionRate}
+          updateCapacityRates={updateCapacityRates}
+          refundResources={updatePopulation}
+        >
+          <ResearchProvider
             spendResources={spendResources}
-            updateProductionRate={updateProductionRate}
-            updateCapacityRates={updateCapacityRates}
-            refundResources={updatePopulation}
+            updateResearchEffects={updateResearchEffects}
           >
-            <ResearchProvider
+            <MilitaryProvider
               spendResources={spendResources}
-              updateResearchEffects={updateResearchEffects}
+              updateCapacityRates={updateCapacityRates}
+              refundResources={refundResources}
             >
-              <MilitaryProvider
+              <DefenseProvider
                 spendResources={spendResources}
                 updateCapacityRates={updateCapacityRates}
                 refundResources={refundResources}
               >
-                <DefenseProvider
+                <ShipyardProvider
                   spendResources={spendResources}
                   updateCapacityRates={updateCapacityRates}
                   refundResources={refundResources}
                 >
-                  <ShipyardProvider
-                    spendResources={spendResources}
-                    updateCapacityRates={updateCapacityRates}
-                    refundResources={refundResources}
-                  >
-                    <Header
-                      userAddress={userAddress}
-                      resources={resources}
-                      capacityRates={capacityRates}
-                    />
-                    <div className="content">
-                      <Sidebar userAddress={userAddress} resources={resources} />
-                      {showNotification && (
-                        <div className="notification">
-                          {notificationMessage}
-                        </div>
-                      )}
-                      {contractError ? (
-                        <div className="error">
-                          <p>{contractError}</p>
-                        </div>
-                      ) : (
-                        <Routes>
-                          <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
-                          <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
-                          <Route
-                            path="/buildings"
-                            element={
-                              <Buildings
-                                resources={resources}
-                                spendResources={spendResources}
-                                updateProductionRate={updateProductionRate}
-                                updateCapacityRates={updateCapacityRates}
-                                handleUpgradeBuilding={handleUpgradeBuilding}
-                                handleDemolishBuilding={handleUpgradeResearch}
-                              />
-                            }
-                          />
-                          <Route
-                            path="/research"
-                            element={
-                              <Research
-                                resources={resources}
-                                spendResources={spendResources}
-                                updateResearchEffects={updateResearchEffects}
-                                handleUpgradeResearch={handleUpgradeResearch}
-                              />
-                            }
-                          />
-                          <Route path="/merchant" element={
-                            <Merchant
+                  <Header
+                    userAddress={userAddress}
+                    resources={resources}
+                    capacityRates={capacityRates}
+                  />
+                  <div className="content">
+                    <Sidebar userAddress={userAddress} resources={resources} />
+                    {showNotification && (
+                      <div className="notification">
+                        {notificationMessage}
+                      </div>
+                    )}
+                    {contractError ? (
+                      <div className="error">
+                        <p>{contractError}</p>
+                      </div>
+                    ) : (
+                      <Routes>
+                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} />} />
+                        <Route
+                          path="/buildings"
+                          element={
+                            <Buildings
                               resources={resources}
                               spendResources={spendResources}
-                              refundResources={refundResources}
+                              updateProductionRate={updateProductionRate}
+                              updateCapacityRates={updateCapacityRates}
+                              handleUpgradeBuilding={handleUpgradeBuilding}
+                              handleDemolishBuilding={handleUpgradeResearch}
                             />
-                          } />
-                          <Route path="/shipyard" element={
-                            <Shipyard
+                          }
+                        />
+                        <Route
+                          path="/research"
+                          element={
+                            <Research
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateResearchEffects={updateResearchEffects}
+                              handleUpgradeResearch={handleUpgradeResearch}
+                            />
+                          }
+                        />
+                        <Route path="/merchant" element={
+                          <Merchant
+                            resources={resources}
+                            spendResources={spendResources}
+                            refundResources={refundResources}
+                          />
+                        } />
+                        <Route path="/shipyard" element={
+                          <Shipyard
+                            resources={resources}
+                            spendResources={spendResources}
+                            updateCapacityRates={updateCapacityRates}
+                            handleBuildShip={handleBuildShip}
+                            handleScrapShip={handleScrapShip}
+                          />
+                        } />
+                        <Route
+                          path="/defence"
+                          element={
+                            <Defence
                               resources={resources}
                               spendResources={spendResources}
                               updateCapacityRates={updateCapacityRates}
-                              handleBuildShip={handleBuildShip}
-                              handleScrapShip={handleScrapShip}
+                              handleBuildDefense={handleBuildDefense}
+                              handleDemolishDefense={handleDemolishDefense}
                             />
-                          } />
-                          <Route
-                            path="/defence"
-                            element={
-                              <Defence
-                                resources={resources}
-                                spendResources={spendResources}
-                                updateCapacityRates={updateCapacityRates}
-                                handleBuildDefense={handleBuildDefense}
-                                handleDemolishDefense={handleDemolishDefense}
-                              />
-                            }
-                          />
-                          <Route
-                            path="/military"
-                            element={
-                              <Military
-                                resources={resources}
-                                spendResources={spendResources}
-                                updateCapacityRates={updateCapacityRates}
-                                handleTrainUnit={handleTrainUnit}
-                                handleDisbandUnit={handleDisbandUnit}
-                              />
-                            }
-                          />
-                          <Route path="/world" element={<World />} />
-                          <Route path="/alliance" element={<Alliance />} />
-                          <Route path="/shop" element={<Shop />} />
-                        </Routes>
-                      )}
-                    </div>
-                    <Footer />
-                  </ShipyardProvider>
-                </DefenseProvider>
-              </MilitaryProvider>
-            </ResearchProvider>
-          </BuildingsProvider>
-        ) : (
-          <StartPage onConnect={handleConnect} />
-        )}
-      </div>
+                          }
+                        />
+                        <Route
+                          path="/military"
+                          element={
+                            <Military
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateCapacityRates={updateCapacityRates}
+                              handleTrainUnit={handleTrainUnit}
+                              handleDisbandUnit={handleDisbandUnit}
+                            />
+                          }
+                        />
+                        <Route path="/world" element={<World />} />
+                        <Route path="/alliance" element={<Alliance />} />
+                        <Route path="/shop" element={<Shop />} />
+                      </Routes>
+                    )}
+                  </div>
+                  <Footer />
+                </ShipyardProvider>
+              </DefenseProvider>
+            </MilitaryProvider>
+          </ResearchProvider>
+        </BuildingsProvider>
+      ) : (
+        <StartPage onConnect={handleConnect} />
+      )}
+    </div>
+  );
+}
+
+function App() {
+  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates } = useResources(); // Hier sicherstellen, dass setCapacityRates importiert wird
+
+  return (
+    <Router>
+      <AppContent
+        resources={resources}
+        setResources={setResources}
+        updateProductionRate={updateProductionRate}
+        spendResources={spendResources}
+        updateCapacityRates={updateCapacityRates}
+        updatePopulation={updatePopulation}
+        updateResearchEffects={updateResearchEffects}
+        capacityRates={capacityRates}
+        getNetProductionRates={getNetProductionRates}
+        refundResources={refundResources}
+        setCapacityRates={setCapacityRates}
+      />
     </Router>
   );
 }
