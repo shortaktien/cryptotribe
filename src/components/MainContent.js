@@ -33,10 +33,7 @@ const MainContent = ({ getNetProductionRates, capacityRates = {} }) => {
                     + defenseStructures.reduce((total, structure) => total + (structure.defense * (structure.count || 0)), 0)
                     + ships.reduce((total, ship) => total + (ship.defense * (ship.count || 0)), 0);
 
-                    useEffect(() => {
-                      console.log('Net Production:', netProduction);
-                      console.log('Capacity Rates:', capacityRates);
-                    }, [netProduction, capacityRates]);
+                
 
   return (
     <div className="main-content-statistic">

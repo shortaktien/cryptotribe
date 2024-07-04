@@ -345,7 +345,7 @@ const BuildingsProvider = ({
       })
     );
   };
-
+/*
   useEffect(() => {
     const intervalId = setInterval(() => {
       buildings.forEach(building => {
@@ -357,7 +357,7 @@ const BuildingsProvider = ({
 
     return () => clearInterval(intervalId);
   }, [buildings]);
-
+*/
   return (
     <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding }}>
       {children}

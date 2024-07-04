@@ -136,9 +136,9 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
         setUserAddress(accounts[0]);
         const contractInstance = await getContract(web3Instance);
         setContract(contractInstance);
-        console.log('Web3 and contract initialized:', { web3Instance, contractInstance });
+        //console.log('Web3 and contract initialized:', { web3Instance, contractInstance });
       } catch (error) {
-        console.error('Error initializing web3 or contract:', error);
+        //console.error('Error initializing web3 or contract:', error);
         setContractError(error.message);
       }
     };
@@ -147,12 +147,12 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
 
   const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts) => {
     if (!contract) {
-      console.error('Contract not initialized');
+      //console.error('Contract not initialized');
       return;
     }
 
     if (!userAddress) {
-      console.error('User address not initialized');
+      //console.error('User address not initialized');
       return;
     }
 
@@ -161,24 +161,24 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     });
 
     if (!hasEnoughResources) {
-      console.error('Not enough resources');
+      //console.error('Not enough resources');
       return;
     }
 
     try {
-      console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
+      //console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
       await sendTransaction(web3, userAddress, contract, 'upgradeBuilding', [buildingId, resourceNames, resourceCosts]);
     } catch (error) {
-      console.error('Error upgrading building:', error);
+      //console.error('Error upgrading building:', error);
       if (error.data) {
-        console.error('Error data: ', error.data);
+        //console.error('Error data: ', error.data);
       }
     }
   };
 
   const handleUpgradeResearch = async (researchId, cost) => {
     if (!contract) {
-      console.error('Contract not initialized');
+      //console.error('Contract not initialized');
       return;
     }
 
@@ -192,43 +192,43 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     });
 
     if (!hasEnoughResources) {
-      console.error('Not enough resources');
+      //console.error('Not enough resources');
       return;
     }
 
     try {
-      console.log('Sending transaction with the following parameters:', { researchId, cost });
+      //console.log('Sending transaction with the following parameters:', { researchId, cost });
       await sendTransaction(web3, userAddress, contract, 'upgradeResearch', [researchId, Object.keys(cost), Object.values(cost)]);
     } catch (error) {
-      console.error('Error upgrading research:', error);
+      //console.error('Error upgrading research:', error);
       if (error.data) {
-        console.error('Error data: ', error.data);
+        //console.error('Error data: ', error.data);
       }
     }
   };
 
   const handleTrainUnit = async (unitId) => {
-    console.log(`Train unit with id ${unitId}`);
+    //console.log(`Train unit with id ${unitId}`);
   };
 
   const handleDisbandUnit = async (unitId) => {
-    console.log(`Disband unit with id ${unitId}`);
+    //console.log(`Disband unit with id ${unitId}`);
   };
 
   const handleBuildDefense = async (structureId) => {
-    console.log(`Build defense structure with id ${structureId}`);
+    //console.log(`Build defense structure with id ${structureId}`);
   };
 
   const handleDemolishDefense = async (structureId) => {
-    console.log(`Demolish defense structure with id ${structureId}`);
+    //console.log(`Demolish defense structure with id ${structureId}`);
   };
 
   const handleBuildShip = async (shipId) => {
-    console.log(`Build ship with id ${shipId}`);
+    //console.log(`Build ship with id ${shipId}`);
   };
 
   const handleScrapShip = async (shipId) => {
-    console.log(`Scrap ship with id ${shipId}`);
+    //console.log(`Scrap ship with id ${shipId}`);
   };
 
   return (
