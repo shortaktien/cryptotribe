@@ -115,7 +115,9 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
   };
 
   const renderResourceCost = (cost, highlight = false) => {
-    return Object.entries(cost).map(([resource, amount], index, array) => {
+    return Object.entries(cost)
+      .filter(([resource, amount]) => amount > 0)
+      .map(([resource, amount], index, array) => {
       const hasEnough = resources[resource] >= amount;
       const style = highlight ? {
         color: hasEnough ? 'green' : 'red',

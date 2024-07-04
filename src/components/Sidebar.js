@@ -21,7 +21,7 @@ const Sidebar = ({ userAddress, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [saving, setSaving] = useState(false);
   const { buildings } = useBuildings();
-  const { capacityRates } = useResources(); // Hier sicherstellen, dass capacityRates verwendet wird
+  const { capacityRates } = useResources();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -36,7 +36,7 @@ const Sidebar = ({ userAddress, resources }) => {
   const handleSaveGame = async () => {
     setSaving(true); 
     const currentCapacities = capacityRates;
-    console.log('Current capacities:', currentCapacities); // Hier die aktuellen Kapazitäten protokollieren
+    console.log('Current capacities:', currentCapacities);
     console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities });
     await saveGameProgress(userAddress, resources, buildings, currentCapacities);
     setSaving(false);

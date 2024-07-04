@@ -176,10 +176,16 @@ const initialBuildingsData = [
 const calculateCost = (baseCost, level, multiplier) => {
   const cost = {};
   Object.keys(baseCost).forEach(resource => {
-    cost[resource] = Math.ceil(baseCost[resource] * Math.pow(multiplier, level));
+    // Kohle nur ab Level 5 hinzufügen
+    if (resource === 'coal' && level < 5) {
+      cost[resource] = 0; // Kein Kohleverbrauch vor Level 5
+    } else {
+      cost[resource] = Math.ceil(baseCost[resource] * Math.pow(multiplier, level));
+    }
   });
   return cost;
 };
+
 
 const calculateProduction = (baseProduction, level, multiplier) => {
   const production = {};

@@ -16,10 +16,10 @@ const useResources = () => {
   const [productionRates, setProductionRates] = useState({
     water: 40 / 3600,
     food: 35 / 3600,
-    wood: 33 /3600,
-    stone: 29 /3600,
+    wood: 33 / 3600,
+    stone: 29 / 3600,
     knowledge: 1 / 3600, 
-    population: 1 /3600,
+    population: 1 / 3600,
     coal: 15 / 3600,
     gold: 0.01 / 3600
   });
@@ -116,7 +116,7 @@ const useResources = () => {
   const updateCapacityRates = (resource, amount) => {
     setCapacityRates(prevCapacityRates => ({
       ...prevCapacityRates,
-      [resource]: amount // Direkt auf den neuen Wert setzen
+      [resource]: amount
     }));
 
     if (resource === 'military') {
