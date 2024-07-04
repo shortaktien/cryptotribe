@@ -45,7 +45,7 @@ function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
 
     return () => clearInterval(interval); // Bereinigt das Intervall beim Unmounting der Komponente
   }, [userAddress, navigate, setIsConnected, setUserAddress]);
-}
+};
 
 function AppContent({ resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates }) {
   const [isConnected, setIsConnected] = useState(false);
@@ -67,8 +67,6 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
   };
 
   const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}) => {
-    console.log('handleLogin called with:', { address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds, gainedResources });
-  
     const defaultResources = {
       water: 250,
       food: 250,
@@ -123,9 +121,6 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     const response = await fetch(`/api/loadGame?user_name=${address}`);
     if (response.ok) {
       const data = await response.json();
-      console.log('API response:', data);
-      console.log(`User ${address} was away for ${data.timeDifferenceInSeconds || 0} seconds.`);
-      console.log(`Resources gained by user ${address} during absence:`, data.gainedResources || {});
       handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {});
     } else {
       handleLogin(address, null, null, null, 0, {});

@@ -1,4 +1,3 @@
-// src/components/Header.js
 import React, { useState, useEffect, useMemo } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 
@@ -18,11 +17,6 @@ import "./App.css";
 const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates, resourceChanges = {} }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [highlightedResources, setHighlightedResources] = useState({});
-
-  // Konsolenausgabe, um die geladenen Ressourcen zu überprüfen
-  useEffect(() => {
-    //console.log('Loaded resources in Header:', resources);
-  }, [resources]);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
