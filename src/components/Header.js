@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 import foodImage from '../assets/foodImage.webp';
 import populationImage from '../assets/populationImage.webp';
@@ -92,6 +93,9 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
             <p>Address: {userAddress}</p>
             <p>Balance: {userBalance}</p>
             <p>Name: {userName}</p>
+            <Link to="/settings">
+              <button onClick={closeDropdown}>Settings</button>
+            </Link>
           </div>
         )}
       </div>
