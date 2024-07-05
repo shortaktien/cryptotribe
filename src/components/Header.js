@@ -15,7 +15,7 @@ import militaryImage from "../assets/militaryRessourceImage.webp";
 
 import "./header.css";
 
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates, resourceChanges = {} }) => {
+const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates, resourceChanges = {}, nickname }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [highlightedResources, setHighlightedResources] = useState({});
 
@@ -89,15 +89,15 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
           <FaUserCircle size={40} onClick={toggleDropdown} />
         )}
         {dropdownVisible && (
-          <div className="dropdown" onClick={closeDropdown}>
-            <p>Address: {userAddress}</p>
-            <p>Balance: {userBalance}</p>
-            <p>Name: {userName}</p>
-            <Link to="/settings">
-              <button onClick={closeDropdown}>Settings</button>
-            </Link>
-          </div>
-        )}
+  <div className="dropdown" onClick={closeDropdown}>
+    <p>Address: {userAddress}</p>
+    <p>Balance: {userBalance}</p>
+    <p>Name: {nickname || userName}</p> {/* Display nickname if available */}
+    <Link to="/settings">
+      <button onClick={closeDropdown}>Settings</button>
+    </Link>
+  </div>
+)}
       </div>
     </div>
   );
