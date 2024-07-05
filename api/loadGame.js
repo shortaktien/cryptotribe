@@ -8,6 +8,22 @@ const calculateCapacity = (baseCapacity, level, multiplier) => {
   return capacity;
 };
 
+const calculateProductionWithinCapacity = (currentResources, gainedResources, capacities) => {
+  const updatedResources = { ...currentResources };
+  const finalGainedResources = { ...gainedResources };
+
+  Object.keys(gainedResources).forEach(resource => {
+    if (updatedResources[resource] + gainedResources[resource] > capacities[resource]) {
+      finalGainedResources[resource] = capacities[resource] - updatedResources[resource];
+      updatedResources[resource] = capacities[resource];
+    } else {
+      updatedResources[resource] += gainedResources[resource];
+    }
+  });
+
+  return { updatedResources, finalGainedResources };
+};
+
 module.exports = async (req, res) => {
   const { user_name } = req.query;
 
@@ -75,17 +91,13 @@ module.exports = async (req, res) => {
     console.log(`User ${user_name} was away for ${timeDifferenceInSeconds} seconds.`);
 
     // Berechne die neuen Ressourcen basierend auf der verstrichenen Zeit und der Produktionsrate der Gebäude
-    const updatedResources = { ...resources };
     const gainedResources = {};
-
-    // Produktionsraten basierend auf den Gebäuden berechnen
     buildings.forEach(building => {
       if (building.currentLevel > 0) {
         const productionRate = building.levels[building.currentLevel].production;
         if (productionRate) {
           Object.keys(productionRate).forEach(resource => {
             const gained = productionRate[resource] * timeDifferenceInSeconds;
-            updatedResources[resource] = (updatedResources[resource] || 0) + gained;
             gainedResources[resource] = (gainedResources[resource] || 0) + gained;
           });
         }
@@ -95,7 +107,10 @@ module.exports = async (req, res) => {
     // Ausgabe der gewonnenen Ressourcen in der Konsole
     console.log(`Resources gained by user ${user_name} during absence:`, gainedResources);
 
-    res.status(200).json({ resources: updatedResources, buildings, capacities, timeDifferenceInSeconds, gainedResources });
+    // Begrenzung der Produktionsmenge auf die Kapazitätsgrenzen
+    const { updatedResources, finalGainedResources } = calculateProductionWithinCapacity(resources, gainedResources, capacities);
+
+    res.status(200).json({ resources: updatedResources, buildings, capacities, timeDifferenceInSeconds, gainedResources: finalGainedResources });
   } catch (error) {
     console.error('Error loading game progress:', error);
     res.status(500).json({ error: 'Internal Server Error' });
