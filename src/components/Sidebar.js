@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useBuildings } from './BuildingsContext';
 import useResources from './SetResources';
 import saveGameProgress from '../utils/saveGameButton';
-
 import allianceImage from "../assets/allianceImage.webp";
 import buildingsImage from "../assets/buildingsImage.webp";
 import defenceImage from "../assets/defenceImage.webp";
@@ -14,10 +13,9 @@ import researchImage from "../assets/researchImage.webp";
 import shipyardImage from "../assets/shipyardImage.webp";
 import shopImage from "../assets/shopImage.webp";
 import worldImage from "../assets/worldImage.webp";
-
 import './sidebar.css';
 
-const Sidebar = ({ userAddress, resources }) => {
+const Sidebar = ({ userAddress, resources, economicPoints }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false); // Neu hinzugefügt
@@ -39,8 +37,8 @@ const Sidebar = ({ userAddress, resources }) => {
     setSaveSuccess(false); // Setze den Erfolg auf false, wenn das Speichern beginnt
     const currentCapacities = capacityRates;
     console.log('Current capacities:', currentCapacities);
-    console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities });
-    await saveGameProgress(userAddress, resources, buildings, currentCapacities);
+    console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities, economic_points: economicPoints });
+    await saveGameProgress(userAddress, resources, buildings, currentCapacities, economicPoints);
     setSaving(false);
     setSaveSuccess(true); // Setze den Erfolg auf true, wenn das Speichern erfolgreich ist
     setTimeout(() => setSaveSuccess(false), 3000); // Zurücksetzen des Erfolgsstatus nach 3 Sekunden

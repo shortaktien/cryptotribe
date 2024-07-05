@@ -59,6 +59,8 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
+  const [economicPoints, setEconomicPoints] = useState(0); // Neuer State für wirtschaftliche Punkte
+
   
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
@@ -69,7 +71,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     return `${Math.floor(seconds / 86400)} days`;
   };
 
-  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '') => {
+  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '', economic_points = 0) => {
     const defaultResources = {
       water: 250,
       food: 250,
@@ -108,6 +110,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
     setNickname(nickname); // Set the nickname here
+    setEconomicPoints(economic_points);
   
     const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
     const formattedResources = Object.keys(gainedResources).length > 0
@@ -125,7 +128,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     const response = await fetch(`/api/loadGame?user_name=${address}`);
     if (response.ok) {
       const data = await response.json();
-      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname);
+      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname, data.economic_points);
       if (!data.nickname) {
         setShowNicknamePrompt(true); // Zeige die Benachrichtigung, wenn kein Nickname existiert
       } else {
@@ -277,7 +280,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                     capacityRates={capacityRates}
                   />
                   <div className="content">
-                    <Sidebar userAddress={userAddress} resources={resources} />
+                    <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} />
                     {showNotification && (
                       <div className="notification-container">
                         <div className="notification">
@@ -296,8 +299,8 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                       </div>
                     ) : (
                       <Routes>
-                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} />} />
-                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} />} />
+                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
+                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
                         <Route
                           path="/buildings"
                           element={
@@ -399,6 +402,7 @@ function App() {
         getNetProductionRates={getNetProductionRates}
         refundResources={refundResources}
         setCapacityRates={setCapacityRates}
+        
       />
     </Router>
   );

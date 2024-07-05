@@ -1,54 +1,60 @@
 const { Client } = require('pg');
 
 module.exports = async (req, res) => {
-  console.log('Received request:', req.body); // Logging request body
-  const { user_name, resources, buildings, capacities } = req.body;
+  const { userAddress, resources, buildings, capacities, economic_points } = req.body;
 
-  if (!user_name || !resources || !buildings || !capacities) {
-    console.error('Missing user_name, resources, buildings, or capacities');
-    return res.status(400).json({ error: 'User name, resources, buildings, and capacities are required' });
+  if (!userAddress || !resources || !buildings || !capacities || economic_points === undefined) {
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
   const client = new Client({
     connectionString: process.env.POSTGRES_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
 
   try {
     await client.connect();
-    console.log('Connected to database');
 
-    const query1 = `
-      INSERT INTO player_progress (user_name, resources, created_at, updated_at)
-      VALUES ($1, $2, NOW(), NOW())
-      ON CONFLICT (user_name)
-      DO UPDATE SET resources = $2, updated_at = NOW()
-      RETURNING *;
+    const playerProgressQuery = `
+      INSERT INTO player_progress (user_name, resources, economic_points)
+      VALUES ($1, $2::json, $3)
+      ON CONFLICT (user_name) 
+      DO UPDATE SET 
+        resources = EXCLUDED.resources,
+        economic_points = EXCLUDED.economic_points
     `;
-    const values1 = [user_name, JSON.stringify(resources)];
 
-    console.log('Executing query for resources:', query1, values1);
-    const result1 = await client.query(query1, values1);
-    console.log('Query result for resources:', result1.rows[0]);
-
-    const query2 = `
-      INSERT INTO building_progress (user_name, buildings, capacities, created_at, updated_at)
-      VALUES ($1, $2, $3, NOW(), NOW())
-      ON CONFLICT (user_name)
-      DO UPDATE SET buildings = $2, capacities = $3, updated_at = NOW()
-      RETURNING *;
+    const buildingProgressQuery = `
+      INSERT INTO building_progress (user_name, buildings, capacities)
+      VALUES ($1, $2::json, $3::json)
+      ON CONFLICT (user_name) 
+      DO UPDATE SET 
+        buildings = EXCLUDED.buildings,
+        capacities = EXCLUDED.capacities
     `;
-    const values2 = [user_name, JSON.stringify(buildings), JSON.stringify(capacities)];
 
-    console.log('Executing query for buildings and capacities:', query2, values2);
-    const result2 = await client.query(query2, values2);
-    console.log('Query result for buildings and capacities:', result2.rows[0]);
+    const playerProgressValues = [
+      userAddress,
+      JSON.stringify(resources),
+      economic_points,
+    ];
 
-    res.status(201).json({ resources: result1.rows[0], buildings: result2.rows[0], capacities: result2.rows[0] });
+    const buildingProgressValues = [
+      userAddress,
+      JSON.stringify(buildings) || '{}', // Ensure buildings is never null
+      JSON.stringify(capacities),
+    ];
+
+    await client.query(playerProgressQuery, playerProgressValues);
+    await client.query(buildingProgressQuery, buildingProgressValues);
+
+    res.status(200).json({ message: 'Game progress saved successfully' });
   } catch (error) {
-    console.error('Error saving game progress:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error updating game progress:', error);
+    res.status(500).json({ error: 'Failed to save game progress' });
   } finally {
     await client.end();
-    console.log('Database connection closed');
   }
 };

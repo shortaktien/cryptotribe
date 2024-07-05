@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useBuildings } from './BuildingsContext';
+import { updatePoints } from '../utils/scoreCalculation'; // Importiere die Punktelogik
 import buildingsMainPage from "../assets/buildingsMainPage.webp";
 import './Buildings.css'; // Separate CSS-Datei für Buildings
 
@@ -43,6 +44,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
       console.log('Resources spent successfully:', nextLevelData.cost);
       await handleUpgradeBuilding(buildingId, resourceNames, resourceCosts);
       upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
+      updatePoints(nextLevelData.cost); // Aktualisiere die Punkte basierend auf den ausgegebenen Ressourcen
       startCooldown(nextLevelData.buildTime);
     } else {
       console.log('Not enough resources:', nextLevelData.cost);
@@ -183,7 +185,11 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
                     {getNextLevelData(selectedBuilding).capacity && (
                       <p>Capacity: {Object.entries(getNextLevelData(selectedBuilding).capacity).map(([resource, amount]) => `${amount} ${resource}`).join(', ')}</p>
                     )}
-                    <p>Build Time: {getNextLevelData(selectedBuilding).buildTime} seconds</p>
+                    <p>Build Time: {getNextLevelData(selectedBuilding).buildTime < 60
+                      ? `${getNextLevelData(selectedBuilding).buildTime} seconds`
+                      : getNextLevelData(selectedBuilding).buildTime < 3600
+                        ? `${Math.floor(getNextLevelData(selectedBuilding).buildTime / 60)} minutes`
+                        : `${Math.floor(getNextLevelData(selectedBuilding).buildTime / 3600)} hours`}</p>
                     <button onClick={handleUpgrade} disabled={!canUpgrade(getNextLevelData(selectedBuilding).cost) || isCooldownActive}>
                       {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
                       {isCooldownActive ? `Building... ${remainingTime}s` : `Upgrade to Level ${selectedBuilding.currentLevel + 1}`}

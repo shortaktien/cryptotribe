@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
     await client.connect();
     console.log('Database connection successful');
 
-    const resourcesQuery = 'SELECT resources, updated_at FROM player_progress WHERE user_name = $1';
+    const resourcesQuery = 'SELECT resources, updated_at, economic_points FROM player_progress WHERE user_name = $1';
     const resourcesValues = [user_name];
     const resourcesResult = await client.query(resourcesQuery, resourcesValues);
 
@@ -63,13 +63,8 @@ module.exports = async (req, res) => {
     }
     console.log('Buildings and capacities query result:', buildingsResult.rows[0]);
 
-    const nicknameQuery = 'SELECT nickname FROM users WHERE user_name = $1';
-    const nicknameValues = [user_name];
-    const nicknameResult = await client.query(nicknameQuery, nicknameValues);
-
-    const { resources, updated_at } = resourcesResult.rows[0];
+    const { resources, updated_at, economic_points } = resourcesResult.rows[0];
     let { buildings, capacities } = buildingsResult.rows[0];
-    const nickname = nicknameResult.rows[0]?.nickname || '';
 
     // Berechnung der Kapazitäten basierend auf dem Level
     buildings = buildings.map(building => {
@@ -115,7 +110,7 @@ module.exports = async (req, res) => {
     // Begrenzung der Produktionsmenge auf die Kapazitätsgrenzen
     const { updatedResources, finalGainedResources } = calculateProductionWithinCapacity(resources, gainedResources, capacities);
 
-    res.status(200).json({ resources: updatedResources, buildings, capacities, timeDifferenceInSeconds, gainedResources: finalGainedResources, nickname });
+    res.status(200).json({ resources: updatedResources, buildings, capacities, timeDifferenceInSeconds, gainedResources: finalGainedResources, economic_points });
   } catch (error) {
     console.error('Error loading game progress:', error);
     res.status(500).json({ error: 'Internal Server Error' });
