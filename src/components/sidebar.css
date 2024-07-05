@@ -1,0 +1,184 @@
+/* src/components/Sidebar.css */
+.sidebar {
+    width: 200px;
+    background-color: #333333c5;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    height: 730px; 
+    border-radius: 20px; 
+  }
+  
+  @media (min-width: 720px) {
+    .sidebar {
+      position: sticky;
+      top: 70px; /* Adjust this value based on your header height */
+      z-index: 10;
+    }
+  }
+
+.sidebar ul {
+list-style-type: none;
+padding: 0;
+}
+
+.sidebar li {
+padding: 5px 0;
+}
+
+.sidebar-link {
+text-decoration: none;
+color: #fff;
+background-color: #444;
+padding: 5px;
+border-radius: 10px;
+display: flex;
+align-items: center; /* Vertically center the icon and text */
+transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar-link img.sidebar-icon {
+width: 45px;
+height: 45px;
+margin-right: 8px;
+}
+
+.sidebar-link
+{
+background-color: #555;
+color: #f0f0f0;
+}
+
+.dropdown-menu {
+display: none;
+}
+
+.dropdown-toggle {
+display: none;
+background-color: #333;
+color: #fff;
+border: none;
+padding: 10px;
+width: 100%;
+cursor: pointer;
+font-size: 16px;
+margin: auto;
+text-align: center;
+border-radius: 20px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-toggle
+{
+background-color: #494646;
+}
+
+.dropdown-content {
+background-color: #333333d0;
+color: #fff;
+position: absolute;
+top: 120px;
+left: 0;
+width: 100%;
+text-align: center;
+display: flex;
+flex-wrap: wrap; /* Allows wrapping to the next line */
+justify-content: center; /* Center the items */
+border-radius: 20px;
+padding: 10px 0;
+box-sizing: border-box; /* Ensure padding is included in the width */
+z-index: 2;
+}
+
+.dropdown-content ul {
+list-style-type: none;
+padding: 0;
+margin-top: 0;
+display: flex;
+flex-wrap: wrap; /* Allows wrapping to the next line */
+justify-content: center; /* Center the items */
+width: 100%;
+box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+.dropdown-content li {
+padding: 5px;
+flex: 1 1 auto; /* Allows items to grow and shrink */
+min-width: 30px; /* Minimum width for each item */
+}
+
+.dropdown-content .sidebar-link {
+text-decoration: none;
+color: #fff;
+display: block;
+}
+
+.icon-only .sidebar-link {
+justify-content: center; /* Center the icon when there's no text */
+}
+
+.icon-only .sidebar-link span {
+display: none; /* Hide the text in the dropdown */
+}
+
+@media screen and (max-width: 1286px) {
+.sidebar {
+display: none;
+}
+.dropdown-menu {
+display: block;
+}
+.dropdown-toggle {
+display: block;
+}
+.dropdown-content {
+display: block;
+}
+}
+
+.save-game-button {
+  position: relative;
+  overflow: hidden;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
+  background-color: #4caf50;
+  color: white;
+}
+
+.save-game-button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.save-game-button.saving {
+  pointer-events: none;
+  background-color: #45a049;
+}
+
+.save-game-button.saving .progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: loadingAnimation 3s ease-in-out infinite;
+}
+
+@keyframes loadingAnimation {
+  0% {
+    transform: scaleX(0);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}

@@ -1,0 +1,143 @@
+/* src/components/Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333333bd;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    position: relative;
+    top: auto;
+    margin-bottom: 20px;
+  }
+  
+  @media (min-width: 720px) {
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+  }
+  
+  .logo-icon {
+    display: flex;
+    margin-left: 10px;
+    width: 185px;
+    height: 45px;
+  }
+  
+  .resources {
+    display: flex;
+    gap: 10px; /* Abstand zwischen den Ressourcen */
+    margin-right: 90px;
+    margin-left: 80px;
+  }
+  
+  .resource {
+    display: flex;
+    align-items: center;
+    margin-right: 1px;
+    position: relative;
+  }
+  
+  .resource-container {
+    position: relative;
+  }
+  
+  .resource-icon {
+    width: 45px;
+    height: 45px;
+    margin-right: 5px;
+  }
+  
+  .resource-amount {
+    margin-left: 5px;
+    font-size: 16px;
+  }
+  
+  .resource-amount.full {
+    color: red;
+  }
+  
+  .resource-tooltip {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%; /* Position above the icon */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .resource-container:hover .resource-tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .profile {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .dropdown {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .header .logo-icon {
+      width: 120px; /* Logo wird kleiner */
+      height: 30px; /* Logo wird kleiner */
+      margin-left: 20px;
+      display: none;
+    }
+    .resources {
+      display: none; /* Ressourcen werden ausgeblendet */
+    }
+    .resources .resource {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .resources .resource span {
+      display: block;
+      font-size: 12px;
+    }
+    .resources {
+      display: flex; /* Ressourcen werden wieder angezeigt */
+      flex-direction: row; /* Richtet die Ressourcen nebeneinander aus */
+      gap: 5px; /* Reduziert den Abstand zwischen den Ressourcen */
+    }
+    .resource span {
+      display: none; /* Blendet den Text aus */
+    }
+    .resource-icon {
+      width: 30px; /* Verkleinert das Icon */
+      height: 30px; /* Verkleinert das Icon */
+    }
+    .dropdown-content {
+      top: 40px; /* Dropdown-Position anpassen */
+    }
+    .profile {
+      margin-right: 20px;
+    }
+  }

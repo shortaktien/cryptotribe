@@ -13,7 +13,7 @@ import coalImage from '../assets/coalRessourceImage.webp';
 import goldImage from '../assets/goldRessourceImage.webp';
 import militaryImage from "../assets/militaryRessourceImage.webp"; 
 
-import "./App.css";
+import "./header.css";
 
 const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates, resourceChanges = {} }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);

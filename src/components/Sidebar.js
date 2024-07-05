@@ -15,7 +15,7 @@ import shipyardImage from "../assets/shipyardImage.webp";
 import shopImage from "../assets/shopImage.webp";
 import worldImage from "../assets/worldImage.webp";
 
-import './App.css';
+import './sidebar.css';
 
 const Sidebar = ({ userAddress, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
