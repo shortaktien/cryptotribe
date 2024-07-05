@@ -1,5 +1,13 @@
 const { Client } = require('pg');
 
+const calculateCapacity = (baseCapacity, level, multiplier) => {
+  const capacity = {};
+  Object.keys(baseCapacity).forEach(resource => {
+    capacity[resource] = Math.ceil(baseCapacity[resource] * Math.pow(multiplier, level));
+  });
+  return capacity;
+};
+
 module.exports = async (req, res) => {
   const { user_name } = req.query;
 
@@ -40,7 +48,24 @@ module.exports = async (req, res) => {
     console.log('Buildings and capacities query result:', buildingsResult.rows[0]);
 
     const { resources, updated_at } = resourcesResult.rows[0];
-    const { buildings, capacities } = buildingsResult.rows[0];
+    let { buildings, capacities } = buildingsResult.rows[0];
+
+    // Berechnung der Kapazitäten basierend auf dem Level
+    buildings = buildings.map(building => {
+      if (building.name === 'Warehouse') {
+        building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
+        console.log(`Calculated capacity for Warehouse level ${building.currentLevel}:`, building.capacity);
+      }
+      return building;
+    });
+
+    // Kapazitäten aktualisieren
+    capacities = buildings.reduce((acc, building) => {
+      if (building.name === 'Warehouse') {
+        acc = { ...acc, ...building.capacity };
+      }
+      return acc;
+    }, capacities);
 
     const currentTime = new Date();
     const lastUpdateTime = new Date(updated_at);
