@@ -20,6 +20,7 @@ import './sidebar.css';
 const Sidebar = ({ userAddress, resources }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false); // Neu hinzugefügt
   const { buildings } = useBuildings();
   const { capacityRates } = useResources();
   const navigate = useNavigate();
@@ -35,11 +36,14 @@ const Sidebar = ({ userAddress, resources }) => {
 
   const handleSaveGame = async () => {
     setSaving(true); 
+    setSaveSuccess(false); // Setze den Erfolg auf false, wenn das Speichern beginnt
     const currentCapacities = capacityRates;
     console.log('Current capacities:', currentCapacities);
     console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities });
     await saveGameProgress(userAddress, resources, buildings, currentCapacities);
     setSaving(false);
+    setSaveSuccess(true); // Setze den Erfolg auf true, wenn das Speichern erfolgreich ist
+    setTimeout(() => setSaveSuccess(false), 3000); // Zurücksetzen des Erfolgsstatus nach 3 Sekunden
   };
 
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
@@ -103,8 +107,12 @@ const Sidebar = ({ userAddress, resources }) => {
             </Link>
           </li>
         </ul>
-        <button className={`save-game-button ${saving ? 'saving' : ''}`} onClick={handleSaveGame}>
-          {saving ? 'Saving...' : 'Save Game'}
+        <button 
+          className={`save-game-button ${saving ? 'saving' : ''} ${saveSuccess ? 'success' : ''}`} 
+          onClick={handleSaveGame}
+          disabled={saving}
+        >
+          {saving ? 'Saving...' : saveSuccess ? 'Game Saved' : 'Save Game'}
           {saving && <div className="progress-bar"></div>}
         </button>
       </div>

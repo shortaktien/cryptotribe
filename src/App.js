@@ -14,8 +14,8 @@ import World from './components/World';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import StartPage from './components/StartPage';
-import UserSettings from './components/userSettings'; // Importiere UserSettings-Komponente
 import useResources from './components/SetResources';
+import UserSettings from "./components/userSettings"
 import { BuildingsProvider, initialBuildingsData } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
@@ -24,7 +24,6 @@ import { ShipyardProvider } from './components/ShipyardContext';
 
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
-import "./components/userSettings.css";
 
 function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
   const navigate = useNavigate();
@@ -52,13 +51,14 @@ function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
 function AppContent({ resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates }) {
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
+  const [nickname, setNickname] = useState('');
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
   const [loadedBuildings, setLoadedBuildings] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
-  const [showNicknamePrompt, setShowNicknamePrompt] = useState(false); // State für Nickname-Prompt
+  const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
   
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
@@ -69,7 +69,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     return `${Math.floor(seconds / 86400)} days`;
   };
 
-  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}) => {
+  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '') => {
     const defaultResources = {
       water: 250,
       food: 250,
@@ -107,6 +107,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
   
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
+    setNickname(nickname); // Set the nickname here
   
     const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
     const formattedResources = Object.keys(gainedResources).length > 0
@@ -118,30 +119,21 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 10000);
   };
-
-  const checkNickname = async (address) => {
-    try {
-      const response = await fetch(`/api/getNickname?user_name=${address}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (!data.nickname) {
-          setShowNicknamePrompt(true);
-        }
-      }
-    } catch (error) {
-      console.error('Error checking nickname:', error);
-    }
-  };
   
   const handleConnect = async (address) => {
     setUserAddress(address);
     const response = await fetch(`/api/loadGame?user_name=${address}`);
     if (response.ok) {
       const data = await response.json();
-      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {});
-      checkNickname(address);
+      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname);
+      if (!data.nickname) {
+        setShowNicknamePrompt(true); // Zeige die Benachrichtigung, wenn kein Nickname existiert
+      } else {
+        setShowNicknamePrompt(false);
+      }
     } else {
-      handleLogin(address, null, null, null, 0, {});
+      handleLogin(address, null, null, null, 0, {}, '');
+      setNickname('');
     }
   };
 
@@ -280,23 +272,24 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                 >
                   <Header
                     userAddress={userAddress}
+                    userName={nickname} // Use nickname here
                     resources={resources}
                     capacityRates={capacityRates}
                   />
                   <div className="content">
                     <Sidebar userAddress={userAddress} resources={resources} />
-                    <div className="notification-container">
-                      {showNotification && (
+                    {showNotification && (
+                      <div className="notification-container">
                         <div className="notification">
                           {notificationMessage}
                         </div>
-                      )}
-                      {showNicknamePrompt && (
-                        <div className="notification">
-                          Go to profile settings and create a nickname
-                        </div>
-                      )}
-                    </div>
+                        {showNicknamePrompt && (
+                          <div className="notification">
+                            Go to profile settings and create a nickname
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {contractError ? (
                       <div className="error">
                         <p>{contractError}</p>
@@ -387,7 +380,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
       )}
     </div>
   );
-};    
+}
 
 function App() {
   const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates } = useResources(); // Hier sicherstellen, dass setCapacityRates importiert wird

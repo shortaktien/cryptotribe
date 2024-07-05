@@ -3,6 +3,7 @@ import './StartPage.css';
 
 const StartPage = ({ onConnect }) => {
   const [loading, setLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   const connectMetaMask = async () => {
     if (window.ethereum) {
@@ -29,9 +30,11 @@ const StartPage = ({ onConnect }) => {
             const { resources, buildings } = await loadResponse.json();
             console.log('Game progress loaded:', resources, buildings);
             onConnect(address, resources, buildings); // Pass buildings to the onConnect function
+            setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
           } else {
             console.log('User not found, starting new game');
             onConnect(address, null); // Start with new game
+            setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
           }
         } else {
           console.error('Failed to save address:', saveResponse.statusText);
@@ -52,8 +55,12 @@ const StartPage = ({ onConnect }) => {
         <h1>Welcome to Cryptotribe</h1>
       </div>
       <div className="button-container">
-        <button onClick={connectMetaMask} className={`connect-button ${loading ? 'loading' : ''}`}>
-          {loading ? 'Loading...' : 'Login with MetaMask'}
+        <button 
+          onClick={connectMetaMask} 
+          className={`connect-button ${loading ? 'loading' : ''} ${isConnected ? 'success' : ''}`}
+          disabled={loading || isConnected}
+        >
+          {loading ? 'Loading...' : isConnected ? 'Connected' : 'Login with MetaMask'}
           {loading && <div className="progress-bar"></div>}
         </button>
         <button className="other-button">Button 2</button>
