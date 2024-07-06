@@ -73,7 +73,16 @@
   color: #007bff;
 }
 
-.resource-rate, .unit-count {
+.resource-rate {
+  color: #28a745;
+}
+
+.resource-rate.gross-rate {
+  color: rgba(40, 167, 69, 0.6); /* Blasseres Grün für Brutto-Produktionsrate */
+  margin-left: 5px; /* Abstand zwischen Netto- und Brutto-Produktionsrate */
+}
+
+.unit-count {
   color: #28a745;
 }
 
@@ -99,4 +108,3 @@
   font-weight: bold;
   color: #333;
 }
-

@@ -48,7 +48,7 @@ function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
   }, [userAddress, navigate, setIsConnected, setUserAddress]);
 };
 
-function AppContent({ resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates }) {
+function AppContent({ resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates }) {
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [nickname, setNickname] = useState('');
@@ -299,8 +299,8 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                       </div>
                     ) : (
                       <Routes>
-                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
-                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
+                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
+                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
                         <Route
                           path="/buildings"
                           element={
@@ -386,7 +386,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
 }
 
 function App() {
-  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, refundResources, setCapacityRates } = useResources(); // Hier sicherstellen, dass setCapacityRates importiert wird
+  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates } = useResources(); // Hier sicherstellen, dass getProductionRates importiert wird
 
   return (
     <Router>
@@ -400,9 +400,9 @@ function App() {
         updateResearchEffects={updateResearchEffects}
         capacityRates={capacityRates}
         getNetProductionRates={getNetProductionRates}
+        getProductionRates={getProductionRates} // Hier getProductionRates übergeben
         refundResources={refundResources}
         setCapacityRates={setCapacityRates}
-        
       />
     </Router>
   );
