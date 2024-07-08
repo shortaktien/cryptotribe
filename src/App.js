@@ -396,7 +396,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
 }
 
 function App() {
-  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates, setLoadedProductionRates } = useResources(); // Hier sicherstellen, dass getProductionRates importiert wird
+  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates, setLoadedProductionRates, economicPoints, setEconomicPoints } = useResources(); // Hier sicherstellen, dass getProductionRates importiert wird
 
   return (
     <Router>
@@ -410,10 +410,11 @@ function App() {
         updateResearchEffects={updateResearchEffects}
         capacityRates={capacityRates}
         getNetProductionRates={getNetProductionRates}
-        getProductionRates={getProductionRates} // Hier getProductionRates übergeben
+        getProductionRates={getProductionRates} 
         refundResources={refundResources}
         setCapacityRates={setCapacityRates}
-        setLoadedProductionRates={setLoadedProductionRates} // Hier setLoadedProductionRates übergeben
+        setLoadedProductionRates={setLoadedProductionRates} 
+        setEconomicPoints={setEconomicPoints} // Hier hinzufügen
       />
     </Router>
   );
