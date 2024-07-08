@@ -11,7 +11,7 @@ const defaultImage = {
   info: 'Select a building to see details.'
 };
 
-const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, handleUpgradeBuilding, handleDemolishBuilding }) => {
+const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, handleUpgradeBuilding, handleDemolishBuilding, setEconomicPoints }) => { // setEconomicPoints als Prop hinzufügen
   const [selectedBuilding, setSelectedBuilding] = useState(defaultImage);
   const [cooldownProgress, setCooldownProgress] = useState(0);
   const [isCooldownActive, setIsCooldownActive] = useState(false);
@@ -44,7 +44,9 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
       console.log('Resources spent successfully:', nextLevelData.cost);
       await handleUpgradeBuilding(buildingId, resourceNames, resourceCosts);
       upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
-      updatePoints(nextLevelData.cost); // Aktualisiere die Punkte basierend auf den ausgegebenen Ressourcen
+      const newPoints = updatePoints(nextLevelData.cost); // Aktualisiere die Punkte basierend auf den ausgegebenen Ressourcen
+      console.log(`Updated economic points: ${newPoints}`);
+      setEconomicPoints(newPoints); // Aktualisiere die Punkte im übergeordneten Zustand
       startCooldown(nextLevelData.buildTime);
     } else {
       console.log('Not enough resources:', nextLevelData.cost);

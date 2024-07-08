@@ -159,6 +159,10 @@ const useResources = () => {
   const getNetProductionRates = () => calculateNetProduction(productionRates);
   const getProductionRates = () => productionRates; // Brutto-Produktionsraten
 
+  const setLoadedProductionRates = (loadedProductionRates) => {
+    setProductionRates(loadedProductionRates);
+  };
+
   return { 
     resources, 
     setResources,
@@ -172,8 +176,11 @@ const useResources = () => {
     setCapacityRates, 
     refundResources, 
     getNetProductionRates,
-    getProductionRates // Brutto-Produktionsraten zurückgeben
+    getProductionRates, // Brutto-Produktionsraten zurückgeben
+    setLoadedProductionRates // Hinzugefügte Methode
   };
 };
 
 export default useResources;
+
+

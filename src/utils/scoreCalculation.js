@@ -1,5 +1,3 @@
-// utils/scoreCalculation.js
-
 let leftoverResources = 0;
 let totalPoints = 0;
 

@@ -8,6 +8,14 @@ const calculateCapacity = (baseCapacity, level, multiplier) => {
   return capacity;
 };
 
+const calculateProduction = (baseProduction, level, multiplier) => {
+  const production = {};
+  Object.keys(baseProduction).forEach(resource => {
+    production[resource] = baseProduction[resource] * Math.pow(multiplier, level);
+  });
+  return production;
+};
+
 const calculateProductionWithinCapacity = (currentResources, gainedResources, capacities) => {
   const updatedResources = { ...currentResources };
   const finalGainedResources = { ...gainedResources };
@@ -66,11 +74,14 @@ module.exports = async (req, res) => {
     const { resources, updated_at, economic_points } = resourcesResult.rows[0];
     let { buildings, capacities } = buildingsResult.rows[0];
 
-    // Berechnung der Kapazitäten basierend auf dem Level
+    // Berechnung der Kapazitäten und Produktionsraten basierend auf dem Level
     buildings = buildings.map(building => {
       if (building.name === 'Warehouse') {
         building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
         console.log(`Calculated capacity for Warehouse level ${building.currentLevel}:`, building.capacity);
+      } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine'].includes(building.name)) {
+        building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.8);
+        console.log(`Calculated production for ${building.name} level ${building.currentLevel}:`, building.production);
       }
       return building;
     });
@@ -85,7 +96,7 @@ module.exports = async (req, res) => {
 
     const currentTime = new Date();
     const lastUpdateTime = new Date(updated_at);
-    const timeDifferenceInSeconds = (currentTime - lastUpdateTime) / 1000;
+    const timeDifferenceInSeconds = Math.floor((currentTime - lastUpdateTime) / 1000); // Ensure integer seconds
 
     // Ausgabe der Zeitdifferenz in der Konsole
     console.log(`User ${user_name} was away for ${timeDifferenceInSeconds} seconds.`);
@@ -94,7 +105,7 @@ module.exports = async (req, res) => {
     const gainedResources = {};
     buildings.forEach(building => {
       if (building.currentLevel > 0) {
-        const productionRate = building.levels[building.currentLevel].production;
+        const productionRate = building.production; // Verwendet die berechnete Produktionsrate
         if (productionRate) {
           Object.keys(productionRate).forEach(resource => {
             const gained = productionRate[resource] * timeDifferenceInSeconds;

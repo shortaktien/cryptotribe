@@ -4,7 +4,7 @@ import { useMilitary } from './MilitaryContext';
 import { useDefense } from './DefenseContext';
 import { useShipyard } from './ShipyardContext';
 
-const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates = {}, economicPoints }) => {
+const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates, economicPoints }) => {
   const [netProduction, setNetProduction] = useState({});
   const [grossProduction, setGrossProduction] = useState({});
   const { units: militaryUnits } = useMilitary();

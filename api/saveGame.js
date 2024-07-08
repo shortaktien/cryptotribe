@@ -18,12 +18,13 @@ module.exports = async (req, res) => {
     await client.connect();
 
     const playerProgressQuery = `
-      INSERT INTO player_progress (user_name, resources, economic_points)
-      VALUES ($1, $2::json, $3)
+      INSERT INTO player_progress (user_name, resources, economic_points, updated_at)
+      VALUES ($1, $2::json, $3, $4)
       ON CONFLICT (user_name) 
       DO UPDATE SET 
         resources = EXCLUDED.resources,
-        economic_points = EXCLUDED.economic_points
+        economic_points = EXCLUDED.economic_points,
+        updated_at = EXCLUDED.updated_at
     `;
 
     const buildingProgressQuery = `
@@ -35,15 +36,17 @@ module.exports = async (req, res) => {
         capacities = EXCLUDED.capacities
     `;
 
+    const currentTime = new Date(); // Hinzufügen der aktuellen Zeit
     const playerProgressValues = [
       userAddress,
       JSON.stringify(resources),
       economic_points,
+      currentTime, // Übergeben der aktuellen Zeit
     ];
 
     const buildingProgressValues = [
       userAddress,
-      JSON.stringify(buildings) || '{}', // Ensure buildings is never null
+      JSON.stringify(buildings) || '{}', // Sicherstellen, dass buildings niemals null ist
       JSON.stringify(capacities),
     ];
 

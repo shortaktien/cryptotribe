@@ -60,8 +60,8 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
   const [notificationMessage, setNotificationMessage] = useState('');
   const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
   const [economicPoints, setEconomicPoints] = useState(0); // Neuer State für wirtschaftliche Punkte
+  const { setLoadedProductionRates } = useResources();
 
-  
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
   const formatTimeDifference = (seconds) => {
@@ -71,7 +71,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     return `${Math.floor(seconds / 86400)} days`;
   };
 
-  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '', economic_points = 0) => {
+  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '', economic_points = 0, productionRates = {}) => {
     const defaultResources = {
       water: 250,
       food: 250,
@@ -109,18 +109,24 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
   
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
-    setNickname(nickname); // Set the nickname here
     setEconomicPoints(economic_points);
+    setLoadedProductionRates(productionRates);
   
-    const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
-    const formattedResources = Object.keys(gainedResources).length > 0
-      ? Object.entries(gainedResources).map(([resource, amount]) => `${Math.ceil(amount)} ${resource}`).join(', ')
-      : 'no resources';
+    if (nickname) {
+      setNickname(nickname);
+    }
   
-    console.log(`You were away for ${formattedTime} and produced ${formattedResources}.`);
-    setNotificationMessage(`You were away for ${formattedTime} and produced ${formattedResources}.`);
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 10000);
+    if (timeDifferenceInSeconds > 0 && Object.keys(gainedResources).length > 0) {
+      const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
+      const formattedResources = Object.entries(gainedResources)
+        .map(([resource, amount]) => `${Math.ceil(amount)} ${resource}`)
+        .join(', ');
+  
+      console.log(`You were away for ${formattedTime} and produced ${formattedResources}.`);
+      setNotificationMessage(`You were away for ${formattedTime} and produced ${formattedResources}.`);
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 10000);
+    }
   };
   
   const handleConnect = async (address) => {
@@ -128,17 +134,20 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     const response = await fetch(`/api/loadGame?user_name=${address}`);
     if (response.ok) {
       const data = await response.json();
-      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname, data.economic_points);
-      if (!data.nickname) {
-        setShowNicknamePrompt(true); // Zeige die Benachrichtigung, wenn kein Nickname existiert
+      const isExistingPlayer = data.resources || data.buildings || data.capacities;
+      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname, data.economic_points, data.productionRates);
+      if (!data.nickname && !isExistingPlayer) {
+        setShowNicknamePrompt(true);
       } else {
         setShowNicknamePrompt(false);
       }
     } else {
       handleLogin(address, null, null, null, 0, {}, '');
       setNickname('');
+      setShowNicknamePrompt(true);
     }
   };
+  
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -311,6 +320,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                               updateCapacityRates={updateCapacityRates}
                               handleUpgradeBuilding={handleUpgradeBuilding}
                               handleDemolishBuilding={handleUpgradeResearch}
+                              setEconomicPoints={setEconomicPoints} // Hier hinzufügen
                             />
                           }
                         />
@@ -386,7 +396,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
 }
 
 function App() {
-  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates } = useResources(); // Hier sicherstellen, dass getProductionRates importiert wird
+  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates, setLoadedProductionRates } = useResources(); // Hier sicherstellen, dass getProductionRates importiert wird
 
   return (
     <Router>
@@ -403,6 +413,7 @@ function App() {
         getProductionRates={getProductionRates} // Hier getProductionRates übergeben
         refundResources={refundResources}
         setCapacityRates={setCapacityRates}
+        setLoadedProductionRates={setLoadedProductionRates} // Hier setLoadedProductionRates übergeben
       />
     </Router>
   );
