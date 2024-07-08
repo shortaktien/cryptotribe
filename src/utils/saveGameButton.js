@@ -1,5 +1,7 @@
-export default async function saveGameProgress(userAddress, resources, buildings, capacities, economicPoints) {
+export default async function saveGameProgress(userAddress, resources, buildings, capacities, economicPoints, military) {
   try {
+    console.log('Military data before saving:', military);
+
     const response = await fetch('/api/saveGame', {
       method: 'POST',
       headers: {
@@ -11,6 +13,7 @@ export default async function saveGameProgress(userAddress, resources, buildings
         buildings,
         capacities,
         economic_points: economicPoints,
+        military,
       }),
     });
 
@@ -20,6 +23,9 @@ export default async function saveGameProgress(userAddress, resources, buildings
 
     const data = await response.json();
     console.log('Game progress saved:', data.message);
+
+    const totalUnits = Object.values(military).reduce((acc, count) => acc + count, 0); // Korrigierte Berechnung
+    console.log(`Saved military units: ${totalUnits}`);
   } catch (error) {
     console.error('Error saving game progress:', error);
   }

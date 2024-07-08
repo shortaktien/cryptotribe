@@ -4,12 +4,17 @@ import { useMilitary } from './MilitaryContext';
 import { useDefense } from './DefenseContext';
 import { useShipyard } from './ShipyardContext';
 
-const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates, economicPoints }) => {
+const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates, economicPoints, military }) => {
   const [netProduction, setNetProduction] = useState({});
   const [grossProduction, setGrossProduction] = useState({});
-  const { units: militaryUnits } = useMilitary();
+  const { units: militaryUnits, updateUnits } = useMilitary();
   const { structures: defenseStructures } = useDefense();
   const { ships } = useShipyard();
+
+  useEffect(() => {
+    // Update the units with the data loaded from the server only if military has changed
+    updateUnits(military);
+  }, [military, updateUnits]);
 
   useEffect(() => {
     const updateProductionRates = () => {
@@ -23,12 +28,6 @@ const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates,
 
     return () => clearInterval(intervalId);
   }, [getNetProductionRates, getProductionRates]);
-
-  useEffect(() => {
-    console.log('Military Units:', militaryUnits);
-    console.log('Defense Structures:', defenseStructures);
-    console.log('Ships:', ships);
-  }, [militaryUnits, defenseStructures, ships]);
 
   const totalAttack = militaryUnits.reduce((total, unit) => total + (unit.attack * (unit.count || 0)), 0)
                     + ships.reduce((total, ship) => total + (ship.attack * (ship.count || 0)), 0);

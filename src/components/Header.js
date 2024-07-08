@@ -19,11 +19,6 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [highlightedResources, setHighlightedResources] = useState({});
 
-  useEffect(() => {
-    // Konsolenausgabe, um die geladenen Ressourcen zu überprüfen
-    //console.log('Loaded resources in Header:', resources);
-  }, [resources]);
-
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
@@ -89,15 +84,15 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
           <FaUserCircle size={40} onClick={toggleDropdown} />
         )}
         {dropdownVisible && (
-  <div className="dropdown" onClick={closeDropdown}>
-    <p>Address: {userAddress}</p>
-    <p>Balance: {userBalance}</p>
-    <p>Name: {nickname || userName}</p> {/* Display nickname if available */}
-    <Link to="/settings">
-      <button onClick={closeDropdown}>Settings</button>
-    </Link>
-  </div>
-)}
+          <div className="dropdown" onClick={closeDropdown}>
+            <p>Address: {userAddress}</p>
+            <p>Balance: {userBalance}</p>
+            <p>Name: {nickname || userName}</p> {/* Display nickname if available */}
+            <Link to="/settings">
+              <button onClick={closeDropdown}>Settings</button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

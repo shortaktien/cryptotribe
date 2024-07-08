@@ -1,80 +1,78 @@
-/* General styling for the military section */
 .military {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px; /* Beispielhafte Padding-Einstellung für den Abstand vom Rand */
+  background-color: #ffffffcc;
+  border-radius: 10px;
 }
 
-.blue-rectangle {
-  background-color: rgba(235, 227, 227, 0.8); /* Dunkelweißer Hintergrund */
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 20px;
-  width: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.image-container {
   position: relative;
-  z-index: 1;
 }
 
 .blue-image {
-  width: 80%; /* Bild soll die volle Breite des Containers nutzen */
-  height: auto; /* Höhe automatisch anpassen */
+  background-color: aqua;
+  max-width: 100%; /* Bild skaliert sich auf die Containerbreite */
+  height: auto;
   border-radius: 10px;
-  position: relative;
-  z-index: 1;
+}
+
+.grayscale {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}
+
+@media (min-width: 720px) {
+  .blue-rectangle {
+    position: sticky;
+    top: 70;
+  }
 }
 
 .unit-info {
   position: absolute;
-  top: 40px;
-  right: 130px;
-  background-color: rgba(0, 0, 0, 0.685);
+  top: 58px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
   padding: 10px;
   border-radius: 10px;
   color: white;
   z-index: 2;
-  transition: opacity 0.3s ease-in-out;
-  width: calc(300px); /* Ensure it fits within the parent */
+  width: calc(100% - 500px); /* Ensure it fits within the parent */
 }
 
 .next-info {
-  bottom: 40px;
   top: auto;
+  bottom: 15px;
+  left: 390px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  z-index: 2;
+  width: calc(100% - 500px); /* Ensure it fits within the parent */
 }
 
 .overlapping {
   opacity: 0;
 }
 
-.green-rectangles {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
+@media screen and (max-width: 1071px) {
+  .unit-info {
+    visibility: hidden;
+  }
 }
 
-.green-rectangle {
-  background-color: rgba(235, 227, 227, 0.8); /* Grün */
-  border-radius: 10px;
-  padding: 10px;
-  margin: 0 10px;
-  position: relative;
-  cursor: pointer;
-  text-align: center;
-  width: 150px; /* Feste Breite setzen */
-  height: 150px; /* Feste Höhe setzen */
-}
-
-.green-image {
-  width: 100px; /* Breite des Bildes auf 100px setzen */
-  height: 100px; /* Höhe des Bildes auf 100px setzen */
-  border-radius: 50px;
+@media screen and (max-width: 1071px) {
+  .next-info {
+    visibility: visible;
+  }
 }
 
 .level {
-  background-color: #ffa600e8; /* Rot */
+  background-color: #ffa600e8; /* Red */
   border-radius: 5px;
   color: white;
   padding: 5px;
@@ -87,26 +85,20 @@
 .circular-images {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
   width: 100%;
   padding: 20px 0;
-  flex-wrap: wrap; /* Hinzugefügt für bessere Reaktionsfähigkeit */
 }
 
 .circular-image-wrapper {
   width: 100px;
   height: 100px;
-  border-radius: 15%;
-  overflow: hidden;
-  border: 2px solid #ccc; /* Optional: Rand um die Kreise */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff; /* Optional: Hintergrundfarbe */
-  position: relative;
+  margin: 10px; /* Beispielhafte Margin-Einstellung für Abstand zwischen den Bildern */
+  /* Weitere Stile für die runden Bilder */
 }
 
 .circular-image {
-  width: 180%;
+  width: 100%;
   height: auto;
 }
 
@@ -139,29 +131,26 @@
 }
 
 @media screen and (max-width: 768px) {
-  .tooltip {
-    display: block; /* Bei kleineren Bildschirmen anzeigen */
+  .unit-info-container {
+    flex-direction: column; /* Stellt die Position wieder auf Spalte für kleinere Bildschirme */
   }
-  
-  .unit-info.current-info {
-    display: none; /* Bei kleineren Bildschirmen ausblenden */
+  .unit-info {
+    width: 100%; /* Nimmt die volle Breite des Bildschirms ein */
+    margin-bottom: 10px; /* Abstand zwischen den beiden Boxen */
   }
 }
 
 .button-progress {
-  position: absolute;
-  left: 0;
-  top: 0;
+  background-color: rgba(0, 255, 0, 0.3); /* Green with some transparency */
   height: 100%;
-  background-color: rgba(0, 128, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
 }
 
-.total-stats {
-  margin-top: 10px;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.total-stats p {
-  margin: 5px 0;
+button {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
 }

@@ -42,11 +42,11 @@ function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
       }
     };
 
-    const interval = setInterval(checkAddressChange, 1000); // Überprüft die Adresse alle 1 Sekunde
+    const interval = setInterval(checkAddressChange, 1000);
 
-    return () => clearInterval(interval); // Bereinigt das Intervall beim Unmounting der Komponente
+    return () => clearInterval(interval);
   }, [userAddress, navigate, setIsConnected, setUserAddress]);
-};
+}
 
 function AppContent({ resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates }) {
   const [isConnected, setIsConnected] = useState(false);
@@ -59,7 +59,8 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
-  const [economicPoints, setEconomicPoints] = useState(0); // Neuer State für wirtschaftliche Punkte
+  const [economicPoints, setEconomicPoints] = useState(0);
+  const [military, setMilitary] = useState({});
   const { setLoadedProductionRates } = useResources();
 
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
@@ -71,7 +72,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     return `${Math.floor(seconds / 86400)} days`;
   };
 
-  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '', economic_points = 0, productionRates = {}) => {
+  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
     const defaultResources = {
       water: 250,
       food: 250,
@@ -83,10 +84,10 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
       gold: 0,
       military: 0,
     };
-  
+
     const updatedResources = { ...defaultResources, ...(loadedResources || {}) };
     setResources(updatedResources);
-  
+
     if (!loadedCapacities) {
       loadedCapacities = {
         water: 500,
@@ -98,44 +99,46 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
         coal: 500,
         gold: 500,
         military: 0,
-        maxMilitaryCapacity: 0
+        maxMilitaryCapacity: 0,
       };
     }
     setCapacityRates(loadedCapacities);
-  
+
     if (!loadedBuildings) {
       loadedBuildings = initialBuildingsData;
     }
-  
+
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
     setEconomicPoints(economic_points);
     setLoadedProductionRates(productionRates);
-  
+
     if (nickname) {
       setNickname(nickname);
     }
-  
+
+    setMilitary(military);
+
     if (timeDifferenceInSeconds > 0 && Object.keys(gainedResources).length > 0) {
       const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
       const formattedResources = Object.entries(gainedResources)
         .map(([resource, amount]) => `${Math.ceil(amount)} ${resource}`)
         .join(', ');
-  
+
       console.log(`You were away for ${formattedTime} and produced ${formattedResources}.`);
       setNotificationMessage(`You were away for ${formattedTime} and produced ${formattedResources}.`);
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 10000);
     }
   };
-  
+
   const handleConnect = async (address) => {
     setUserAddress(address);
     const response = await fetch(`/api/loadGame?user_name=${address}`);
     if (response.ok) {
       const data = await response.json();
       const isExistingPlayer = data.resources || data.buildings || data.capacities;
-      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname, data.economic_points, data.productionRates);
+      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname, data.economic_points, data.productionRates, data.military);
       if (!data.nickname && !isExistingPlayer) {
         setShowNicknamePrompt(true);
       } else {
@@ -147,7 +150,6 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
       setShowNicknamePrompt(true);
     }
   };
-  
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -158,9 +160,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
         setUserAddress(accounts[0]);
         const contractInstance = await getContract(web3Instance);
         setContract(contractInstance);
-        //console.log('Web3 and contract initialized:', { web3Instance, contractInstance });
       } catch (error) {
-        //console.error('Error initializing web3 or contract:', error);
         setContractError(error.message);
       }
     };
@@ -169,12 +169,10 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
 
   const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts) => {
     if (!contract) {
-      //console.error('Contract not initialized');
       return;
     }
 
     if (!userAddress) {
-      //console.error('User address not initialized');
       return;
     }
 
@@ -183,24 +181,20 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     });
 
     if (!hasEnoughResources) {
-      //console.error('Not enough resources');
       return;
     }
 
     try {
-      //console.log('Sending transaction with the following parameters:', { buildingId, resourceNames, resourceCosts });
       await sendTransaction(web3, userAddress, contract, 'upgradeBuilding', [buildingId, resourceNames, resourceCosts]);
     } catch (error) {
-      //console.error('Error upgrading building:', error);
       if (error.data) {
-        //console.error('Error data: ', error.data);
+        console.error('Error data: ', error.data);
       }
     }
   };
 
   const handleUpgradeResearch = async (researchId, cost) => {
     if (!contract) {
-      //console.error('Contract not initialized');
       return;
     }
 
@@ -214,43 +208,40 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
     });
 
     if (!hasEnoughResources) {
-      //console.error('Not enough resources');
       return;
     }
 
     try {
-      //console.log('Sending transaction with the following parameters:', { researchId, cost });
       await sendTransaction(web3, userAddress, contract, 'upgradeResearch', [researchId, Object.keys(cost), Object.values(cost)]);
     } catch (error) {
-      //console.error('Error upgrading research:', error);
       if (error.data) {
-        //console.error('Error data: ', error.data);
+        console.error('Error data: ', error.data);
       }
     }
   };
 
   const handleTrainUnit = async (unitId) => {
-    //console.log(`Train unit with id ${unitId}`);
+    console.log(`Train unit with id ${unitId}`);
   };
 
   const handleDisbandUnit = async (unitId) => {
-    //console.log(`Disband unit with id ${unitId}`);
+    console.log(`Disband unit with id ${unitId}`);
   };
 
   const handleBuildDefense = async (structureId) => {
-    //console.log(`Build defense structure with id ${structureId}`);
+    console.log(`Build defense structure with id ${structureId}`);
   };
 
   const handleDemolishDefense = async (structureId) => {
-    //console.log(`Demolish defense structure with id ${structureId}`);
+    console.log(`Demolish defense structure with id ${structureId}`);
   };
 
   const handleBuildShip = async (shipId) => {
-    //console.log(`Build ship with id ${shipId}`);
+    console.log(`Build ship with id ${shipId}`);
   };
 
   const handleScrapShip = async (shipId) => {
-    //console.log(`Scrap ship with id ${shipId}`);
+    console.log(`Scrap ship with id ${shipId}`);
   };
 
   return (
@@ -283,106 +274,107 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                   refundResources={refundResources}
                 >
                   <Header
-                    userAddress={userAddress}
-                    userName={nickname} // Use nickname here
-                    resources={resources}
-                    capacityRates={capacityRates}
-                  />
-                  <div className="content">
-                    <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} />
-                    {showNotification && (
-                      <div className="notification-container">
-                        <div className="notification">
-                          {notificationMessage}
-                        </div>
-                        {showNicknamePrompt && (
-                          <div className="notification">
-                            Go to profile settings and create a nickname
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    {contractError ? (
-                      <div className="error">
-                        <p>{contractError}</p>
-                      </div>
-                    ) : (
-                      <Routes>
-                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
-                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} />} />
-                        <Route
-                          path="/buildings"
-                          element={
-                            <Buildings
-                              resources={resources}
-                              spendResources={spendResources}
-                              updateProductionRate={updateProductionRate}
-                              updateCapacityRates={updateCapacityRates}
-                              handleUpgradeBuilding={handleUpgradeBuilding}
-                              handleDemolishBuilding={handleUpgradeResearch}
-                              setEconomicPoints={setEconomicPoints} // Hier hinzufügen
-                            />
-                          }
-                        />
-                        <Route
-                          path="/research"
-                          element={
-                            <Research
-                              resources={resources}
-                              spendResources={spendResources}
-                              updateResearchEffects={updateResearchEffects}
-                              handleUpgradeResearch={handleUpgradeResearch}
-                            />
-                          }
-                        />
-                        <Route path="/merchant" element={
-                          <Merchant
-                            resources={resources}
-                            spendResources={spendResources}
-                            refundResources={refundResources}
-                          />
-                        } />
-                        <Route path="/shipyard" element={
-                          <Shipyard
-                            resources={resources}
-                            spendResources={spendResources}
-                            updateCapacityRates={updateCapacityRates}
-                            handleBuildShip={handleBuildShip}
-                            handleScrapShip={handleScrapShip}
-                          />
-                        } />
-                        <Route
-                          path="/defence"
-                          element={
-                            <Defence
-                              resources={resources}
-                              spendResources={spendResources}
-                              updateCapacityRates={updateCapacityRates}
-                              handleBuildDefense={handleBuildDefense}
-                              handleDemolishDefense={handleDemolishDefense}
-                            />
-                          }
-                        />
-                        <Route
-                          path="/military"
-                          element={
-                            <Military
-                              resources={resources}
-                              spendResources={spendResources}
-                              updateCapacityRates={updateCapacityRates}
-                              handleTrainUnit={handleTrainUnit}
-                              handleDisbandUnit={handleDisbandUnit}
-                            />
-                          }
-                        />
-                        <Route path="/world" element={<World />} />
-                        <Route path="/alliance" element={<Alliance />} />
-                        <Route path="/shop" element={<Shop />} />
-                        <Route path="/settings" element={<UserSettings userAddress={userAddress} />} /> {/* Route für UserSettings */}
-                      </Routes>
-                    )}
-                  </div>
-                  <Footer />
+  userAddress={userAddress}
+  userName={nickname} // Use nickname here
+  resources={resources}
+  capacityRates={capacityRates}
+  military={military} // Military state
+/>
+<div className="content">
+  <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} military={military} />
+  {showNotification && (
+    <div className="notification-container">
+      <div className="notification">
+        {notificationMessage}
+      </div>
+      {showNicknamePrompt && (
+        <div className="notification">
+          Go to profile settings and create a nickname
+        </div>
+      )}
+    </div>
+  )}
+  {contractError ? (
+    <div className="error">
+      <p>{contractError}</p>
+    </div>
+  ) : (
+    <Routes>
+      <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
+      <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
+      <Route
+        path="/buildings"
+        element={
+          <Buildings
+            resources={resources}
+            spendResources={spendResources}
+            updateProductionRate={updateProductionRate}
+            updateCapacityRates={updateCapacityRates}
+            handleUpgradeBuilding={handleUpgradeBuilding}
+            handleDemolishBuilding={handleUpgradeResearch}
+            setEconomicPoints={setEconomicPoints}
+          />
+        }
+      />
+      <Route
+        path="/research"
+        element={
+          <Research
+            resources={resources}
+            spendResources={spendResources}
+            updateResearchEffects={updateResearchEffects}
+            handleUpgradeResearch={handleUpgradeResearch}
+          />
+        }
+      />
+      <Route path="/merchant" element={
+        <Merchant
+          resources={resources}
+          spendResources={spendResources}
+          refundResources={refundResources}
+        />
+      } />
+      <Route path="/shipyard" element={
+        <Shipyard
+          resources={resources}
+          spendResources={spendResources}
+          updateCapacityRates={updateCapacityRates}
+          handleBuildShip={handleBuildShip}
+          handleScrapShip={handleScrapShip}
+        />
+      } />
+      <Route
+        path="/defence"
+        element={
+          <Defence
+            resources={resources}
+            spendResources={spendResources}
+            updateCapacityRates={updateCapacityRates}
+            handleBuildDefense={handleBuildDefense}
+            handleDemolishDefense={handleDemolishDefense}
+          />
+        }
+      />
+      <Route
+        path="/military"
+        element={
+          <Military
+            resources={resources}
+            spendResources={spendResources}
+            updateCapacityRates={updateCapacityRates}
+            handleTrainUnit={handleTrainUnit}
+            handleDisbandUnit={handleDisbandUnit}
+          />
+        }
+      />
+      <Route path="/world" element={<World />} />
+      <Route path="/alliance" element={<Alliance />} />
+      <Route path="/shop" element={<Shop />} />
+      <Route path="/settings" element={<UserSettings userAddress={userAddress} />} /> {/* Route für UserSettings */}
+    </Routes>
+  )}
+</div>
+<Footer />
                 </ShipyardProvider>
               </DefenseProvider>
             </MilitaryProvider>
@@ -396,7 +388,7 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
 }
 
 function App() {
-  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates, setLoadedProductionRates, economicPoints, setEconomicPoints } = useResources(); // Hier sicherstellen, dass getProductionRates importiert wird
+  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates, setLoadedProductionRates } = useResources();
 
   return (
     <Router>
@@ -410,11 +402,10 @@ function App() {
         updateResearchEffects={updateResearchEffects}
         capacityRates={capacityRates}
         getNetProductionRates={getNetProductionRates}
-        getProductionRates={getProductionRates} 
+        getProductionRates={getProductionRates}
         refundResources={refundResources}
         setCapacityRates={setCapacityRates}
-        setLoadedProductionRates={setLoadedProductionRates} 
-        setEconomicPoints={setEconomicPoints} // Hier hinzufügen
+        setLoadedProductionRates={setLoadedProductionRates}
       />
     </Router>
   );

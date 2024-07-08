@@ -1,8 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useBuildings } from './BuildingsContext';
 import useResources from './SetResources';
 import saveGameProgress from '../utils/saveGameButton';
+import { useMilitary } from './MilitaryContext';
 import allianceImage from "../assets/allianceImage.webp";
 import buildingsImage from "../assets/buildingsImage.webp";
 import defenceImage from "../assets/defenceImage.webp";
@@ -18,9 +19,10 @@ import './sidebar.css';
 const Sidebar = ({ userAddress, resources, economicPoints }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false); // Neu hinzugefügt
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const { buildings } = useBuildings();
   const { capacityRates } = useResources();
+  const { getMilitaryData } = useMilitary();
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
@@ -33,15 +35,16 @@ const Sidebar = ({ userAddress, resources, economicPoints }) => {
   };
 
   const handleSaveGame = async () => {
-    setSaving(true); 
-    setSaveSuccess(false); // Setze den Erfolg auf false, wenn das Speichern beginnt
+    setSaving(true);
+    setSaveSuccess(false);
     const currentCapacities = capacityRates;
+    const militaryData = getMilitaryData();
     console.log('Current capacities:', currentCapacities);
-    console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities, economic_points: economicPoints });
-    await saveGameProgress(userAddress, resources, buildings, currentCapacities, economicPoints);
+    console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities, economic_points: economicPoints, military: militaryData });
+    await saveGameProgress(userAddress, resources, buildings, currentCapacities, economicPoints, militaryData);
     setSaving(false);
-    setSaveSuccess(true); // Setze den Erfolg auf true, wenn das Speichern erfolgreich ist
-    setTimeout(() => setSaveSuccess(false), 3000); // Zurücksetzen des Erfolgsstatus nach 3 Sekunden
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 3000);
   };
 
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);

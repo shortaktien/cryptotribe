@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
     await client.connect();
     console.log('Database connection successful');
 
-    const resourcesQuery = 'SELECT resources, updated_at, economic_points FROM player_progress WHERE user_name = $1';
+    const resourcesQuery = 'SELECT resources, updated_at, economic_points, military FROM player_progress WHERE user_name = $1';
     const resourcesValues = [user_name];
     const resourcesResult = await client.query(resourcesQuery, resourcesValues);
 
@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
     }
     console.log('Buildings and capacities query result:', buildingsResult.rows[0]);
 
-    const { resources, updated_at, economic_points } = resourcesResult.rows[0];
+    const { resources, updated_at, economic_points, military } = resourcesResult.rows[0];
     let { buildings, capacities } = buildingsResult.rows[0];
 
     // Berechnung der Kapazitäten und Produktionsraten basierend auf dem Level
@@ -82,6 +82,10 @@ module.exports = async (req, res) => {
       } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine', 'House'].includes(building.name)) {
         building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.8);
         console.log(`Calculated production for ${building.name} level ${building.currentLevel}:`, building.production);
+      } else if (building.name === 'Barracks') {
+        building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
+        console.log(`Calculated capacity for Barracks level ${building.currentLevel}:`, building.capacity);
+        capacities['maxMilitaryCapacity'] = building.capacity.military;
       }
       return building;
     });
@@ -96,7 +100,7 @@ module.exports = async (req, res) => {
 
     const currentTime = new Date();
     const lastUpdateTime = new Date(updated_at);
-    const timeDifferenceInSeconds = Math.floor((currentTime - lastUpdateTime) / 1000); // Ensure integer seconds
+    const timeDifferenceInSeconds = Math.floor((currentTime - lastUpdateTime) / 1000);
 
     // Ausgabe der Zeitdifferenz in der Konsole
     console.log(`User ${user_name} was away for ${timeDifferenceInSeconds} seconds.`);
@@ -105,7 +109,7 @@ module.exports = async (req, res) => {
     const gainedResources = {};
     buildings.forEach(building => {
       if (building.currentLevel > 0) {
-        const productionRate = building.production; // Verwendet die berechnete Produktionsrate
+        const productionRate = building.production;
         if (productionRate) {
           Object.keys(productionRate).forEach(resource => {
             const gained = productionRate[resource] * timeDifferenceInSeconds;
@@ -121,7 +125,10 @@ module.exports = async (req, res) => {
     // Begrenzung der Produktionsmenge auf die Kapazitätsgrenzen
     const { updatedResources, finalGainedResources } = calculateProductionWithinCapacity(resources, gainedResources, capacities);
 
-    res.status(200).json({ resources: updatedResources, buildings, capacities, timeDifferenceInSeconds, gainedResources: finalGainedResources, economic_points });
+    // Konsolenausgabe der geladenen militärischen Einheiten
+    console.log(`Loaded military units for user ${user_name}:`, military);
+
+    res.status(200).json({ resources: updatedResources, buildings, capacities, timeDifferenceInSeconds, gainedResources: finalGainedResources, economic_points, military });
   } catch (error) {
     console.error('Error loading game progress:', error);
     res.status(500).json({ error: 'Internal Server Error' });

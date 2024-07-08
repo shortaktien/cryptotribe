@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMilitary } from './MilitaryContext';
 import militaryMainPage from "../assets/barracksBuildingImage.webp";
-import './Military.css';
+import './Military.css'; // Separate CSS-Datei für Military
 
 const defaultImage = {
   id: 0,
@@ -88,51 +88,54 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
   };
 
   const renderResourceCost = (cost, highlight = false) => {
-    return Object.entries(cost).map(([resource, amount], index, array) => {
-      const hasEnough = resources[resource] >= amount;
-      const style = highlight ? {
-        color: hasEnough ? 'green' : 'red',
-        fontWeight: hasEnough ? 'normal' : 'bold'
-      } : {};
-      return (
-        <span
-          key={resource}
-          style={style}
-        >
-          {amount} {resource}{index < array.length - 1 ? ', ' : ''}
-        </span>
-      );
-    });
+    return Object.entries(cost)
+      .filter(([resource, amount]) => amount > 0)
+      .map(([resource, amount], index, array) => {
+        const hasEnough = resources[resource] >= amount;
+        const style = highlight ? {
+          color: hasEnough ? 'green' : 'red',
+          fontWeight: hasEnough ? 'normal' : 'bold'
+        } : {};
+        return (
+          <span
+            key={resource}
+            style={style}
+          >
+            {amount} {resource}{index < array.length - 1 ? ', ' : ''}
+          </span>
+        );
+      });
   };
 
   return (
     <div className='main-content'>
       <div className="military">
         <div className="blue-rectangle">
-          <img src={selectedUnit.image} alt={selectedUnit.name} className="blue-image" />
+          <div className="image-container">
+            <img src={selectedUnit.image} alt={selectedUnit.name} className="blue-image" />
+            
+            {selectedUnit.id !== 0 && (
+              <div className={`unit-info current-info current-info-${selectedUnit.id} ${isOverlapping(selectedUnit) ? 'overlapping' : ''}`}>
+                <h2>{selectedUnit.name}</h2>
+                <p>Cost: {renderResourceCost(selectedUnit.cost)}</p>
+                <p>Attack: {selectedUnit.attack}</p>
+                <p>Defense: {selectedUnit.defense}</p>
+                <p>{selectedUnit.description}</p>
+              </div>
+            )}
 
-          {selectedUnit.id !== 0 && (
-            <div className={`unit-info current-info current-info-${selectedUnit.id} ${isOverlapping(selectedUnit) ? 'overlapping' : ''}`}>
-              <h2>{selectedUnit.name}</h2>
-              <h3>Unit Information:</h3>
-              <p>Cost: {renderResourceCost(selectedUnit.cost)}</p>
-              <p>Attack: {selectedUnit.attack}</p>
-              <p>Defense: {selectedUnit.defense}</p>
-              <p>{selectedUnit.description}</p>
-            </div>
-          )}
-
-          {selectedUnit.id !== 0 && (
-            <div className={`unit-info next-info next-info-${selectedUnit.id}`}>
-              <button onClick={handleTrain} disabled={!canTrain(selectedUnit.cost) || isCooldownActive}>
-                {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
-                {isCooldownActive ? `Training... ${remainingTime}s` : `Train Unit`}
-              </button>
-              <button onClick={handleDisband} disabled={selectedUnit.isTraining}>
-                Disband Unit
-              </button>
-            </div>
-          )}
+            {selectedUnit.id !== 0 && (
+              <div className={`unit-info next-info next-info-${selectedUnit.id}`}>
+                <button onClick={handleTrain} disabled={!canTrain(selectedUnit.cost) || isCooldownActive}>
+                  {isCooldownActive && <div className="button-progress" style={{ width: `${cooldownProgress}%` }}></div>}
+                  {isCooldownActive ? `Training... ${remainingTime}s` : `Train Unit`}
+                </button>
+                <button onClick={handleDisband} disabled={selectedUnit.isTraining}>
+                  Disband Unit
+                </button>
+              </div>
+            )}
+          </div>
 
           <div className="tooltip">
             <button>?</button>
@@ -140,7 +143,6 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
               {selectedUnit.id !== 0 && (
                 <>
                   <h2>{selectedUnit.name}</h2>
-                  <h3>Unit Information:</h3>
                   <p>Cost: {renderResourceCost(selectedUnit.cost)}</p>
                   <p>Attack: {selectedUnit.attack}</p>
                   <p>Defense: {selectedUnit.defense}</p>
@@ -152,7 +154,7 @@ const Military = ({ resources, capacityRates, spendResources, handleTrainUnit, h
         </div>
         <div className="circular-images">
           {units.map((unit) => (
-            <div key={unit.id} className="circular-image-wrapper" onClick={() => handleUnitClick(unit)}>
+            <div key={unit.id} className={`circular-image-wrapper`} onClick={() => handleUnitClick(unit)}>
               <img src={unit.image} alt={unit.name} className="circular-image" />
               <div className="level">{unit.name}</div>
             </div>

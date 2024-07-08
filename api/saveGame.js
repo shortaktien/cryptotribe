@@ -1,9 +1,9 @@
 const { Client } = require('pg');
 
 module.exports = async (req, res) => {
-  const { userAddress, resources, buildings, capacities, economic_points } = req.body;
+  const { userAddress, resources, buildings, capacities, economic_points, military } = req.body;
 
-  if (!userAddress || !resources || !buildings || !capacities || economic_points === undefined) {
+  if (!userAddress || !resources || !buildings || !capacities || economic_points === undefined || !military) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
@@ -18,13 +18,14 @@ module.exports = async (req, res) => {
     await client.connect();
 
     const playerProgressQuery = `
-      INSERT INTO player_progress (user_name, resources, economic_points, updated_at)
-      VALUES ($1, $2::json, $3, $4)
+      INSERT INTO player_progress (user_name, resources, economic_points, updated_at, military)
+      VALUES ($1, $2::json, $3, $4, $5::json)
       ON CONFLICT (user_name) 
       DO UPDATE SET 
         resources = EXCLUDED.resources,
         economic_points = EXCLUDED.economic_points,
-        updated_at = EXCLUDED.updated_at
+        updated_at = EXCLUDED.updated_at,
+        military = EXCLUDED.military
     `;
 
     const buildingProgressQuery = `
@@ -36,17 +37,18 @@ module.exports = async (req, res) => {
         capacities = EXCLUDED.capacities
     `;
 
-    const currentTime = new Date(); // Hinzufügen der aktuellen Zeit
+    const currentTime = new Date();
     const playerProgressValues = [
       userAddress,
       JSON.stringify(resources),
       economic_points,
-      currentTime, // Übergeben der aktuellen Zeit
+      currentTime,
+      JSON.stringify(military),
     ];
 
     const buildingProgressValues = [
       userAddress,
-      JSON.stringify(buildings) || '{}', // Sicherstellen, dass buildings niemals null ist
+      JSON.stringify(buildings) || '{}',
       JSON.stringify(capacities),
     ];
 

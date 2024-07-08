@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useCallback } from 'react';
 import unitImage1 from "../assets/infantrieUnitImage.webp"; 
 import unitImage2 from "../assets/cavalryUnitImage.webp";
 
@@ -14,11 +14,9 @@ const initialUnitsData = [
     attack: 2,
     defense: 1,
     life: 10,
-    capacity: 1, // Kapazität, die diese Einheit benötigt
-    description: 'Trained in the shadow of the Tarnished Warriors grim tradition, these soldiers would sacrifice everything for the power of the Threads of Continuity. Each one harbors a dark ambition to become the next ruler, their hearts slowly succumbing to corruption.',
-    count: 0, // Initialisiere die Anzahl der Einheiten
-    speed: 60, // Bewegungsgeschwindigkeit
-    attackCooldown: 1000 // Angriffstempo (1 Angriff pro Sekunde)
+    capacity: 1,
+    description: 'Infantry unit description.',
+    count: 0,
   },
   {
     id: 2,
@@ -29,22 +27,21 @@ const initialUnitsData = [
     attack: 1,
     defense: 2,
     life: 15,
-    capacity: 2, // Kapazität, die diese Einheit benötigt
-    description: 'These soldiers water their brutal steeds outside the city, where the Gleam of Eternity is believed to be stronger. Their horses are fierce beasts, capable of smashing through house walls with ease, instilling fear and chaos wherever they charge.',
-    count: 0, // Initialisiere die Anzahl der Einheiten
-    speed: 20, // Bewegungsgeschwindigkeit
-    attackCooldown: 2000 // Angriffstempo (1 Angriff alle 2 Sekunden)
+    capacity: 2,
+    description: 'Cavalry unit description.',
+    count: 0,
   }
 ];
 
-export const MilitaryProvider = ({ children, spendResources, updateCapacityRates, refundResources, resources, capacityRates }) => {
+export const MilitaryProvider = ({ children, spendResources, updateCapacityRates }) => {
   const [units, setUnits] = useState(initialUnitsData);
 
   const trainUnit = (unitId) => {
     setUnits(prevUnits =>
       prevUnits.map(unit => {
         if (unit.id === unitId) {
-          if (spendResources(unit.cost)) {
+          const success = spendResources(unit.cost);
+          if (success) {
             const updatedUnit = {
               ...unit,
               isTraining: true,
@@ -56,13 +53,13 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
                   if (u.id === unitId) {
                     if (u.buildProgress >= unit.buildTime) {
                       clearInterval(intervalId);
-                      updateCapacityRates('military', unit.capacity);
                       const newUnit = {
                         ...u,
                         isTraining: false,
                         buildProgress: 0,
                         count: (u.count || 0) + 1 // Anzahl der Einheiten erhöhen
                       };
+                      updateCapacityRates('military', newUnit.count);
                       return newUnit;
                     }
                     return {
@@ -86,7 +83,7 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
     setUnits(prevUnits =>
       prevUnits.map(unit => {
         if (unit.id === unitId && unit.count > 0) {
-          updateCapacityRates('military', -unit.capacity);
+          updateCapacityRates('military', unit.count - 1); // Reduzieren Sie die Kapazitätsraten um 1 für jede abgerüstete Einheit
           return {
             ...unit,
             count: (unit.count || 0) - 1, // Anzahl der Einheiten verringern
@@ -99,8 +96,25 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
     );
   };
 
+  const getMilitaryData = () => {
+    const militaryData = {};
+    units.forEach(unit => {
+      militaryData[unit.name.toLowerCase()] = unit.count;
+    });
+    return militaryData;
+  };
+
+  const updateUnits = useCallback((militaryData) => {
+    setUnits(prevUnits =>
+      prevUnits.map(unit => ({
+        ...unit,
+        count: militaryData[unit.name.toLowerCase()] || 0
+      }))
+    );
+  }, []);
+
   return (
-    <MilitaryContext.Provider value={{ units, trainUnit, disbandUnit, resources, capacityRates }}>
+    <MilitaryContext.Provider value={{ units, trainUnit, disbandUnit, getMilitaryData, updateUnits }}>
       {children}
     </MilitaryContext.Provider>
   );
