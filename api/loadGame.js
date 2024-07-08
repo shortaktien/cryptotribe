@@ -100,7 +100,7 @@ module.exports = async (req, res) => {
 
     const currentTime = new Date();
     const lastUpdateTime = new Date(updated_at);
-    const timeDifferenceInSeconds = Math.floor((currentTime - lastUpdateTime) / 1000);
+    const timeDifferenceInSeconds = Math.floor((currentTime - lastUpdateTime) / 1000); // Ensure integer seconds
 
     // Ausgabe der Zeitdifferenz in der Konsole
     console.log(`User ${user_name} was away for ${timeDifferenceInSeconds} seconds.`);
@@ -109,7 +109,7 @@ module.exports = async (req, res) => {
     const gainedResources = {};
     buildings.forEach(building => {
       if (building.currentLevel > 0) {
-        const productionRate = building.production;
+        const productionRate = building.production; // Verwendet die berechnete Produktionsrate
         if (productionRate) {
           Object.keys(productionRate).forEach(resource => {
             const gained = productionRate[resource] * timeDifferenceInSeconds;

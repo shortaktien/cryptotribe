@@ -36,6 +36,10 @@ const initialUnitsData = [
 export const MilitaryProvider = ({ children, spendResources, updateCapacityRates }) => {
   const [units, setUnits] = useState(initialUnitsData);
 
+  const calculateTotalMilitaryCapacity = (units) => {
+    return units.reduce((sum, unit) => sum + (unit.count * unit.capacity), 0);
+  };
+
   const trainUnit = (unitId) => {
     setUnits(prevUnits =>
       prevUnits.map(unit => {
@@ -59,7 +63,7 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
                         buildProgress: 0,
                         count: (u.count || 0) + 1 // Anzahl der Einheiten erhöhen
                       };
-                      updateCapacityRates('military', newUnit.count);
+                      updateCapacityRates('military', calculateTotalMilitaryCapacity([...prevUnits, newUnit]));
                       return newUnit;
                     }
                     return {
@@ -83,10 +87,11 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
     setUnits(prevUnits =>
       prevUnits.map(unit => {
         if (unit.id === unitId && unit.count > 0) {
-          updateCapacityRates('military', unit.count - 1); // Reduzieren Sie die Kapazitätsraten um 1 für jede abgerüstete Einheit
+          const newCount = (unit.count || 0) - 1;
+          updateCapacityRates('military', calculateTotalMilitaryCapacity([...prevUnits, { ...unit, count: newCount }]));
           return {
             ...unit,
-            count: (unit.count || 0) - 1, // Anzahl der Einheiten verringern
+            count: newCount, // Anzahl der Einheiten verringern
             isTraining: false,
             buildProgress: 0
           };
@@ -96,13 +101,13 @@ export const MilitaryProvider = ({ children, spendResources, updateCapacityRates
     );
   };
 
-  const getMilitaryData = () => {
+  const getMilitaryData = useCallback(() => {
     const militaryData = {};
     units.forEach(unit => {
       militaryData[unit.name.toLowerCase()] = unit.count;
     });
     return militaryData;
-  };
+  }, [units]);
 
   const updateUnits = useCallback((militaryData) => {
     setUnits(prevUnits =>
