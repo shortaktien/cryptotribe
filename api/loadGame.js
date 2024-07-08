@@ -76,10 +76,10 @@ module.exports = async (req, res) => {
 
     // Berechnung der Kapazitäten und Produktionsraten basierend auf dem Level
     buildings = buildings.map(building => {
-      if (building.name === 'Warehouse') {
+      if (building.name === 'Warehouse' || building.name === 'House') {
         building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
-        console.log(`Calculated capacity for Warehouse level ${building.currentLevel}:`, building.capacity);
-      } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine'].includes(building.name)) {
+        console.log(`Calculated capacity for ${building.name} level ${building.currentLevel}:`, building.capacity);
+      } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine', 'House'].includes(building.name)) {
         building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.8);
         console.log(`Calculated production for ${building.name} level ${building.currentLevel}:`, building.production);
       }
@@ -88,7 +88,7 @@ module.exports = async (req, res) => {
 
     // Kapazitäten aktualisieren
     capacities = buildings.reduce((acc, building) => {
-      if (building.name === 'Warehouse') {
+      if (building.capacity) {
         acc = { ...acc, ...building.capacity };
       }
       return acc;
