@@ -2,21 +2,17 @@ const { Client } = require('pg');
 
 const calculateCapacity = (baseCapacity, level, multiplier) => {
   const capacity = { ...baseCapacity };
-  if (baseCapacity) {
-    Object.keys(baseCapacity).forEach(resource => {
-      capacity[resource] = Math.ceil(baseCapacity[resource] * Math.pow(multiplier, level));
-    });
-  }
+  Object.keys(baseCapacity).forEach(resource => {
+    capacity[resource] = Math.ceil(baseCapacity[resource] * Math.pow(multiplier, level));
+  });
   return capacity;
 };
 
 const calculateProduction = (baseProduction, level, multiplier) => {
   const production = { ...baseProduction };
-  if (baseProduction) {
-    Object.keys(baseProduction).forEach(resource => {
-      production[resource] = baseProduction[resource] * Math.pow(multiplier, level);
-    });
-  }
+  Object.keys(baseProduction).forEach(resource => {
+    production[resource] = baseProduction[resource] * Math.pow(multiplier, level);
+  });
   return production;
 };
 
@@ -81,35 +77,15 @@ module.exports = async (req, res) => {
     // Berechnung der Kapazitäten und Produktionsraten basierend auf dem Level
     buildings = buildings.map(building => {
       if (building.name === 'Warehouse' || building.name === 'House') {
-        if (building.baseCapacity) {
-          building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
-          console.log(`Calculated capacity for ${building.name} level ${building.currentLevel}:`, building.capacity);
-        }
-        if (building.baseProduction) {
-          building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.2); // Fügt die Produktionsberechnung für House hinzu
-          console.log(`Calculated production for ${building.name} level ${building.currentLevel}:`, building.production);
-        }
-      } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine'].includes(building.name)) {
-        if (building.baseProduction) {
-          building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.8);
-          console.log(`Calculated production for ${building.name} level ${building.currentLevel}:`, building.production);
-        }
+        building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
+        console.log(`Calculated capacity for ${building.name} level ${building.currentLevel}:`, building.capacity);
+      } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine', 'House', 'Science'].includes(building.name)) {
+        building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.8);
+        console.log(`Calculated production for ${building.name} level ${building.currentLevel}:`, building.production);
       } else if (building.name === 'Barracks') {
-        if (building.baseCapacity) {
-          building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
-          console.log(`Calculated capacity for Barracks level ${building.currentLevel}:`, building.capacity);
-          capacities['maxMilitaryCapacity'] = building.capacity.military;
-        }
-      } else if (building.name === 'House') {
-        if (building.baseProduction) {
-          building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.2);
-          console.log(`Calculated production for House level ${building.currentLevel}:`, building.production);
-        }
-      } else if (building.name === 'Science') {
-        if (building.baseProduction) {
-          building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.5);
-          console.log(`Calculated production for Science level ${building.currentLevel}:`, building.production);
-        }
+        building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
+        console.log(`Calculated capacity for Barracks level ${building.currentLevel}:`, building.capacity);
+        capacities['maxMilitaryCapacity'] = building.capacity.military; // Korrigierte Zuweisung
       }
       return building;
     });
@@ -132,12 +108,14 @@ module.exports = async (req, res) => {
     // Berechne die neuen Ressourcen basierend auf der verstrichenen Zeit und der Produktionsrate der Gebäude
     const gainedResources = {};
     buildings.forEach(building => {
-      if (building.currentLevel > 0 && building.production) {
+      if (building.currentLevel > 0) {
         const productionRate = building.production; // Verwendet die berechnete Produktionsrate
-        Object.keys(productionRate).forEach(resource => {
-          const gained = productionRate[resource] * timeDifferenceInSeconds;
-          gainedResources[resource] = (gainedResources[resource] || 0) + gained;
-        });
+        if (productionRate) {
+          Object.keys(productionRate).forEach(resource => {
+            const gained = productionRate[resource] * timeDifferenceInSeconds;
+            gainedResources[resource] = (gainedResources[resource] || 0) + gained;
+          });
+        }
       }
     });
 

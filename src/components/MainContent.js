@@ -23,6 +23,8 @@ const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates,
       setGrossProduction(grossRates || {});
     };
 
+    updateProductionRates(); // Initial call to set production rates
+
     const intervalId = setInterval(updateProductionRates, 1000);
 
     return () => clearInterval(intervalId);
