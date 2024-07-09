@@ -1,7 +1,7 @@
 const { Client } = require('pg');
 
 const calculateCapacity = (baseCapacity, level, multiplier) => {
-  const capacity = {};
+  const capacity = { ...baseCapacity };
   Object.keys(baseCapacity).forEach(resource => {
     capacity[resource] = Math.ceil(baseCapacity[resource] * Math.pow(multiplier, level));
   });
@@ -9,7 +9,7 @@ const calculateCapacity = (baseCapacity, level, multiplier) => {
 };
 
 const calculateProduction = (baseProduction, level, multiplier) => {
-  const production = {};
+  const production = { ...baseProduction };
   Object.keys(baseProduction).forEach(resource => {
     production[resource] = baseProduction[resource] * Math.pow(multiplier, level);
   });
@@ -79,13 +79,19 @@ module.exports = async (req, res) => {
       if (building.name === 'Warehouse' || building.name === 'House') {
         building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
         console.log(`Calculated capacity for ${building.name} level ${building.currentLevel}:`, building.capacity);
-      } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine', 'House'].includes(building.name)) {
+      } else if (['Lumberjack', 'Stonemason', 'Farm', 'Drawing well', 'Kohlemine', 'Goldmine'].includes(building.name)) {
         building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.8);
         console.log(`Calculated production for ${building.name} level ${building.currentLevel}:`, building.production);
       } else if (building.name === 'Barracks') {
         building.capacity = calculateCapacity(building.baseCapacity, building.currentLevel, 1.4);
         console.log(`Calculated capacity for Barracks level ${building.currentLevel}:`, building.capacity);
         capacities['maxMilitaryCapacity'] = building.capacity.military;
+      } else if (building.name === 'PopulationCenter') {
+        building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.2);
+        console.log(`Calculated production for PopulationCenter level ${building.currentLevel}:`, building.production);
+      } else if (building.name === 'Science') {
+        building.production = calculateProduction(building.baseProduction, building.currentLevel, 1.5);
+        console.log(`Calculated production for Science level ${building.currentLevel}:`, building.production);
       }
       return building;
     });

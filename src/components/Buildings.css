@@ -163,3 +163,21 @@ button {
   z-index: 1;
   overflow: hidden;
 }
+
+/* Define the keyframes for the click animation */
+@keyframes clickAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Apply the click animation to the building images */
+.circular-image-wrapper.clicked {
+  animation: clickAnimation 0.3s ease-out;
+}

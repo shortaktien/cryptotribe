@@ -12,7 +12,6 @@ const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates,
   const { ships } = useShipyard();
 
   useEffect(() => {
-    // Update the units with the data loaded from the server only if military has changed
     updateUnits(military);
   }, [military, updateUnits]);
 

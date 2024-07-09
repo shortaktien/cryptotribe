@@ -11,15 +11,20 @@ const defaultImage = {
   info: 'Select a building to see details.'
 };
 
-const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, handleUpgradeBuilding, handleDemolishBuilding, setEconomicPoints }) => { // setEconomicPoints als Prop hinzufügen
+const Buildings = ({ resources, spendResources, updateProductionRate, updateCapacityRates, handleUpgradeBuilding, handleDemolishBuilding, setEconomicPoints }) => {
   const [selectedBuilding, setSelectedBuilding] = useState(defaultImage);
   const [cooldownProgress, setCooldownProgress] = useState(0);
   const [isCooldownActive, setIsCooldownActive] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [clickedBuildingId, setClickedBuildingId] = useState(null);
   const { buildings, upgradeBuilding, demolishBuilding } = useBuildings();
 
   const handleBuildingClick = (building) => {
     setSelectedBuilding(building);
+    setClickedBuildingId(building.id);
+
+    // Remove the clicked state after the animation duration
+    setTimeout(() => setClickedBuildingId(null), 300);
   };
 
   const isOverlapping = (building) => {
@@ -145,7 +150,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
         <h2 className="section-title">{sectionTitle}</h2>
         <div className="circular-images">
           {sectionBuildings.map((building) => (
-            <div key={building.id} className={`circular-image-wrapper ${!canBuildBuilding(building) ? 'grayscale' : ''}`} onClick={() => handleBuildingClick(building)}>
+            <div key={building.id} className={`circular-image-wrapper ${!canBuildBuilding(building) ? 'grayscale' : ''} ${clickedBuildingId === building.id ? 'clicked' : ''}`} onClick={() => handleBuildingClick(building)}>
               <img src={building.image} alt={building.name} className="circular-image" />
               <div className="level">{building.currentLevel}</div>
             </div>
