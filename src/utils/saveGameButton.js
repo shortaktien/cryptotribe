@@ -8,6 +8,8 @@ const useSaveGame = () => {
 
     try {
       console.log('Military data before saving:', military);
+      console.log('Buildings data before saving:', buildings);
+      console.log('Capacities data before saving:', capacities);
 
       const response = await fetch('/api/saveGame', {
         method: 'POST',
@@ -30,9 +32,6 @@ const useSaveGame = () => {
 
       const data = await response.json();
       console.log('Game progress saved:', data.message);
-
-      const totalUnits = Object.values(military).reduce((acc, count) => acc + (count || 0), 0);
-      console.log(`Saved military units: ${totalUnits}`);
     } catch (error) {
       console.error('Error saving game progress:', error);
     }
