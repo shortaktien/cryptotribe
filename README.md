@@ -4,7 +4,7 @@
 
 
 
-[![Vercel Badge](https://vercelbadge.vercel.app/api/shortaktien/cryptotribe)](https://github.com/shortaktien/cryptotribe)
+[![Vercel Badge](https://vercelbadge.vercel.app/api/shortaktien/cryptotribe)](cryptotribe-n4qkhpl1c-shortaktiens-projects.vercel.app)
 
 
 
