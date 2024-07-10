@@ -61,4 +61,4 @@ For any inquiries, please contact us at [Mail](mailto:info@shortaktien.de).
 
 ---
 
-Made with ❤️ by the Alexander.
+Made with ❤️ by Alexander.
