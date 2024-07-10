@@ -4,7 +4,7 @@
 
 
 
-[![Vercel Badge](https://vercelbadge.vercel.app/api/shortaktien/cryptotribe)](https://github.com/datejer/vercel-badge?tab=readme-ov-file)
+[![Vercel Badge](https://vercelbadge.vercel.app/api/shortaktien/cryptotribe)](https://github.com/shortaktien/cryptotribe)
 
 
 
