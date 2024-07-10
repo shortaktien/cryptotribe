@@ -9,15 +9,11 @@
 <p align="center">
   <a href="https://github.com/shortaktien/cryptotribe">
     <img src="https://vercelbadge.vercel.app/api/shortaktien/cryptotribe" alt="Vercel Badge"/>
-  </a>
-</p>
-
-<p align="center">
-  <img src="https://github.com/shortaktien/cryptotribe/workflows/Build/badge.svg" alt="Build Status"/>
-  <img src="https://img.shields.io/david/shortaktien/cryptotribe" alt="Dependencies"/>
-  <img src="https://img.shields.io/github/v/release/shortaktien/cryptotribe" alt="Version"/>
-  <img src="https://img.shields.io/github/issues/shortaktien/cryptotribe" alt="GitHub issues"/>
-</p>
+    <img src="https://github.com/shortaktien/cryptotribe/actions/workflows/build.yml/badge.svg" alt="Build Status"/>
+    <img src="https://img.shields.io/david/shortaktien/cryptotribe" alt="Dependencies"/>
+    <img src="https://img.shields.io/github/v/release/shortaktien/cryptotribe" alt="Version"/>
+    <img src="https://img.shields.io/github/issues/shortaktien/cryptotribe" alt="GitHub issues"/>
+</p>>
 
 
 
