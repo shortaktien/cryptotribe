@@ -51,9 +51,6 @@ Join me to revolutionize community management in the crypto space. Whether you'r
 
 - **Follow**: Stay up-to-date with our latest developments by following us on [Twitter](https://twitter.com/shortaktien) and [GitHub](https://github.com/shortaktien/cryptotribe).
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
