@@ -47,7 +47,7 @@ Are you ready to forge your destiny and lead your realm to immortal glory? Dive 
 
 ## Get Involved
 
-Join us on our journey to revolutionize community management in the crypto space. Whether you're a developer, a community manager, or simply a blockchain enthusiast, there's a place for you in the CryptoTribe.
+Join me to revolutionize community management in the crypto space. Whether you're a developer, a community manager, or simply a blockchain enthusiast, there's a place for you in the CryptoTribe.
 
 - **Follow**: Stay up-to-date with our latest developments by following us on [Twitter](https://twitter.com/shortaktien) and [GitHub](https://github.com/shortaktien/cryptotribe).
 
@@ -57,7 +57,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For any inquiries, please contact us at [email@example.com](mailto:info@shortaktien.de).
+For any inquiries, please contact us at [Mail](mailto:info@shortaktien.de).
 
 ---
 
