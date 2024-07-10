@@ -2,7 +2,7 @@
 
 
 <p align="center">
-  <img src="https://example.com/logo.png" alt="CryptoTribe Logo" />
+  <img src="src/assets/cryptotribeImage.webp" alt="CryptoTribe Logo" />
 </p>
 
 <p align="center">
