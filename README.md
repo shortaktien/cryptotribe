@@ -1,10 +1,15 @@
 # CryptoTribe
 
-![CryptoTribe Logo](src/assets/cryptotribeImage.webp)
 
+<p align="center">
+  <img src="https://example.com/logo.png" alt="CryptoTribe Logo" />
+</p>
 
-
-[![Vercel Badge](https://vercelbadge.vercel.app/api/shortaktien/cryptotribe)](cryptotribe-n4qkhpl1c-shortaktiens-projects.vercel.app)
+<p align="center">
+  <a href="https://github.com/shortaktien/cryptotribe">
+    <img src="https://vercelbadge.vercel.app/api/shortaktien/cryptotribe" alt="Vercel Badge"/>
+  </a>
+</p>
 
 
 
