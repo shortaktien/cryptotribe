@@ -2,6 +2,12 @@
 
 ![CryptoTribe Logo](src/assets/cryptotribeImage.webp)
 
+
+
+[![Vercel Badge](https://vercelbadge.vercel.app/api/shortaktien/cryptotribe)](https://github.com/datejer/vercel-badge?tab=readme-ov-file)
+
+
+
 ## About
 
 CryptoTribe is an immersive decentralized application (dApp) designed to manage and engage cryptocurrency communities through strategic gameplay. Set in the fantasy world of Ealdoria, users can build, manage, and expand their empires by leveraging blockchain technology for secure and transparent operations.
