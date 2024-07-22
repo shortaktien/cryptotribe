@@ -33,6 +33,10 @@ CryptoTribe is an immersive decentralized application (dApp) designed to manage 
 
 ## Game Description
 
+To Play you need MetaMask and the IOTA EVM Testnet Chain:
+Chain ID	1075
+API:  https://iota-testnet-evm.public.blastapi.io 
+
 ### Welcome to the World of Ealdoria
 
 In the shadows of bygone ages, where kings and warlords once clashed for supremacy, a new power rises. In Ealdoria, the fate of your realm rests in your hands. You are the architect of your own empire, and only through astute management and strategic thinking will you survive and thrive in this unforgiving world.

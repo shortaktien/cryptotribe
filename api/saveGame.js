@@ -17,6 +17,15 @@ module.exports = async (req, res) => {
   try {
     await client.connect();
 
+    // Hole die aktuellen Punkte aus der Datenbank
+    const currentPointsQuery = 'SELECT economic_points FROM player_progress WHERE user_name = $1';
+    const currentPointsResult = await client.query(currentPointsQuery, [userAddress]);
+
+    let totalEconomicPoints = economic_points;
+    if (currentPointsResult.rows.length > 0) {
+      totalEconomicPoints += currentPointsResult.rows[0].economic_points;
+    }
+
     const playerProgressQuery = `
       INSERT INTO player_progress (user_name, resources, economic_points, updated_at, military)
       VALUES ($1, $2::json, $3, $4, $5::json)
@@ -41,7 +50,7 @@ module.exports = async (req, res) => {
     const playerProgressValues = [
       userAddress,
       JSON.stringify(resources),
-      economic_points,
+      totalEconomicPoints,
       currentTime,
       JSON.stringify(military),
     ];
