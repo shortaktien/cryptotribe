@@ -49,6 +49,14 @@ const StartPage = ({ onConnect }) => {
     }
   };
 
+  const handleGitHubClick = () => {
+    window.open('https://github.com/shortaktien/cryptotribe', '_blank');
+  };
+
+  const handleXClick = () => {
+    window.open('https://x.com/shortaktien', '_blank');
+  };
+
   return (
     <div className="start-page">
       <div className="headline">
@@ -63,8 +71,8 @@ const StartPage = ({ onConnect }) => {
           {loading ? 'Loading...' : isConnected ? 'Connected' : 'Login with MetaMask'}
           {loading && <div className="progress-bar"></div>}
         </button>
-        <button className="other-button">Button 2</button>
-        <button className="other-button">Button 3</button>
+        <button className="other-button github-button" onClick={handleGitHubClick}>GitHub</button>
+        <button className="other-button x-button" onClick={handleXClick}>X/Twitter</button>
         <button className="other-button">Button 4</button>
       </div>
       <div className="description">

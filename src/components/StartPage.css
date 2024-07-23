@@ -1,6 +1,24 @@
+.connect-button,
+.other-button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
+  display: flex; /* Für zentrierten Inhalt */
+  align-items: center; /* Für zentrierten Inhalt */
+  justify-content: center; /* Für zentrierten Inhalt */
+}
+
 .connect-button {
-  position: relative;
-  overflow: hidden;
+  background-color: #ff9800;
+  color: white;
+}
+
+.connect-button:hover {
+  background-color: #e68a00;
+  transform: scale(1.05);
 }
 
 .connect-button.loading {
@@ -21,19 +39,45 @@
   animation: loadingAnimation 3s ease-in-out infinite;
 }
 
-@keyframes loadingAnimation {
-  0% {
-    transform: scaleX(0);
-  }
-  50% {
-    transform: scaleX(1);
-  }
-  100% {
-    transform: scaleX(0);
-  }
+.other-button {
+  background-color: #757575;
+  color: white;
 }
 
-/* Rest deines CSS bleibt unverändert */
+.other-button:hover {
+  background-color: #616161;
+  transform: scale(1.05);
+}
+
+.github-button {
+  background-color: #24292e;
+  color: white;
+}
+
+.github-button:hover {
+  background-color: #444d56;
+}
+
+.x-button {
+  background-color: #1da1f2;
+  color: white;
+}
+
+.x-button:hover {
+  background-color: #0d95e8;
+}
+
+.button-container {
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
 
 .start-page {
   position: relative;
@@ -62,48 +106,6 @@
   margin-bottom: 20px;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.button-container {
-  width: 80%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.connect-button,
-.other-button {
-  padding: 15px 30px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s, transform 0.3s;
-}
-
-.connect-button {
-  background-color: #ff9800;
-  color: white;
-}
-
-.connect-button:hover {
-  background-color: #e68a00;
-  transform: scale(1.05);
-}
-
-.other-button {
-  background-color: #757575;
-  color: white;
-}
-
-.other-button:hover {
-  background-color: #616161;
-  transform: scale(1.05);
 }
 
 .description {
@@ -146,5 +148,17 @@
 
   .description {
       padding: 20px;
+  }
+}
+
+@keyframes loadingAnimation {
+  0% {
+    transform: scaleX(0);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
   }
 }

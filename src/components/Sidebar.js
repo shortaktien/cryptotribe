@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useBuildings } from './BuildingsContext';
 import useResources from './SetResources';
 import useSaveGame from '../utils/saveGameButton';
-import { useMilitary } from './MilitaryContext';
 import allianceImage from "../assets/allianceImage.webp";
 import buildingsImage from "../assets/buildingsImage.webp";
 import defenceImage from "../assets/defenceImage.webp";
@@ -21,7 +20,7 @@ const Sidebar = ({ userAddress, resources, economicPoints }) => {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const { buildings } = useBuildings();
-  const { capacityRates } = useResources();
+  const { capacityRates, setResources } = useResources(); // Ressourcen aktualisieren
   const saveGameProgress = useSaveGame();
   const navigate = useNavigate();
 
@@ -44,6 +43,26 @@ const Sidebar = ({ userAddress, resources, economicPoints }) => {
     setSaving(false);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
+  };
+
+  const handleCheat = () => {
+    console.log('Cheat button clicked');
+    setResources(prevResources => {
+      console.log('Previous resources:', prevResources);
+      const newResources = {
+        water: prevResources.water + 100,
+        food: prevResources.food + 100,
+        wood: prevResources.wood + 100,
+        stone: prevResources.stone + 100,
+        knowledge: prevResources.knowledge + 100,
+        population: prevResources.population + 100,
+        coal: prevResources.coal + 100,
+        gold: prevResources.gold + 100,
+        military: prevResources.military + 100
+      };
+      console.log('New resources:', newResources);
+      return newResources;
+    });
   };
 
   const isScienceBuilt = buildings.some(building => building.name === 'Science' && building.currentLevel > 0);
@@ -114,6 +133,12 @@ const Sidebar = ({ userAddress, resources, economicPoints }) => {
         >
           {saving ? 'Saving...' : saveSuccess ? 'Game Saved' : 'Save Game'}
           {saving && <div className="progress-bar"></div>}
+        </button>
+        <button 
+          className="cheat-button" 
+          onClick={handleCheat}
+        >
+          Cheat (+100 resources)
         </button>
       </div>
       <div className="dropdown-menu">

@@ -176,16 +176,14 @@ const initialBuildingsData = [
 const calculateCost = (baseCost, level, multiplier) => {
   const cost = {};
   Object.keys(baseCost).forEach(resource => {
-    // Kohle nur ab Level 5 hinzufügen
     if (resource === 'coal' && level < 5) {
-      cost[resource] = 0; // Kein Kohleverbrauch vor Level 5
+      cost[resource] = 0;
     } else {
       cost[resource] = Math.ceil(baseCost[resource] * Math.pow(multiplier, level));
     }
   });
   return cost;
 };
-
 
 const calculateProduction = (baseProduction, level, multiplier) => {
   const production = {};
@@ -235,7 +233,9 @@ const BuildingsProvider = ({
     (initialBuildings || initialBuildingsData).map(building => ({
       ...building,
       levels: generateLevels(building),
-      currentLevel: building.currentLevel || 0
+      currentLevel: building.currentLevel || 0,
+      buildStartTime: building.buildStartTime || null,
+      buildTimeRemaining: building.buildTimeRemaining || null,
     }))
   );
 
@@ -244,7 +244,9 @@ const BuildingsProvider = ({
       setBuildings(initialBuildings.map(building => ({
         ...building,
         levels: generateLevels(building),
-        currentLevel: building.currentLevel || 0
+        currentLevel: building.currentLevel || 0,
+        buildStartTime: building.buildStartTime || null,
+        buildTimeRemaining: building.buildTimeRemaining || null,
       })));
     }
   }, [initialBuildings]);
@@ -258,46 +260,54 @@ const BuildingsProvider = ({
             const nextLevelData = building.levels[nextLevel];
             const totalCost = { ...nextLevelData.cost };
             if (spendResources(totalCost)) {
+              const buildStartTime = new Date();
+              const buildTimeRemaining = nextLevelData.buildTime;
+
               const updatedBuilding = {
                 ...building,
                 isBuilding: true,
+                buildStartTime,
+                buildTimeRemaining,
                 buildProgress: 0
               };
+
               const intervalId = setInterval(() => {
-                setBuildings(prevBuildings =>
-                  prevBuildings.map(b => {
-                    if (b.id === buildingId) {
-                      if (b.buildProgress >= nextLevelData.buildTime) {
-                        clearInterval(intervalId);
-                        const newBuilding = {
-                          ...b,
-                          currentLevel: nextLevel,
-                          isBuilding: false,
-                          buildProgress: 0
-                        };
-                        if (nextLevelData.production) {
-                          Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
-                            updateProductionRate(resource, rate);
-                          });
-                        }
-                        if (nextLevelData.capacity) {
-                          Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
-                            updateCapacityRates(resource, capacity, true);
-                          });
-                        }
-                        if (building.name === 'Barracks') {
-                          updateCapacityRates('maxMilitaryCapacity', nextLevelData.capacity.military, true);
-                        }
-                        return newBuilding;
-                      }
-                      return {
-                        ...b,
-                        buildProgress: b.buildProgress + 1
-                      };
-                    }
-                    return b;
-                  })
-                );
+                const currentTime = new Date();
+                const timeElapsed = Math.floor((currentTime - buildStartTime) / 1000);
+                const newBuildTimeRemaining = buildTimeRemaining - timeElapsed;
+
+                if (newBuildTimeRemaining <= 0) {
+                  clearInterval(intervalId);
+                  const newBuilding = {
+                    ...building,
+                    currentLevel: nextLevel,
+                    isBuilding: false,
+                    buildStartTime: null,
+                    buildTimeRemaining: null,
+                    buildProgress: 0
+                  };
+
+                  if (nextLevelData.production) {
+                    Object.entries(nextLevelData.production).forEach(([resource, rate]) => {
+                      updateProductionRate(resource, rate);
+                    });
+                  }
+                  if (nextLevelData.capacity) {
+                    Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
+                      updateCapacityRates(resource, capacity, true);
+                    });
+                  }
+                  if (building.name === 'Barracks') {
+                    updateCapacityRates('maxMilitaryCapacity', nextLevelData.capacity.military, true);
+                  }
+                  setBuildings(prevBuildings =>
+                    prevBuildings.map(b => (b.id === buildingId ? newBuilding : b))
+                  );
+                } else {
+                  setBuildings(prevBuildings =>
+                    prevBuildings.map(b => (b.id === buildingId ? { ...b, buildTimeRemaining: newBuildTimeRemaining } : b))
+                  );
+                }
               }, 1000);
               return updatedBuilding;
             }
@@ -345,19 +355,7 @@ const BuildingsProvider = ({
       })
     );
   };
-/*
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      buildings.forEach(building => {
-        if (building.baseCapacity) {
-          console.log(`${building.name} Capacities:`, building.levels[building.currentLevel].capacity);
-        }
-      });
-    }, 2000);
 
-    return () => clearInterval(intervalId);
-  }, [buildings]);
-*/
   return (
     <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding }}>
       {children}

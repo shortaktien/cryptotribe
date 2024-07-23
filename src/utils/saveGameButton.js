@@ -6,9 +6,16 @@ const useSaveGame = () => {
   const saveGameProgress = async (userAddress, resources, buildings, capacities, economicPoints) => {
     const military = getMilitaryData();
 
+    // Bauzeiten und Startzeiten der Gebäude speichern
+    const buildingsWithBuildTimes = buildings.map(building => ({
+      ...building,
+      buildStartTime: building.buildStartTime || null,
+      buildTimeRemaining: building.buildTimeRemaining || null,
+    }));
+
     try {
       console.log('Military data before saving:', military);
-      console.log('Buildings data before saving:', buildings);
+      console.log('Buildings data before saving:', buildingsWithBuildTimes);
       console.log('Capacities data before saving:', capacities);
 
       const response = await fetch('/api/saveGame', {
@@ -19,7 +26,7 @@ const useSaveGame = () => {
         body: JSON.stringify({
           userAddress,
           resources,
-          buildings,
+          buildings: buildingsWithBuildTimes,
           capacities,
           economic_points: economicPoints,
           military,
