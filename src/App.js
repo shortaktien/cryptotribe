@@ -84,10 +84,10 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
       gold: 0,
       military: 0,
     };
-
+  
     const updatedResources = { ...defaultResources, ...(loadedResources || {}) };
     setResources(updatedResources);
-
+  
     if (!loadedCapacities) {
       loadedCapacities = {
         water: 500,
@@ -103,22 +103,23 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
       };
     }
     setCapacityRates(loadedCapacities);
-
+  
+    console.log('Loaded Buildings:', loadedBuildings);
     if (!loadedBuildings) {
       loadedBuildings = initialBuildingsData;
     }
-
+  
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
     setEconomicPoints(economic_points);
     setLoadedProductionRates(productionRates);
-
+  
     if (nickname) {
       setNickname(nickname);
     }
-
+  
     setMilitary(military);
-
+  
     if (timeDifferenceInSeconds > 0 && Object.keys(gainedResources).length > 0) {
       const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
       const formattedResources = Object.entries(gainedResources)

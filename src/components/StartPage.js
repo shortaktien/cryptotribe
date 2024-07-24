@@ -4,6 +4,8 @@ import './StartPage.css';
 const StartPage = ({ onConnect }) => {
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [userStatus, setUserStatus] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   const connectMetaMask = async () => {
     if (window.ethereum) {
@@ -13,31 +15,21 @@ const StartPage = ({ onConnect }) => {
         const address = accounts[0];
         console.log('MetaMask address:', address);
 
-        const saveResponse = await fetch('/api/saveData', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ address }),
-        });
-
-        if (saveResponse.ok) {
-          const saveMessage = await saveResponse.text();
-          console.log(saveMessage);
-
-          const loadResponse = await fetch(`/api/loadGame?user_name=${address}`);
-          if (loadResponse.ok) {
-            const { resources, buildings } = await loadResponse.json();
-            console.log('Game progress loaded:', resources, buildings);
-            onConnect(address, resources, buildings); // Pass buildings to the onConnect function
-            setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
-          } else {
-            console.log('User not found, starting new game');
-            onConnect(address, null); // Start with new game
-            setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
-          }
+        const loadResponse = await fetch(`/api/loadGame?user_name=${address}`);
+        if (loadResponse.ok) {
+          const data = await loadResponse.json();
+          const { resources, buildings } = data;
+          console.log('Game progress loaded:', data);
+          onConnect(address, resources, buildings); // Pass buildings to the onConnect function
+          setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
+          setUserStatus('User found');
+          setUserData({ resources, buildings });
         } else {
-          console.error('Failed to save address:', saveResponse.statusText);
+          console.log('User not found, starting new game');
+          onConnect(address, null); // Start with new game
+          setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
+          setUserStatus('New user loading default');
+          setUserData(null);
         }
       } catch (error) {
         console.error('Error connecting to MetaMask:', error);
@@ -77,6 +69,14 @@ const StartPage = ({ onConnect }) => {
       </div>
       <div className="description">
         <h2>Welcome to the World of Ealdoria</h2>
+        {userStatus && (
+          <div className="user-status">
+            <p>{userStatus}</p>
+            {userData && (
+              <pre>{JSON.stringify(userData, null, 2)}</pre>
+            )}
+          </div>
+        )}
         <p>
           In the shadows of bygone ages, where kings and warlords once clashed for supremacy, a new power rises. In Ealdoria, the fate of your realm rests in your hands. You are the architect of your own empire, and only through astute management and strategic thinking will you survive and thrive in this unforgiving world.
         </p>

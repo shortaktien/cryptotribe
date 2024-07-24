@@ -19,6 +19,8 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
   const [clickedBuildingId, setClickedBuildingId] = useState(null);
   const { buildings, upgradeBuilding, demolishBuilding } = useBuildings();
 
+  console.log('Buildings from context:', buildings);
+
   const handleBuildingClick = (building) => {
     setSelectedBuilding(building);
     setClickedBuildingId(building.id);
@@ -127,20 +129,20 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
     return Object.entries(cost)
       .filter(([resource, amount]) => amount > 0)
       .map(([resource, amount], index, array) => {
-      const hasEnough = resources[resource] >= amount;
-      const style = highlight ? {
-        color: hasEnough ? 'green' : 'red',
-        fontWeight: hasEnough ? 'normal' : 'bold'
-      } : {};
-      return (
-        <span
-          key={resource}
-          style={style}
-        >
-          {amount} {resource}{index < array.length - 1 ? ', ' : ''}
-        </span>
-      );
-    });
+        const hasEnough = resources[resource] >= amount;
+        const style = highlight ? {
+          color: hasEnough ? 'green' : 'red',
+          fontWeight: hasEnough ? 'normal' : 'bold'
+        } : {};
+        return (
+          <span
+            key={resource}
+            style={style}
+          >
+            {amount} {resource}{index < array.length - 1 ? ', ' : ''}
+          </span>
+        );
+      });
   };
 
   const renderBuildingSection = (sectionTitle, buildingIds) => {

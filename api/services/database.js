@@ -1,3 +1,5 @@
+// services/database.js
+
 const { Client } = require('pg');
 
 const connectToDatabase = async () => {
@@ -7,10 +9,9 @@ const connectToDatabase = async () => {
       rejectUnauthorized: false,
     },
   });
+
   await client.connect();
   return client;
 };
 
-module.exports = {
-  connectToDatabase,
-};
+module.exports = { connectToDatabase };

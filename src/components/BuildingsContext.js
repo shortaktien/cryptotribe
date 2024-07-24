@@ -174,6 +174,7 @@ const initialBuildingsData = [
 ];
 
 const calculateCost = (baseCost, level, multiplier) => {
+  if (!baseCost) return {}; // Check for undefined or null baseCost
   const cost = {};
   Object.keys(baseCost).forEach(resource => {
     if (resource === 'coal' && level < 5) {
@@ -186,6 +187,7 @@ const calculateCost = (baseCost, level, multiplier) => {
 };
 
 const calculateProduction = (baseProduction, level, multiplier) => {
+  if (!baseProduction) return {}; // Check for undefined or null baseProduction
   const production = {};
   Object.keys(baseProduction).forEach(resource => {
     production[resource] = baseProduction[resource] * Math.pow(multiplier, level);
@@ -194,6 +196,7 @@ const calculateProduction = (baseProduction, level, multiplier) => {
 };
 
 const calculateCapacity = (baseCapacity, level, multiplier) => {
+  if (!baseCapacity) return {}; // Check for undefined or null baseCapacity
   const capacity = {};
   Object.keys(baseCapacity).forEach(resource => {
     capacity[resource] = Math.ceil(baseCapacity[resource] * Math.pow(multiplier, level));
@@ -240,6 +243,7 @@ const BuildingsProvider = ({
   );
 
   useEffect(() => {
+    console.log('Initializing Buildings:', initialBuildings);
     if (initialBuildings) {
       setBuildings(initialBuildings.map(building => ({
         ...building,
