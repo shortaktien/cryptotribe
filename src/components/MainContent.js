@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo} from 'react';
 import './MainContent.css';
 import { useMilitary } from './MilitaryContext';
 import { useDefense } from './DefenseContext';

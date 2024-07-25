@@ -15,13 +15,14 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import StartPage from './components/StartPage';
 import useResources from './components/SetResources';
-import UserSettings from "./components/userSettings";
+import UserSettings from './components/userSettings';
 import { BuildingsProvider, initialBuildingsData } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
 import { DefenseProvider } from './components/DefenseContext';
 import { ShipyardProvider } from './components/ShipyardContext';
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
+import Notification, { fetchNotificationData, calculateNotificationMessage } from './utils/Notification';
 import './components/App.css';
 
 function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
@@ -60,7 +61,7 @@ function AppContent({
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
   const [loadedBuildings, setLoadedBuildings] = useState(initialBuildingsData); // Default initialBuildingsData
-  const [showNotification, setShowNotification] = useState(false);
+  const [showNotificationState, setShowNotificationState] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
   const [economicPoints, setEconomicPoints] = useState(0);
@@ -69,14 +70,7 @@ function AppContent({
 
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
-  const formatTimeDifference = (seconds) => {
-    if (seconds < 60) return `${seconds} seconds`;
-    if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours`;
-    return `${Math.floor(seconds / 86400)} days`;
-  };
-
-  const handleLogin = (address, loadedResources, loadedBuildings, loadedCapacities, timeDifferenceInSeconds = 0, gainedResources = {}, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
+  const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapacities, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
     const defaultResources = {
       water: 250,
       food: 250,
@@ -130,16 +124,17 @@ function AppContent({
 
     setMilitary(military);
 
-    if (timeDifferenceInSeconds > 0 && Object.keys(gainedResources).length > 0) {
-      const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
-      const formattedResources = Object.entries(gainedResources)
-        .map(([resource, amount]) => `${Math.ceil(amount)} ${resource}`)
-        .join(', ');
+    const notificationData = await fetchNotificationData(address);
+    if (notificationData) {
+      const { last_savegame } = notificationData;
+      const currentTime = new Date().toISOString();
+      const notificationMessage = calculateNotificationMessage(last_savegame, currentTime, productionRates);
 
-      console.log(`You were away for ${formattedTime} and produced ${formattedResources}.`);
-      setNotificationMessage(`You were away for ${formattedTime} and produced ${formattedResources}.`);
-      setShowNotification(true);
-      setTimeout(() => setShowNotification(false), 10000);
+      if (notificationMessage) {
+        setNotificationMessage(notificationMessage);
+        setShowNotificationState(true);
+        setTimeout(() => setShowNotificationState(false), 10000);
+      }
     }
   };
 
@@ -159,8 +154,6 @@ function AppContent({
           data.resources,
           data.buildings,
           data.capacities,
-          data.timeDifferenceInSeconds || 0,
-          data.gainedResources || {},
           data.nickname,
           data.economic_points,
           data.productionRates,
@@ -174,7 +167,7 @@ function AppContent({
         }
       } else {
         console.error('Failed to load game data:', response.statusText); // Log the error response
-        handleLogin(address, null, null, null, 0, {}, '');
+        handleLogin(address, null, null, null, '');
         setNickname('');
         setShowNicknamePrompt(true);
       }
@@ -314,16 +307,10 @@ function AppContent({
                   />
                   <div className="content">
                     <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} military={military} />
-                    {showNotification && (
-                      <div className="notification-container">
-                        <div className="notification">
-                          {notificationMessage}
-                        </div>
-                        {showNicknamePrompt && (
-                          <div className="notification">
-                            Go to profile settings and create a nickname
-                          </div>
-                        )}
+                    <Notification message={notificationMessage} show={showNotificationState} />
+                    {showNicknamePrompt && (
+                      <div className="notification">
+                        Go to profile settings and create a nickname
                       </div>
                     )}
                     {contractError ? (

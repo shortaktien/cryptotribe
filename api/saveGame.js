@@ -24,11 +24,11 @@ module.exports = async (req, res) => {
     if (!userExists) {
       // Wenn der Benutzer nicht existiert, füge ihn in die users-Tabelle ein
       await client.query(
-        `INSERT INTO users (user_name, login_time) 
-         VALUES ($1, $2)
+        `INSERT INTO users (user_name, login_time, last_saveGame) 
+         VALUES ($1, $2, $3)
          ON CONFLICT (user_name) 
          DO UPDATE SET login_time = EXCLUDED.login_time`,
-        [userAddress, new Date()]
+        [userAddress, new Date(), new Date()]
       );
       console.log('New player added:', userAddress);
     } else {
@@ -61,6 +61,10 @@ module.exports = async (req, res) => {
     // Speichere die Aktualisierungszeit in player_progress
     const updateQuery = `UPDATE player_progress SET updated_at = $1, economic_points = $2 WHERE user_name = $3`;
     await client.query(updateQuery, [currentTime, economic_points, userAddress]);
+
+    // Speichere last_saveGame in der users Tabelle
+    const saveGameTimeQuery = `UPDATE users SET last_saveGame = $1 WHERE user_name = $2`;
+    await client.query(saveGameTimeQuery, [currentTime, userAddress]);
 
     res.status(200).json({ message: 'Game progress saved successfully' });
   } catch (error) {

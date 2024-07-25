@@ -15,6 +15,15 @@ const StartPage = ({ onConnect }) => {
         const address = accounts[0];
         console.log('MetaMask address:', address);
 
+        // Speichere die login_time
+        await fetch('/api/saveData', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ address }),
+        });
+
         const loadResponse = await fetch(`/api/loadGame?user_name=${address}`);
         if (loadResponse.ok) {
           const data = await loadResponse.json();
