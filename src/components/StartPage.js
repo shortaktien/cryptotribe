@@ -18,12 +18,12 @@ const StartPage = ({ onConnect }) => {
         const loadResponse = await fetch(`/api/loadGame?user_name=${address}`);
         if (loadResponse.ok) {
           const data = await loadResponse.json();
-          const { resources, buildings } = data;
+          const { resources, buildings, productionRates } = data;
           console.log('Game progress loaded:', data);
-          onConnect(address, resources, buildings); // Pass buildings to the onConnect function
+          onConnect(address, resources, buildings, productionRates); // Pass buildings and productionRates to the onConnect function
           setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
           setUserStatus('User found');
-          setUserData({ resources, buildings });
+          setUserData({ resources, buildings, productionRates });
         } else {
           console.log('User not found, starting new game');
           onConnect(address, null); // Start with new game

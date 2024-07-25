@@ -29,8 +29,10 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'User name is required' });
   }
 
+  let client; // Define the client variable here
+
   try {
-    const client = await connectToDatabase();
+    client = await connectToDatabase();
 
     let resourcesResult;
     let buildingsResult;
@@ -95,6 +97,11 @@ module.exports = async (req, res) => {
       updated_at: resourcesResult.updated_at,
     });
   } catch (error) {
+    console.error('Error loading game:', error);
     res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  } finally {
+    if (client) {
+      await client.end();
+    }
   }
 };

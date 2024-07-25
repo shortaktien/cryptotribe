@@ -1,51 +1,69 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import './MainContent.css';
 import { useMilitary } from './MilitaryContext';
 import { useDefense } from './DefenseContext';
 import { useShipyard } from './ShipyardContext';
 
-const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates, economicPoints, military }) => {
-  const [netProduction, setNetProduction] = useState({});
-  const [grossProduction, setGrossProduction] = useState({});
+const MainContent = ({ userAddress, capacityRates, economicPoints, military }) => {
+  const [productionRates, setProductionRates] = useState({});
   const { units: militaryUnits, updateUnits } = useMilitary();
   const { structures: defenseStructures } = useDefense();
   const { ships } = useShipyard();
+
+  const resourceNames = useMemo(() => ({
+    water_production: 'Water',
+    food_production: 'Food',
+    wood_production: 'Wood',
+    stone_production: 'Stone',
+    knowledge_production: 'Knowledge',
+    population_production: 'Population',
+    coal_production: 'Coal',
+    gold_production: 'Gold',
+    military_production: 'Military',
+  }), []);
 
   useEffect(() => {
     updateUnits(military);
   }, [military, updateUnits]);
 
   useEffect(() => {
-    const updateProductionRates = () => {
-      const netRates = getNetProductionRates();
-      const grossRates = getProductionRates();
-      setNetProduction(netRates || {});
-      setGrossProduction(grossRates || {});
+    if (!userAddress) {
+      console.error('User address is undefined');
+      return;
+    }
+
+    const fetchProductionRates = async () => {
+      try {
+        const response = await fetch(`/api/loadUserProductionRates?user_name=${userAddress}`);
+        if (response.ok) {
+          const data = await response.json();
+          const productionRates = data.productionRates;
+          console.log('Loaded production rates:', productionRates);
+
+          const formattedProductionRates = Object.fromEntries(
+            Object.entries(productionRates).map(([key, value]) => [resourceNames[key], parseFloat(value) || 0])
+          );
+
+          setProductionRates(formattedProductionRates);
+        } else {
+          console.error('Failed to load production rates');
+        }
+      } catch (error) {
+        console.error('Error loading production rates:', error);
+      }
     };
 
-    updateProductionRates(); // Initial call to set production rates
-
-    const intervalId = setInterval(updateProductionRates, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [getNetProductionRates, getProductionRates]);
+    fetchProductionRates();
+  }, [userAddress, resourceNames]);
 
   const totalAttack = militaryUnits.reduce((total, unit) => total + (unit.attack * (unit.count || 0)), 0)
-                    + ships.reduce((total, ship) => total + (ship.attack * (ship.count || 0)), 0);
+    + ships.reduce((total, ship) => total + (ship.attack * (ship.count || 0)), 0);
   const totalDefense = militaryUnits.reduce((total, unit) => total + (unit.defense * (unit.count || 0)), 0)
-                    + defenseStructures.reduce((total, structure) => total + (structure.defense * (structure.count || 0)), 0)
-                    + ships.reduce((total, ship) => total + (ship.defense * (ship.count || 0)), 0);
+    + defenseStructures.reduce((total, structure) => total + (structure.defense * (structure.count || 0)), 0)
+    + ships.reduce((total, ship) => total + (ship.defense * (ship.count || 0)), 0);
 
-  const renderProductionRates = (resource, netRate, grossRate) => {
-    if (netRate === grossRate) {
-      return <span className="resource-rate">{netRate.toFixed(3)}</span>;
-    }
-    return (
-      <>
-        <span className="resource-rate">{netRate.toFixed(3)}</span>
-        <span className="resource-rate gross-rate">({grossRate.toFixed(3)})</span>
-      </>
-    );
+  const renderProductionRates = (resource, rate) => {
+    return <span className="resource-rate">{rate.toFixed(3)}</span>;
   };
 
   return (
@@ -54,9 +72,9 @@ const MainContent = ({ getNetProductionRates, getProductionRates, capacityRates,
         <div className="box">
           <h2 className="title">Production Rates per Second</h2>
           <ul className="production-list">
-            {Object.entries(netProduction).map(([resource, netRate]) => (
+            {Object.entries(productionRates).map(([resource, rate]) => (
               <li key={resource} className="production-item">
-                <span className="resource-name">{resource}</span>: {renderProductionRates(resource, netRate, grossProduction[resource])}
+                <span className="resource-name">{resource}</span>: {renderProductionRates(resource, rate)}
               </li>
             ))}
           </ul>

@@ -21,7 +21,6 @@ import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
 import { DefenseProvider } from './components/DefenseContext';
 import { ShipyardProvider } from './components/ShipyardContext';
-
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import './components/App.css';
 
@@ -333,8 +332,8 @@ function AppContent({
                       </div>
                     ) : (
                       <Routes>
-                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
-                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
+                        <Route path="/" element={<MainContent userAddress={userAddress} getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
+                        <Route path="/overview" element={<MainContent userAddress={userAddress} getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
                         <Route
                           path="/buildings"
                           element={
