@@ -1,9 +1,12 @@
-// api/saveGame.js
-
 const { connectToDatabase } = require('../api/services/database');
 const saveResources = require('../api/services/saveResources');
 const saveBuildings = require('../api/services/saveBuildings');
 const saveMilitary = require('../api/services/saveMilitary');
+
+const checkUserExists = async (client, userName) => {
+  const result = await client.query('SELECT 1 FROM users WHERE user_name = $1', [userName]);
+  return result.rows.length > 0;
+};
 
 module.exports = async (req, res) => {
   const { userAddress, resources, buildings, capacities, economic_points, military } = req.body;
@@ -15,14 +18,41 @@ module.exports = async (req, res) => {
   const client = await connectToDatabase();
 
   try {
+    // Überprüfen, ob der Benutzer bereits existiert
+    const userExists = await checkUserExists(client, userAddress);
+    
+    if (!userExists) {
+      // Wenn der Benutzer nicht existiert, füge ihn in die users-Tabelle ein
+      await client.query(
+        `INSERT INTO users (user_name, login_time) 
+         VALUES ($1, $2)
+         ON CONFLICT (user_name) 
+         DO UPDATE SET login_time = EXCLUDED.login_time`,
+        [userAddress, new Date()]
+      );
+      console.log('New player added:', userAddress);
+    } else {
+      console.log('Existing player found:', userAddress);
+    }
+
     const currentTime = new Date();
     const updatedBuildings = buildings.map(building => {
       if (building.isBuilding) {
         building.buildStartTime = building.buildStartTime || currentTime.toISOString();
         building.buildTimeRemaining = building.buildTimeRemaining || building.baseBuildTime;
       }
-      return building;
+      return {
+        ...building,
+        currentLevel: typeof building.currentLevel === 'object' ? building.currentLevel.level : building.currentLevel || 0
+      };
     });
+
+    console.log('Saving game for user:', userAddress);
+    console.log('Resources:', resources);
+    console.log('Buildings:', updatedBuildings);
+    console.log('Capacities:', capacities);
+    console.log('Economic points:', economic_points);
+    console.log('Military:', military);
 
     await saveResources(client, userAddress, resources, economic_points);
     await saveBuildings(client, userAddress, updatedBuildings);

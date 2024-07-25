@@ -17,7 +17,6 @@ import merchantImage from "../assets/merchantBuildingImage.webp";
 const BuildingsContext = createContext();
 
 const initialBuildingsData = [
-  // Lumberjack
   {
     id: 1,
     name: 'Lumberjack',
@@ -28,8 +27,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A sturdy structure where wood is harvested, vital for building and maintaining your realm. The legendary lumberjack Tharok, wielding twin battle axes, achieved great feats in the dense forests of Ealdoria.'
   },
-
-  // Stonemason
   {
     id: 2,
     name: 'Stonemason',
@@ -40,8 +37,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A workshop where skilled craftsmen shape stone, crucial for constructing resilient buildings. Ealdorias unique Eldarite stones, imbued with the hidden power of the Threads of Continuity, provide unmatched strength and durability to your structures.'
   },
-
-  // Warehouse
   {
     id: 3,
     name: 'Warehouse',
@@ -52,8 +47,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A fortified storage facility to safeguard your resources. Protecting your supplies from the marauding Skarn Raiders is crucial for sustaining your realms growth and ensuring a steady flow of materials.'
   },
-
-  // House
   {
     id: 4,
     name: 'House',
@@ -65,8 +58,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A humble dwelling where citizens live, fostering a sense of community and providing shelter for your growing population. Essential for maintaining happiness and productivity. King Eldran of the Ehra insisted on these houses for all.'
   },
-
-  // Farm
   {
     id: 5,
     name: 'Farm',
@@ -77,8 +68,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A fertile plot where crops are cultivated, ensuring food for your populace. The mighty farmer Brina, blessed by the Gleam of Eternity, enhanced harvests and secured abundant yields for the realm.'
   },
-
-  // Drawing well
   {
     id: 6,
     name: 'Drawing well',
@@ -89,8 +78,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A deep well providing fresh water, vital for sustaining life in your realm. During the Festival of the Silver Moon, the water is believed to possess potent healing powers, revered by all.'
   },
-
-  // Science
   {
     id: 7,
     name: 'Science',
@@ -102,8 +89,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A center of knowledge and innovation, driving progress in your realm. Beware the risk of scholars turning mad, corrupted by the Dark Veils influence, requiring them to be dealt with repeatedly to protect your kingdom.'
   },
-
-  // Coalmine
   {
     id: 8,
     name: 'Kohlemine',
@@ -114,8 +99,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A grimy pit where coal is extracted, crucial for powering your industry. The filthy mines of Grimscar are plagued daily by goblins and the wretched Skulkin, making every shift a hazardous endeavor.'
   },
-
-  // Goldmine
   {
     id: 9,
     name: 'Goldmine',
@@ -126,8 +109,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A glittering mine yielding precious gold, enabling wealth and opulence like the grand capital of Aurumspire. However, it also attracts the dangers of envious rival nations seeking to plunder your riches.'
   },
-
-  // Barracks
   {
     id: 10,
     name: 'Barracks',
@@ -138,8 +119,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: 'A fortified building where soldiers are trained, known as the birthplace of the Tarnished Warriors. Here, legends are forged, and the might of your army is built to defend and conquer.'
   },
-
-  // Fortifications
   {
     id: 11,
     name: "Fortifications",
@@ -149,8 +128,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: "Massive, robust walls forming the backbone of your realm's defenses. The Great Bastions must be constantly manned by the stalwart giants of Tharundor, for defense is paramount in the struggle for survival."
   },
-
-  // Harbor
   {
     id: 12,
     name: "Harbor",
@@ -160,8 +137,6 @@ const initialBuildingsData = [
     currentLevel: 0,
     description: "A bustling port providing access to the vast world of Ealdoria. Who knows what mysteries and opportunities lie beyond the horizon, waiting to be discovered by intrepid sailors?"
   },
-
-  // Merchant
   {
     id: 13,
     name: "Merchant",
@@ -226,29 +201,29 @@ const generateLevels = (building, maxLevel = 20) => {
 
 const BuildingsProvider = ({
   children,
-  initialBuildings,
+  initialBuildings = initialBuildingsData,
   spendResources,
   updateProductionRate,
   updateCapacityRates,
   refundResources
 }) => {
   const [buildings, setBuildings] = useState(
-    (initialBuildings || initialBuildingsData).map(building => ({
+    initialBuildings.map(building => ({
       ...building,
       levels: generateLevels(building),
-      currentLevel: building.currentLevel || 0,
+      currentLevel: typeof building.currentLevel === 'object' ? building.currentLevel.level : building.currentLevel || 0, // Ensure currentLevel is a number
       buildStartTime: building.buildStartTime || null,
       buildTimeRemaining: building.buildTimeRemaining || null,
     }))
   );
 
   useEffect(() => {
-    console.log('Initializing Buildings:', initialBuildings);
     if (initialBuildings) {
+      console.log('Loaded buildings data:', initialBuildings);
       setBuildings(initialBuildings.map(building => ({
         ...building,
         levels: generateLevels(building),
-        currentLevel: building.currentLevel || 0,
+        currentLevel: typeof building.currentLevel === 'object' ? building.currentLevel.level : building.currentLevel || 0, // Ensure currentLevel is a number
         buildStartTime: building.buildStartTime || null,
         buildTimeRemaining: building.buildTimeRemaining || null,
       })));

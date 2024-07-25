@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useBuildings } from './BuildingsContext';
-import { updatePoints } from '../utils/scoreCalculation'; // Importiere die Punktelogik
+import { updatePoints } from '../utils/scoreCalculation'; 
 import buildingsMainPage from "../assets/buildingsMainPage.webp";
-import './Buildings.css'; // Separate CSS-Datei für Buildings
+import './Buildings.css';
 
 const defaultImage = {
   id: 0,
@@ -19,13 +19,9 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
   const [clickedBuildingId, setClickedBuildingId] = useState(null);
   const { buildings, upgradeBuilding, demolishBuilding } = useBuildings();
 
-  console.log('Buildings from context:', buildings);
-
   const handleBuildingClick = (building) => {
     setSelectedBuilding(building);
     setClickedBuildingId(building.id);
-
-    // Remove the clicked state after the animation duration
     setTimeout(() => setClickedBuildingId(null), 300);
   };
 
@@ -48,13 +44,15 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
 
     const success = spendResources(nextLevelData.cost);
     if (success) {
-      console.log('Resources spent successfully:', nextLevelData.cost);
       await handleUpgradeBuilding(buildingId, resourceNames, resourceCosts);
       upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
-      const newPoints = updatePoints(nextLevelData.cost); // Aktualisiere die Punkte basierend auf den ausgegebenen Ressourcen
-      console.log(`Updated economic points: ${newPoints}`);
-      setEconomicPoints(newPoints); // Aktualisiere die Punkte im übergeordneten Zustand
+      const newPoints = updatePoints(nextLevelData.cost);
+      setEconomicPoints(newPoints);
       startCooldown(nextLevelData.buildTime);
+      setSelectedBuilding(prev => ({
+        ...prev,
+        currentLevel: prev.currentLevel + 1
+      }));
     } else {
       console.log('Not enough resources:', nextLevelData.cost);
     }
@@ -85,9 +83,9 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
         if (newProgress >= 100) {
           clearInterval(interval);
           setIsCooldownActive(false);
-          setCooldownProgress(0); // Reset cooldown progress
+          setCooldownProgress(0);
           setRemainingTime(0);
-          return 0; // Ensure the progress is reset
+          return 0;
         }
         return newProgress;
       });

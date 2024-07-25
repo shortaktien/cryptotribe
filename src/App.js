@@ -15,7 +15,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import StartPage from './components/StartPage';
 import useResources from './components/SetResources';
-import UserSettings from "./components/userSettings"
+import UserSettings from "./components/userSettings";
 import { BuildingsProvider, initialBuildingsData } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
@@ -48,14 +48,19 @@ function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
   }, [userAddress, navigate, setIsConnected, setUserAddress]);
 }
 
-function AppContent({ resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates }) {
+function AppContent({
+  resources, setResources, updateProductionRate, spendResources,
+  updateCapacityRates, updatePopulation, updateResearchEffects, 
+  capacityRates, getNetProductionRates, getProductionRates, 
+  refundResources, setCapacityRates
+}) {
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [nickname, setNickname] = useState('');
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
-  const [loadedBuildings, setLoadedBuildings] = useState([]);
+  const [loadedBuildings, setLoadedBuildings] = useState(initialBuildingsData); // Default initialBuildingsData
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
@@ -84,10 +89,10 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
       gold: 0,
       military: 0,
     };
-  
+
     const updatedResources = { ...defaultResources, ...(loadedResources || {}) };
     setResources(updatedResources);
-  
+
     if (!loadedCapacities) {
       loadedCapacities = {
         water: 500,
@@ -103,23 +108,29 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
       };
     }
     setCapacityRates(loadedCapacities);
-  
+
     console.log('Loaded Buildings:', loadedBuildings);
-    if (!loadedBuildings) {
+    if (!loadedBuildings || Object.keys(loadedBuildings).length === 0) {
       loadedBuildings = initialBuildingsData;
+    } else {
+      // Transform the loaded buildings into the format expected by the BuildingsContext
+      loadedBuildings = initialBuildingsData.map(building => ({
+        ...building,
+        currentLevel: loadedBuildings[building.name.toLowerCase()] || 0
+      }));
     }
-  
+
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
     setEconomicPoints(economic_points);
     setLoadedProductionRates(productionRates);
-  
+
     if (nickname) {
       setNickname(nickname);
     }
-  
+
     setMilitary(military);
-  
+
     if (timeDifferenceInSeconds > 0 && Object.keys(gainedResources).length > 0) {
       const formattedTime = formatTimeDifference(timeDifferenceInSeconds);
       const formattedResources = Object.entries(gainedResources)
@@ -134,21 +145,42 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
   };
 
   const handleConnect = async (address) => {
-    setUserAddress(address);
-    const response = await fetch(`/api/loadGame?user_name=${address}`);
-    if (response.ok) {
-      const data = await response.json();
-      const isExistingPlayer = data.resources || data.buildings || data.capacities;
-      handleLogin(address, data.resources, data.buildings, data.capacities, data.timeDifferenceInSeconds || 0, data.gainedResources || {}, data.nickname, data.economic_points, data.productionRates, data.military);
-      if (!data.nickname && !isExistingPlayer) {
-        setShowNicknamePrompt(true);
+    try {
+      setUserAddress(address);
+      console.log('Connecting with address:', address); // Log the address
+
+      const response = await fetch(`/api/loadGame?user_name=${address}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Loaded data:', data); // Log the loaded data
+
+        const isExistingPlayer = data.resources || data.buildings || data.capacities;
+        handleLogin(
+          address,
+          data.resources,
+          data.buildings,
+          data.capacities,
+          data.timeDifferenceInSeconds || 0,
+          data.gainedResources || {},
+          data.nickname,
+          data.economic_points,
+          data.productionRates,
+          data.military
+        );
+
+        if (!data.nickname && !isExistingPlayer) {
+          setShowNicknamePrompt(true);
+        } else {
+          setShowNicknamePrompt(false);
+        }
       } else {
-        setShowNicknamePrompt(false);
+        console.error('Failed to load game data:', response.statusText); // Log the error response
+        handleLogin(address, null, null, null, 0, {}, '');
+        setNickname('');
+        setShowNicknamePrompt(true);
       }
-    } else {
-      handleLogin(address, null, null, null, 0, {}, '');
-      setNickname('');
-      setShowNicknamePrompt(true);
+    } catch (error) {
+      console.error('Error connecting to load game API:', error); // Log the error
     }
   };
 
@@ -275,107 +307,107 @@ function AppContent({ resources, setResources, updateProductionRate, spendResour
                   refundResources={refundResources}
                 >
                   <Header
-  userAddress={userAddress}
-  userName={nickname} // Use nickname here
-  resources={resources}
-  capacityRates={capacityRates}
-  military={military} // Military state
-/>
-<div className="content">
-  <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} military={military} />
-  {showNotification && (
-    <div className="notification-container">
-      <div className="notification">
-        {notificationMessage}
-      </div>
-      {showNicknamePrompt && (
-        <div className="notification">
-          Go to profile settings and create a nickname
-        </div>
-      )}
-    </div>
-  )}
-  {contractError ? (
-    <div className="error">
-      <p>{contractError}</p>
-    </div>
-  ) : (
-    <Routes>
-      <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
-      <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
-      <Route
-        path="/buildings"
-        element={
-          <Buildings
-            resources={resources}
-            spendResources={spendResources}
-            updateProductionRate={updateProductionRate}
-            updateCapacityRates={updateCapacityRates}
-            handleUpgradeBuilding={handleUpgradeBuilding}
-            handleDemolishBuilding={handleUpgradeResearch}
-            setEconomicPoints={setEconomicPoints}
-          />
-        }
-      />
-      <Route
-        path="/research"
-        element={
-          <Research
-            resources={resources}
-            spendResources={spendResources}
-            updateResearchEffects={updateResearchEffects}
-            handleUpgradeResearch={handleUpgradeResearch}
-          />
-        }
-      />
-      <Route path="/merchant" element={
-        <Merchant
-          resources={resources}
-          spendResources={spendResources}
-          refundResources={refundResources}
-        />
-      } />
-      <Route path="/shipyard" element={
-        <Shipyard
-          resources={resources}
-          spendResources={spendResources}
-          updateCapacityRates={updateCapacityRates}
-          handleBuildShip={handleBuildShip}
-          handleScrapShip={handleScrapShip}
-        />
-      } />
-      <Route
-        path="/defence"
-        element={
-          <Defence
-            resources={resources}
-            spendResources={spendResources}
-            updateCapacityRates={updateCapacityRates}
-            handleBuildDefense={handleBuildDefense}
-            handleDemolishDefense={handleDemolishDefense}
-          />
-        }
-      />
-      <Route
-        path="/military"
-        element={
-          <Military
-            resources={resources}
-            spendResources={spendResources}
-            updateCapacityRates={updateCapacityRates}
-            handleTrainUnit={handleTrainUnit}
-            handleDisbandUnit={handleDisbandUnit}
-          />
-        }
-      />
-      <Route path="/world" element={<World />} />
-      <Route path="/alliance" element={<Alliance />} />
-      <Route path="/shop" element={<Shop />} />
-      <Route path="/settings" element={<UserSettings userAddress={userAddress} />} /> {/* Route für UserSettings */}
-    </Routes>
-  )}
-</div>
-<Footer />
+                    userAddress={userAddress}
+                    userName={nickname} 
+                    resources={resources}
+                    capacityRates={capacityRates}
+                    military={military} 
+                  />
+                  <div className="content">
+                    <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} military={military} />
+                    {showNotification && (
+                      <div className="notification-container">
+                        <div className="notification">
+                          {notificationMessage}
+                        </div>
+                        {showNicknamePrompt && (
+                          <div className="notification">
+                            Go to profile settings and create a nickname
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {contractError ? (
+                      <div className="error">
+                        <p>{contractError}</p>
+                      </div>
+                    ) : (
+                      <Routes>
+                        <Route path="/" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
+                        <Route path="/overview" element={<MainContent getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
+                        <Route
+                          path="/buildings"
+                          element={
+                            <Buildings
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateProductionRate={updateProductionRate}
+                              updateCapacityRates={updateCapacityRates}
+                              handleUpgradeBuilding={handleUpgradeBuilding}
+                              handleDemolishBuilding={handleUpgradeResearch}
+                              setEconomicPoints={setEconomicPoints}
+                            />
+                          }
+                        />
+                        <Route
+                          path="/research"
+                          element={
+                            <Research
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateResearchEffects={updateResearchEffects}
+                              handleUpgradeResearch={handleUpgradeResearch}
+                            />
+                          }
+                        />
+                        <Route path="/merchant" element={
+                          <Merchant
+                            resources={resources}
+                            spendResources={spendResources}
+                            refundResources={refundResources}
+                          />
+                        } />
+                        <Route path="/shipyard" element={
+                          <Shipyard
+                            resources={resources}
+                            spendResources={spendResources}
+                            updateCapacityRates={updateCapacityRates}
+                            handleBuildShip={handleBuildShip}
+                            handleScrapShip={handleScrapShip}
+                          />
+                        } />
+                        <Route
+                          path="/defence"
+                          element={
+                            <Defence
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateCapacityRates={updateCapacityRates}
+                              handleBuildDefense={handleBuildDefense}
+                              handleDemolishDefense={handleDemolishDefense}
+                            />
+                          }
+                        />
+                        <Route
+                          path="/military"
+                          element={
+                            <Military
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateCapacityRates={updateCapacityRates}
+                              handleTrainUnit={handleTrainUnit}
+                              handleDisbandUnit={handleDisbandUnit}
+                            />
+                          }
+                        />
+                        <Route path="/world" element={<World />} />
+                        <Route path="/alliance" element={<Alliance />} />
+                        <Route path="/shop" element={<Shop />} />
+                        <Route path="/settings" element={<UserSettings userAddress={userAddress} />} /> 
+                      </Routes>
+                    )}
+                  </div>
+                  <Footer />
                 </ShipyardProvider>
               </DefenseProvider>
             </MilitaryProvider>

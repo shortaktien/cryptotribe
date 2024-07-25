@@ -1,5 +1,3 @@
-// services/database.js
-
 const { Client } = require('pg');
 
 const connectToDatabase = async () => {
