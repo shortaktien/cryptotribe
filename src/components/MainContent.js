@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './MainContent.css';
 import { useMilitary } from './MilitaryContext';
 import { useDefense } from './DefenseContext';
 import { useShipyard } from './ShipyardContext';
+import { useBuildings } from './BuildingsContext';
 
 const MainContent = ({ userAddress, capacityRates, economicPoints, military }) => {
-  const [productionRates, setProductionRates] = useState({});
+  const { productionRates } = useBuildings();
   const { units: militaryUnits, updateUnits } = useMilitary();
   const { structures: defenseStructures } = useDefense();
   const { ships } = useShipyard();
@@ -26,36 +27,6 @@ const MainContent = ({ userAddress, capacityRates, economicPoints, military }) =
     updateUnits(military);
   }, [military, updateUnits]);
 
-  useEffect(() => {
-    if (!userAddress) {
-      console.error('User address is undefined');
-      return;
-    }
-
-    const fetchProductionRates = async () => {
-      try {
-        const response = await fetch(`/api/loadUserProductionRates?user_name=${userAddress}`);
-        if (response.ok) {
-          const data = await response.json();
-          const productionRates = data.productionRates;
-          console.log('Loaded production rates:', productionRates);
-
-          const formattedProductionRates = Object.fromEntries(
-            Object.entries(productionRates).map(([key, value]) => [resourceNames[key], parseFloat(value) || 0])
-          );
-
-          setProductionRates(formattedProductionRates);
-        } else {
-          console.error('Failed to load production rates');
-        }
-      } catch (error) {
-        console.error('Error loading production rates:', error);
-      }
-    };
-
-    fetchProductionRates();
-  }, [userAddress, resourceNames]);
-
   const totalAttack = militaryUnits.reduce((total, unit) => total + (unit.attack * (unit.count || 0)), 0)
     + ships.reduce((total, ship) => total + (ship.attack * (ship.count || 0)), 0);
   const totalDefense = militaryUnits.reduce((total, unit) => total + (unit.defense * (unit.count || 0)), 0)
@@ -74,7 +45,7 @@ const MainContent = ({ userAddress, capacityRates, economicPoints, military }) =
           <ul className="production-list">
             {Object.entries(productionRates).map(([resource, rate]) => (
               <li key={resource} className="production-item">
-                <span className="resource-name">{resource}</span>: {renderProductionRates(resource, rate)}
+                <span className="resource-name">{resourceNames[resource] || resource}</span>: {renderProductionRates(resource, rate)}
               </li>
             ))}
           </ul>

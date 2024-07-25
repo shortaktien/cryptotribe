@@ -336,7 +336,19 @@ const BuildingsProvider = ({
   };
 
   return (
-    <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding }}>
+    <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding, productionRates: buildings.reduce((acc, building) => {
+      const level = building.currentLevel;
+      const production = building.levels[level].production;
+      if (production) {
+        Object.entries(production).forEach(([resource, rate]) => {
+          if (!acc[resource]) {
+            acc[resource] = 0;
+          }
+          acc[resource] += rate;
+        });
+      }
+      return acc;
+    }, {}) }}>
       {children}
     </BuildingsContext.Provider>
   );
