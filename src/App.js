@@ -23,6 +23,7 @@ import { DefenseProvider } from './components/DefenseContext';
 import { ShipyardProvider } from './components/ShipyardContext';
 import { getWeb3, getContract, sendTransaction } from './utils/web3';
 import Notification, { fetchNotificationData, calculateNotificationMessage } from './utils/Notification';
+import BuildingManagement from '../src/BuildingManagement.json';
 import './components/App.css';
 
 function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
@@ -192,31 +193,98 @@ function AppContent({
     initWeb3();
   }, []);
 
-  const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts) => {
-    if (!contract) {
-      return;
+  const getContract = async (web3) => {
+    let networkId = await web3.eth.net.getId();
+    
+    // Überprüfen, ob networkId ein BigInt ist, und in einen String umwandeln
+    if (typeof networkId === 'bigint') {
+        networkId = networkId.toString();
     }
 
-    if (!userAddress) {
-      return;
+    console.log('Current network ID:', networkId);
+    const deployedNetwork = BuildingManagement.networks[networkId];
+    console.log('Deployed network details:', deployedNetwork);
+
+    if (!deployedNetwork) {
+        console.error('Contract not deployed on this network:', networkId);
+        throw new Error('Contract not deployed on this network');
     }
 
-    const hasEnoughResources = resourceNames.every((resource, index) => {
-      return resources[resource] >= resourceCosts[index];
-    });
+    const contract = new web3.eth.Contract(
+        BuildingManagement.abi,
+        deployedNetwork && deployedNetwork.address,
+    );
+    console.log('Contract initialized:', contract);
+    console.log('Available methods:', Object.keys(contract.methods));
+    return contract;
+};
 
-    if (!hasEnoughResources) {
-      return;
-    }
+const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts, selectedBuilding) => {
+  console.log(selectedBuilding); // Überprüfe die Ausgabe hier
 
-    try {
-      await sendTransaction(web3, userAddress, contract, 'upgradeBuilding', [buildingId, resourceNames, resourceCosts]);
-    } catch (error) {
-      if (error.data) {
-        console.error('Error data: ', error.data);
+  if (!contract) return;
+  if (!userAddress) return;
+
+  if (!selectedBuilding || !selectedBuilding.currentLevel) {
+    console.error('selectedBuilding is not defined or has no currentLevel');
+    return;
+  }
+
+  const hasEnoughResources = resourceNames.every((resource, index) => {
+    return resources[resource] >= resourceCosts[index];
+  });
+
+  if (!hasEnoughResources) return;
+
+  try {
+    const level = selectedBuilding.currentLevel + 1;
+    const message = `Build ${selectedBuilding.name} to level ${level}`;
+
+    const receipt = await sendTransaction(web3, userAddress, contract, 'buildOrUpgrade', [buildingId, message]);
+
+    contract.events.BuildingUpgraded({ filter: { owner: userAddress } })
+      .on('data', async (event) => {
+        const { buildingId, newLevel } = event.returnValues;
+        await updateBuildingInDatabase(buildingId, newLevel);
+      })
+      .on('error', console.error);
+
+    contract.events.BuildingCreated({ filter: { owner: userAddress } })
+      .on('data', async (event) => {
+        const { buildingId, level } = event.returnValues;
+        await updateBuildingInDatabase(buildingId, level);
+      })
+      .on('error', console.error);
+  } catch (error) {
+    console.error('Error in transaction: ', error);
+  }
+};
+
+
+
+
+// Example function to update the building in your database
+const updateBuildingInDatabase = async (buildingId, newLevel) => {
+  try {
+      const response = await fetch('/api/updateBuilding', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              user_name: userAddress,
+              buildingId,
+              newLevel,
+          }),
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to update building in the database');
       }
-    }
-  };
+  } catch (error) {
+      console.error('Error updating building in database:', error);
+  }
+};
 
   const handleUpgradeResearch = async (researchId, cost) => {
     if (!contract) {

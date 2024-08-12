@@ -44,7 +44,7 @@ const Buildings = ({ resources, spendResources, updateProductionRate, updateCapa
 
     const success = spendResources(nextLevelData.cost);
     if (success) {
-      await handleUpgradeBuilding(buildingId, resourceNames, resourceCosts);
+      await handleUpgradeBuilding(buildingId, resourceNames, resourceCosts, selectedBuilding);
       upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
       const newPoints = updatePoints(nextLevelData.cost);
       setEconomicPoints(newPoints);

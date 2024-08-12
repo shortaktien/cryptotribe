@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import ResourceManagement from '../utils/ResourceManagement.json';
+import BuildingManagement from '../BuildingManagement.json';  // Hier den richtigen Namen verwenden
 
 const getWeb3 = () =>
   new Promise((resolve, reject) => {
@@ -29,14 +29,20 @@ const getWeb3 = () =>
 const getContract = async (web3) => {
   const networkId = await web3.eth.net.getId();
   console.log('Current network ID:', networkId);
-  const deployedNetwork = ResourceManagement.networks[networkId];
+  
+  // Überprüfen, ob networkId ein BigInt ist, und in einen String umwandeln
+  if (typeof networkId === 'bigint') {
+    networkId = networkId.toString();
+  }
+
+  const deployedNetwork = BuildingManagement.networks[networkId];
   console.log('Deployed network details:', deployedNetwork);
   if (!deployedNetwork) {
     console.error('Contract not deployed on this network:', networkId);
     throw new Error('Contract not deployed on this network');
   }
   const contract = new web3.eth.Contract(
-    ResourceManagement.abi,
+    BuildingManagement.abi,
     deployedNetwork && deployedNetwork.address,
   );
   console.log('Contract initialized:', contract);
@@ -48,7 +54,7 @@ const sendTransaction = async (web3, userAddress, contract, method, params) => {
     to: contract.options.address,
     from: userAddress,
     data: contract.methods[method](...params).encodeABI(),
-    gas: '4500000',
+    gas: '6000000',
     gasPrice: web3.utils.toWei('10', 'gwei'),
     type: '0x0' // Ensure legacy transaction
   };
@@ -60,8 +66,5 @@ const sendTransaction = async (web3, userAddress, contract, method, params) => {
     console.error('Error in transaction: ', error);
   }
 };
-
-
-
 
 export { getWeb3, getContract, sendTransaction };
