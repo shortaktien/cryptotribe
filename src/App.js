@@ -16,15 +16,31 @@ import Footer from './components/Footer';
 import StartPage from './components/StartPage';
 import useResources from './components/SetResources';
 import UserSettings from './components/userSettings';
+import { useBuildings } from './components/BuildingsContext';
 import { BuildingsProvider, initialBuildingsData } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
 import { MilitaryProvider } from './components/MilitaryContext';
 import { DefenseProvider } from './components/DefenseContext';
 import { ShipyardProvider } from './components/ShipyardContext';
-import { getWeb3, getContract, sendTransaction } from './utils/web3';
+import { getWeb3, sendTransaction } from './utils/web3';
 import Notification, { fetchNotificationData, calculateNotificationMessage } from './utils/Notification';
 import BuildingManagement from '../src/BuildingManagement.json';
+import TransactionPopup from '../src/utils/TransactionPopup';
 import './components/App.css';
+
+const mergeResources = (resources, gainedResources) => {
+  const updatedResources = { ...resources };
+
+  for (const resource in gainedResources) {
+    if (updatedResources[resource] !== undefined) {
+      updatedResources[resource] += gainedResources[resource];
+    } else {
+      updatedResources[resource] = gainedResources[resource];
+    }
+  }
+
+  return updatedResources;
+};
 
 function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
   const navigate = useNavigate();
@@ -68,6 +84,10 @@ function AppContent({
   const [economicPoints, setEconomicPoints] = useState(0);
   const [military, setMilitary] = useState({});
   const { setLoadedProductionRates } = useResources();
+  const [transactionHash, setTransactionHash] = useState(null);
+  const [showTransactionPopup, setShowTransactionPopup] = useState(false);
+  const buildingsContext = useBuildings();
+  const { upgradeBuilding } = buildingsContext || {};
 
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
@@ -84,8 +104,8 @@ function AppContent({
       military: 0,
     };
 
-    const updatedResources = { ...defaultResources, ...(loadedResources || {}) };
-    setResources(updatedResources);
+    const gainedResources = mergeResources(defaultResources, loadedResources || {});
+    setResources(gainedResources);
 
     if (!loadedCapacities) {
       loadedCapacities = {
@@ -219,29 +239,10 @@ function AppContent({
     return contract;
 };
 
-const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts, selectedBuilding) => {
-  console.log(selectedBuilding); // Überprüfe die Ausgabe hier
-
-  if (!contract) return;
-  if (!userAddress) return;
-
-  if (!selectedBuilding || !selectedBuilding.currentLevel) {
-    console.error('selectedBuilding is not defined or has no currentLevel');
-    return;
-  }
-
-  const hasEnoughResources = resourceNames.every((resource, index) => {
-    return resources[resource] >= resourceCosts[index];
-  });
-
-  if (!hasEnoughResources) return;
-
-  try {
-    const level = selectedBuilding.currentLevel + 1;
-    const message = `Build ${selectedBuilding.name} to level ${level}`;
-
-    const receipt = await sendTransaction(web3, userAddress, contract, 'buildOrUpgrade', [buildingId, message]);
-
+const listenForEvents = (contract, userAddress) => {
+  if (contract && contract.events) {
+    console.log('Contract initialized and ready for events:', contract);
+    
     contract.events.BuildingUpgraded({ filter: { owner: userAddress } })
       .on('data', async (event) => {
         const { buildingId, newLevel } = event.returnValues;
@@ -255,13 +256,71 @@ const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts, s
         await updateBuildingInDatabase(buildingId, level);
       })
       .on('error', console.error);
+  } else {
+    console.error('Event listening is not supported. Attempting to retrieve past events.');
+    
+    // Fallback zu getPastEvents
+    contract.getPastEvents('BuildingUpgraded', {
+      filter: { owner: userAddress },
+      fromBlock: 'latest',
+    })
+    .then(async (events) => {
+      for (let event of events) {
+        const { buildingId, newLevel } = event.returnValues;
+        await updateBuildingInDatabase(buildingId, newLevel);
+      }
+    })
+    .catch(console.error);
+    
+    contract.getPastEvents('BuildingCreated', {
+      filter: { owner: userAddress },
+      fromBlock: 'latest',
+    })
+    .then(async (events) => {
+      for (let event of events) {
+        const { buildingId, level } = event.returnValues;
+        await updateBuildingInDatabase(buildingId, level);
+      }
+    })
+    .catch(console.error);
+  }
+};
+
+const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts, selectedBuilding) => {
+  if (!contract || !userAddress) return;
+
+  const hasEnoughResources = resourceNames.every((resource, index) => {
+    return resources[resource] >= resourceCosts[index];
+  });
+
+  if (!hasEnoughResources) return;
+
+  try {
+    const level = selectedBuilding.currentLevel + 1;
+    const message = `Build ${selectedBuilding.name} to level ${level}`;
+
+    // Sende die Transaktion zum Smart Contract
+    const receipt = await sendTransaction(web3, userAddress, contract, 'buildOrUpgrade', [buildingId, message]);
+
+    if (receipt && receipt.status) { // Überprüfen, ob die Transaktion erfolgreich war
+      setTransactionHash(receipt.transactionHash);
+      setShowTransactionPopup(true);
+
+      // Hide the popup after a while
+      setTimeout(() => setShowTransactionPopup(false), 15000);
+
+      // Event-Listener aufrufen, um auf das Ereignis zu reagieren
+      listenForEvents(contract, userAddress);
+
+      // Upgrade des Gebäudes erst nach erfolgreicher Transaktion
+      upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
+    } else {
+      console.error('Transaction failed or was rejected');
+    }
   } catch (error) {
     console.error('Error in transaction: ', error);
   }
 };
-
-
-
 
 // Example function to update the building in your database
 const updateBuildingInDatabase = async (buildingId, newLevel) => {
@@ -366,6 +425,11 @@ const updateBuildingInDatabase = async (buildingId, newLevel) => {
                   updateCapacityRates={updateCapacityRates}
                   refundResources={refundResources}
                 >
+                <TransactionPopup 
+        transactionHash={transactionHash}
+        message="Your transaction was successful!"
+        show={showTransactionPopup}
+      />
                   <Header
                     userAddress={userAddress}
                     userName={nickname} 

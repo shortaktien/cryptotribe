@@ -27,7 +27,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     setDropdownVisible(false);
   };
 
-  const resourcesData = useMemo(() => [
+  const resourcesData = [
     { name: 'Water', value: Math.floor(resources.water), capacity: capacityRates.water, image: waterImage },
     { name: 'Food', value: Math.floor(resources.food), capacity: capacityRates.food, image: foodImage },
     { name: 'Wood', value: Math.floor(resources.wood), capacity: capacityRates.wood, image: woodImage },
@@ -37,7 +37,8 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
     { name: 'Population', value: Math.floor(resources.population), capacity: capacityRates.population, image: populationImage },
     { name: 'Military', value: Math.floor(resources.military), capacity: capacityRates.maxMilitaryCapacity, image: militaryImage }
-  ], [resources, capacityRates]);
+  ];
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -47,18 +48,20 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
           newHighlightedResources[key] = resourceChanges[key] > 0 ? 'highlight-green' : 'highlight-red';
         }
       });
-
+  
       setHighlightedResources(newHighlightedResources);
-
+  
       const timer = setTimeout(() => {
         setHighlightedResources({});
       }, 1000);
-
-      return () => clearTimeout(timer);
+  
+      clearTimeout(timer); // Timer außerhalb des Intervalls löschen
     }, 1000);
-
-    return () => clearInterval(interval);
-  }, [resourceChanges]);
+  
+    return () => clearInterval(interval); // return sollte hier stehen, um das Intervall zu bereinigen
+    console.log("Resources updated in Header:", resources);
+  }, [resourceChanges, resources]); // resources zur Abhängigkeit hinzufügen
+  
 
   return (
     <div className="header">

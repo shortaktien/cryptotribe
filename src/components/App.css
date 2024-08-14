@@ -118,3 +118,39 @@
   margin: 10px;
   text-align: left;
 }
+
+/* Transaction Popup */
+.transaction-popup {
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  margin: 10px 0;
+  opacity: 0;
+  animation: fadeInOut 15s ease-in-out forwards;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.transaction-popup a {
+  color: #4CAF50;
+  text-decoration: none;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.transaction-popup a:hover {
+  color: #45a049;
+}
+
+.transaction-popup a:visited {
+  color: #2e7d32;
+}
+
+.transaction-popup .transaction-message {
+  margin-bottom: 10px;
+  text-align: center;
+}

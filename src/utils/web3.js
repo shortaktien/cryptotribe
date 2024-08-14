@@ -27,7 +27,7 @@ const getWeb3 = () =>
   });
 
 const getContract = async (web3) => {
-  const networkId = await web3.eth.net.getId();
+  let networkId = await web3.eth.net.getId();
   console.log('Current network ID:', networkId);
   
   // Überprüfen, ob networkId ein BigInt ist, und in einen String umwandeln
@@ -50,10 +50,12 @@ const getContract = async (web3) => {
 };
 
 const sendTransaction = async (web3, userAddress, contract, method, params) => {
+  const data = contract.methods[method](...params).encodeABI();
+  
   const transactionParameters = {
     to: contract.options.address,
     from: userAddress,
-    data: contract.methods[method](...params).encodeABI(),
+    data: data,
     gas: '6000000',
     gasPrice: web3.utils.toWei('10', 'gwei'),
     type: '0x0' // Ensure legacy transaction
@@ -61,10 +63,13 @@ const sendTransaction = async (web3, userAddress, contract, method, params) => {
 
   try {
     const receipt = await web3.eth.sendTransaction(transactionParameters);
-    console.log('Transaction receipt: ', receipt);
+    console.log('Transaction receipt in sendTransaction:', receipt);
+    return receipt;
   } catch (error) {
-    console.error('Error in transaction: ', error);
+    console.error('Error in transaction:', error);
+    throw error;
   }
 };
+
 
 export { getWeb3, getContract, sendTransaction };

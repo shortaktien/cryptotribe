@@ -172,6 +172,7 @@ const useResources = () => {
       ...loadedCapacityRates
     }));
   };
+  
 
   return { 
     resources, 

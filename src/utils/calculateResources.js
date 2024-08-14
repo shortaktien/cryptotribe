@@ -1,11 +1,13 @@
-// calculateResources.js
 export const calculateGainedResources = (productionRates, timeDifferenceInSeconds) => {
-    const gainedResources = {};
-  
-    for (const resource in productionRates) {
-      gainedResources[resource] = productionRates[resource] * (timeDifferenceInSeconds / 3600); // assuming productionRates is per hour
-    }
-  
-    return gainedResources;
-  };
-  
+  const gainedResources = {};
+
+  console.log('Production Rates:', productionRates);
+  console.log('Time difference in seconds:', timeDifferenceInSeconds);
+
+  for (const resource in productionRates) {
+      gainedResources[resource] = productionRates[resource] * timeDifferenceInSeconds;
+  }
+
+  console.log('Gained Resources:', gainedResources);
+  return gainedResources;
+};
