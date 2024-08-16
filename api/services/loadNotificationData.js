@@ -1,4 +1,4 @@
-const { connectToDatabase } = require('./services/database');
+const { connectToDatabase } = require('./database');
 
 module.exports = async (req, res) => {
   const { user_name } = req.query;

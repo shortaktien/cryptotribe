@@ -83,6 +83,8 @@ function AppContent({
   const buildingsContext = useBuildings();
   const { upgradeBuilding } = buildingsContext || {};
   const [loadedResources, setLoadedResources] = useState(null);
+  const updatedCapacityRates = buildingsContext?.updatedCapacityRates || {};
+  
 
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
@@ -102,46 +104,54 @@ function AppContent({
         
         if (gainedResources) {
             setResources(gainedResources);
-            console.log("Resources set:", gainedResources);
+            //console.log("Resources set:", gainedResources);
         } else {
             console.log("Failed to set resources:", loadedResources);
         }
     }
 }, [loadedResources, setResources]);
 
+useEffect(() => {
+  // Starte ein Intervall, um die Ressourcen jede Sekunde in der UI zu aktualisieren
+  const interval = setInterval(() => {
+    setResources(prevResources => {
+      // Logge die aktuellen Ressourcen
+      console.log("Aktuelle Ressourcen:", prevResources);
+
+      // Gib die Ressourcen unverändert zurück, um die UI zu aktualisieren
+      return { ...prevResources };
+    });
+  }, 1000); // Intervall auf 1 Sekunde gesetzt
+
+  // Cleanup-Funktion, um das Intervall zu stoppen, wenn die Komponente unmontiert wird
+  return () => clearInterval(interval);
+}, [setResources]);
 
 
-  useEffect(() => {
-    if (isConnected && capacityRates) {  // Prüfe, ob der Benutzer eingeloggt ist
-      setCapacityRates(capacityRates);
-      console.log("Capacities set in useEffect:", capacityRates);
-    }
-  }, [isConnected, capacityRates, setCapacityRates]); 
-  
 
-  useEffect(() => {
-    const interval = startResourceProduction(setResources, getProductionRates(), capacityRates, researchEffects, resources.population);
+ 
 
-    return () => clearInterval(interval);
-  }, [setResources, getProductionRates, capacityRates, researchEffects, resources.population]);
+useEffect(() => {
+  const interval = startResourceProduction(setResources, getProductionRates(), capacityRates, researchEffects, resources.population);
+  return () => clearInterval(interval);
+}, [setResources, getProductionRates, capacityRates, researchEffects, resources.population]);
 
-  const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapacities, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
-    // Setze direkt die geladenen Ressourcen (die Standardwerte werden in useResources bereits verwaltet)
-    setLoadedResources(loadedResources);
-  
-    // Falls Kapazitäten geladen wurden, setze sie. Ansonsten verwendet useResources seine Standardwerte.
-    if (loadedCapacities) {
-      setCapacityRates(loadedCapacities);
-    }
+const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapacities, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
+  setLoadedResources(loadedResources);
 
-    if (!loadedBuildings || Object.keys(loadedBuildings).length === 0) {
-      loadedBuildings = initialBuildingsData;
-    } else {
-      loadedBuildings = initialBuildingsData.map(building => ({
-        ...building,
-        currentLevel: loadedBuildings[building.name.toLowerCase()] || 0
-      }));
-    }
+  if (loadedCapacities) {
+    console.log("Loaded capacities:", loadedCapacities); // Konsolenausgabe
+    setCapacityRates(loadedCapacities);
+  }
+
+  if (!loadedBuildings || Object.keys(loadedBuildings).length === 0) {
+    loadedBuildings = initialBuildingsData;
+  } else {
+    loadedBuildings = initialBuildingsData.map(building => ({
+      ...building,
+      currentLevel: loadedBuildings[building.name.toLowerCase()] || 0
+    }));
+  }
 
     setLoadedBuildings(loadedBuildings);
     setIsConnected(true);
@@ -307,8 +317,6 @@ function AppContent({
 
         setTimeout(() => setShowTransactionPopup(false), 15000);
 
-        listenForEvents(contract, userAddress);
-
         upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
       } else {
         console.error('Transaction failed or was rejected');
@@ -379,10 +387,6 @@ function AppContent({
     console.log(`Build defense structure with id ${structureId}`);
   };
 
-  const handleDemolishDefense = async (structureId) => {
-    console.log(`Demolish defense structure with id ${structureId}`);
-  };
-
   const handleBuildShip = async (shipId) => {
     console.log(`Build ship with id ${shipId}`);
   };
@@ -429,7 +433,7 @@ function AppContent({
                     userAddress={userAddress}
                     userName={nickname}
                     resources={resources}
-                    capacityRates={capacityRates}
+                    capacities={updatedCapacityRates} // Konsistente Verwendung von capacityRates
                     military={military}
                   />
                   <div className="content">
@@ -446,8 +450,32 @@ function AppContent({
                       </div>
                     ) : (
                       <Routes>
-                        <Route path="/" element={<MainContent userAddress={userAddress} getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
-                        <Route path="/overview" element={<MainContent userAddress={userAddress} getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates} capacityRates={capacityRates} economicPoints={economicPoints} military={military} />} />
+                        <Route 
+                          path="/" 
+                          element={
+                            <MainContent 
+                              userAddress={userAddress} 
+                              getNetProductionRates={getNetProductionRates} 
+                              getProductionRates={getProductionRates} 
+                              capacityRates={updatedCapacityRates} 
+                              economicPoints={economicPoints} 
+                              military={military} 
+                            />
+                          } 
+                        />
+                        <Route 
+                          path="/overview" 
+                          element={
+                            <MainContent 
+                              userAddress={userAddress} 
+                              getNetProductionRates={getNetProductionRates} 
+                              getProductionRates={getProductionRates} 
+                              capacityRates={capacityRates} 
+                              economicPoints={economicPoints} 
+                              military={military} 
+                            />
+                          } 
+                        />
                         <Route
                           path="/buildings"
                           element={
@@ -455,9 +483,8 @@ function AppContent({
                               resources={resources}
                               spendResources={spendResources}
                               updateProductionRate={updateProductionRate}
-                              updateCapacityRates={updateCapacityRates}
+                              updatedCapacityRates={updatedCapacityRates} 
                               handleUpgradeBuilding={handleUpgradeBuilding}
-                              handleDemolishBuilding={handleUpgradeResearch}
                               setEconomicPoints={setEconomicPoints}
                             />
                           }
@@ -473,22 +500,28 @@ function AppContent({
                             />
                           }
                         />
-                        <Route path="/merchant" element={
-                          <Merchant
-                            resources={resources}
-                            spendResources={spendResources}
-                            refundResources={refundResources}
-                          />
-                        } />
-                        <Route path="/shipyard" element={
-                          <Shipyard
-                            resources={resources}
-                            spendResources={spendResources}
-                            updateCapacityRates={updateCapacityRates}
-                            handleBuildShip={handleBuildShip}
-                            handleScrapShip={handleScrapShip}
-                          />
-                        } />
+                        <Route 
+                          path="/merchant" 
+                          element={
+                            <Merchant
+                              resources={resources}
+                              spendResources={spendResources}
+                              refundResources={refundResources}
+                            />
+                          }
+                        />
+                        <Route 
+                          path="/shipyard" 
+                          element={
+                            <Shipyard
+                              resources={resources}
+                              spendResources={spendResources}
+                              updateCapacityRates={updateCapacityRates}
+                              handleBuildShip={handleBuildShip}
+                              handleScrapShip={handleScrapShip}
+                            />
+                          }
+                        />
                         <Route
                           path="/defence"
                           element={
@@ -497,7 +530,6 @@ function AppContent({
                               spendResources={spendResources}
                               updateCapacityRates={updateCapacityRates}
                               handleBuildDefense={handleBuildDefense}
-                              handleDemolishDefense={handleDemolishDefense}
                             />
                           }
                         />
@@ -531,6 +563,7 @@ function AppContent({
       )}
     </div>
   );
+  
 }
 
 function App() {
@@ -552,7 +585,6 @@ function App() {
         refundResources={refundResources}
         setCapacityRates={setCapacityRates}
         setLoadedProductionRates={setLoadedProductionRates}
-        loadedCapacities={capacityRates}
       />
     </Router>
   );

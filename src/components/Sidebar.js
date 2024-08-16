@@ -19,8 +19,8 @@ const Sidebar = ({ userAddress, resources, economicPoints }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const { buildings } = useBuildings();
-  const { capacityRates, setResources } = useResources(); // Ressourcen aktualisieren
+  const { buildings, updatedCapacityRates } = useBuildings();
+  const { setResources } = useResources(); // Ressourcen aktualisieren
   const saveGameProgress = useSaveGame();
   const navigate = useNavigate();
 
@@ -36,13 +36,25 @@ const Sidebar = ({ userAddress, resources, economicPoints }) => {
   const handleSaveGame = async () => {
     setSaving(true);
     setSaveSuccess(false);
-    const currentCapacities = capacityRates;
-    console.log('Current capacities:', currentCapacities);
-    console.log('Saving game with:', { userAddress, resources, buildings, capacities: currentCapacities, economic_points: economicPoints });
-    await saveGameProgress(userAddress, resources, buildings, currentCapacities, economicPoints);
-    setSaving(false);
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
+
+    // Debugging: Konsolenausgaben für alle Daten hinzufügen
+    console.log('Saving game with the following data:');
+    console.log('User Address:', userAddress);
+    console.log('Resources:', resources);
+    console.log('Buildings:', buildings);
+    console.log('Capacities:', updatedCapacityRates);
+    console.log('Economic Points:', economicPoints);
+
+    // Daten speichern
+    try {
+      await saveGameProgress(userAddress, resources, buildings, updatedCapacityRates, economicPoints);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error('Failed to save game progress:', error);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCheat = () => {
@@ -70,6 +82,7 @@ const Sidebar = ({ userAddress, resources, economicPoints }) => {
   const isFortresBuilt = buildings.some(building => building.name === "Fortifications" && building.currentLevel > 0);
   const isShipyardBuilt = buildings.some(building => building.name === "Harbor" && building.currentLevel > 0);
   const isMerchantBuilt = buildings.some(building => building.name === "Merchant" && building.currentLevel > 0);
+
 
   return (
     <div>

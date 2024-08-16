@@ -86,7 +86,6 @@ module.exports = async (req, res) => {
 
     // Calculate production rates
     const productionRates = calculateProduction(buildingsResult.buildings, baseProductions, 1.8);
-    console.log('Calculated production rates:', productionRates);
 
     await saveProductionRates(client, user_name, productionRates);
 

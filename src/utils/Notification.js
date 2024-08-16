@@ -20,10 +20,10 @@ export const calculateNotificationMessage = (lastSaveTime, currentTime, producti
 
   if (lastSaveTime && currentTime) {
     const timeDifferenceInSeconds = (new Date(currentTime) - new Date(lastSaveTime)) / 1000;
-    console.log('Time difference in seconds:', timeDifferenceInSeconds); // Debugging log
+    //console.log('Time difference in seconds:', timeDifferenceInSeconds); // Debugging log
 
     const gainedResources = calculateGainedResources(productionRates, timeDifferenceInSeconds);
-    console.log('Gained resources:', gainedResources); // Log the gained resources
+    //console.log('Gained resources:', gainedResources); // Log the gained resources
 
     const formatTimeDifference = (seconds) => {
       if (seconds < 60) return `${seconds} seconds`;

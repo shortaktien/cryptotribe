@@ -29,6 +29,9 @@ const MainContent = ({ userAddress, economicPoints, military }) => {
     //console.log('Received capacityRates in MainContent:', updatedCapacityRates);
   }, [military, updateUnits, updatedCapacityRates]);
 
+
+  
+
   const totalAttack = militaryUnits.reduce((total, unit) => total + (unit.attack * (unit.count || 0)), 0)
     + ships.reduce((total, ship) => total + (ship.attack * (ship.count || 0)), 0);
   const totalDefense = militaryUnits.reduce((total, unit) => total + (unit.defense * (unit.count || 0)), 0)

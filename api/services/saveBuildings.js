@@ -1,6 +1,4 @@
 const saveBuildings = async (client, userName, buildings) => {
-  console.log('Saving buildings for user:', userName);
-  console.log('Buildings data:', buildings);
 
   const saveBuildingsValues = [
     userName,
@@ -18,8 +16,6 @@ const saveBuildings = async (client, userName, buildings) => {
     buildings.find(b => b.name.toLowerCase() === 'harbor')?.currentLevel || 0,
     buildings.find(b => b.name.toLowerCase() === 'merchant')?.currentLevel || 0
   ];
-
-  console.log('Values to save:', saveBuildingsValues);
 
   const saveBuildingsQuery = `
     INSERT INTO buildings_level (

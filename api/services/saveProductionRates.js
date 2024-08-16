@@ -1,6 +1,4 @@
 const saveProductionRates = async (client, userName, productionRates) => {
-  console.log('Saving production rates for user:', userName);
-  console.log('Production rates to save:', productionRates);
 
   const saveProductionRatesQuery = `
     INSERT INTO production_rates_summary (
@@ -44,7 +42,6 @@ const saveProductionRates = async (client, userName, productionRates) => {
     new Date().toISOString()
   ];
 
-  console.log('Values to save:', saveProductionRatesValues);
 
   await client.query(saveProductionRatesQuery, saveProductionRatesValues);
 };

@@ -15,9 +15,10 @@ import militaryImage from "../assets/militaryRessourceImage.webp";
 
 import "./header.css";
 
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources = {}, updatedCapacityRates = {}, nickname }) => {
+const Header = ({ userAddress, userAvatar, userName, userBalance, resources = {}, capacities = {}, nickname }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [highlightedResources, setHighlightedResources] = useState({});
+  const [previousResources, setPreviousResources] = useState(resources);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -28,41 +29,61 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources = {}
   };
 
   useEffect(() => {
-    console.log("Header Resources:", resources);
-    console.log("Header Capacities:", updatedCapacityRates);
-
-    const interval = setInterval(() => {
-      const newHighlightedResources = {};
-      Object.keys(resources).forEach(key => {
-        if (resources[key] !== undefined && resources[key] !== 0) {
-          newHighlightedResources[key] = resources[key] > 0 ? 'highlight-green' : 'highlight-red';
+    const newHighlightedResources = {};
+  
+    // Iteriere über alle Ressourcen
+    Object.keys(resources).forEach(key => {
+      // Kurzzeitiges Grün-Aufleuchten, wenn die Ressource zugenommen hat
+      if (resources[key] > (previousResources[key] || 0)) {
+        newHighlightedResources[key] = 'highlight-green';
+      }
+      // Wenn die Ressource die Kapazität erreicht oder überschreitet, bleibt sie rot
+      else if (capacities[key] && resources[key] >= capacities[key]) {
+        newHighlightedResources[key] = 'highlight-red';
+      }
+      // Weiß für alle anderen Fälle
+      else {
+        newHighlightedResources[key] = '';
+      }
+    });
+  
+    setHighlightedResources(newHighlightedResources);
+    setPreviousResources(resources);
+  
+    // Timer zum Entfernen des Grün-Aufleuchtens nach 1 Sekunde, es bleibt rot, wenn Kapazität erreicht
+    const timer = setTimeout(() => {
+      const resetHighlights = { ...newHighlightedResources };
+      Object.keys(resetHighlights).forEach(key => {
+        if (resetHighlights[key] === 'highlight-green') {
+          // Nur auf Weiß zurücksetzen, wenn nicht gleichzeitig die Kapazität erreicht ist
+          if (capacities[key] && resources[key] >= capacities[key]) {
+            resetHighlights[key] = 'highlight-red'; // Behalte Rot bei, wenn Kapazität erreicht
+          } else {
+            resetHighlights[key] = ''; // Zurücksetzen auf Weiß
+          }
         }
       });
-  
-      setHighlightedResources(newHighlightedResources);
-  
-      const timer = setTimeout(() => {
-        setHighlightedResources(prev => ({ ...prev }));
-      }, 1000);
-
-      clearTimeout(timer);
+      setHighlightedResources(resetHighlights);
     }, 1000);
+  
+    return () => clearTimeout(timer);
+  }, [resources, capacities, previousResources]);
+  
 
-    return () => clearInterval(interval);
-  }, [resources]);
+  // Nur die aktuellen Ressourcen anzeigen, ohne Kapazitäten in der Anzeige
+  const resourcesData = resources ? [
+    { name: 'Water', value: Math.floor(resources.water), image: waterImage },
+    { name: 'Food', value: Math.floor(resources.food), image: foodImage },
+    { name: 'Wood', value: Math.floor(resources.wood), image: woodImage },
+    { name: 'Stone', value: Math.floor(resources.stone), image: stoneImage },
+    { name: 'Coal', value: Math.floor(resources.coal), image: coalImage },
+    { name: 'Gold', value: Math.floor(resources.gold), image: goldImage },
+    { name: 'Knowledge', value: Math.floor(resources.knowledge), image: knowledgeImage },
+    { name: 'Population', value: Math.floor(resources.population), image: populationImage },
+    { name: 'Military', value: Math.floor(resources.military), image: militaryImage }
+  ] : [];
 
-  const resourcesData = resources && updatedCapacityRates ? [
-    { name: 'Water', value: Math.floor(resources.water), capacity: updatedCapacityRates.water, image: waterImage },
-    { name: 'Food', value: Math.floor(resources.food), capacity: updatedCapacityRates.food, image: foodImage },
-    { name: 'Wood', value: Math.floor(resources.wood), capacity: updatedCapacityRates.wood, image: woodImage },
-    { name: 'Stone', value: Math.floor(resources.stone), capacity: updatedCapacityRates.stone, image: stoneImage },
-    { name: 'Coal', value: Math.floor(resources.coal), capacity: updatedCapacityRates.coal, image: coalImage },
-    { name: 'Gold', value: Math.floor(resources.gold), capacity: updatedCapacityRates.gold, image: goldImage },
-    { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: updatedCapacityRates.knowledge, image: knowledgeImage },
-    { name: 'Population', value: Math.floor(resources.population), capacity: updatedCapacityRates.population, image: populationImage },
-    { name: 'Military', value: Math.floor(resources.military), capacity: updatedCapacityRates.maxMilitaryCapacity, image: militaryImage }
-  ] : []; // Fallback to an empty array if resources or capacityRates are undefined
-
+  
   return (
     <div className="header">
       <div className="logo"></div>
@@ -74,8 +95,8 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources = {}
               <img src={resource.image} alt={resource.name} className="resource-icon" />
               <div className="resource-tooltip">{resource.name}</div>
             </div>
-            <span className={`resource-amount ${resource.value >= resource.capacity ? 'full' : ''}`}>
-              {resource.value} / {resource.capacity}
+            <span className={`resource-amount ${highlightedResources[resource.name.toLowerCase()]}`}>
+              {resource.value}
             </span>
           </div>
         ))}
@@ -102,4 +123,3 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources = {}
 };
 
 export default Header;
-

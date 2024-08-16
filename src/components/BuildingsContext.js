@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
+import calculateWarehouseCapacities from "../utils/calculateWarehouseCapacities";
+
 import lamberjackImage from "../assets/lamberjackImage.webp";
 import stonemasonImage from "../assets/stonemasonImage.webp";
 import warehouseImage from "../assets/warehouseImage.webp";
@@ -203,12 +205,12 @@ const generateLevels = (building, maxLevel = 20) => {
 const getUpdatedCapacityRates = (buildings) => {
   const warehouse = buildings.find(b => b.name === 'Warehouse');
   if (warehouse) {
-    const { currentLevel, initialCapacity } = warehouse;
-    //console.log('Warehouse Level:', currentLevel);
-    return calculateCapacity(initialCapacity, currentLevel, 1.4);
+    const { currentLevel } = warehouse;
+    return calculateWarehouseCapacities(currentLevel); // Nutze die richtige Berechnung
   }
   return {}; 
 };
+
 
 const BuildingsProvider = ({
   children,
@@ -282,7 +284,7 @@ const BuildingsProvider = ({
                   if (nextLevelData.capacity) {
                     Object.entries(nextLevelData.capacity).forEach(([resource, capacity]) => {
                       updateCapacityRates(resource, capacity, true);
-                    });
+                    });                    
                   }
                   if (building.name === 'Barracks') {
                     updateCapacityRates('maxMilitaryCapacity', nextLevelData.capacity.military, true);

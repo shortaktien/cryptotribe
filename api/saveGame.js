@@ -2,6 +2,8 @@ const { connectToDatabase } = require('../api/services/database');
 const saveResources = require('../api/services/saveResources');
 const saveBuildings = require('../api/services/saveBuildings');
 const saveMilitary = require('../api/services/saveMilitary');
+const saveCapacities = require('../api/services/saveCapacities'); // Stelle sicher, dass der Pfad korrekt ist
+
 
 const checkUserExists = async (client, userName) => {
   const result = await client.query('SELECT 1 FROM users WHERE user_name = $1', [userName]);
@@ -18,11 +20,9 @@ module.exports = async (req, res) => {
   const client = await connectToDatabase();
 
   try {
-    // Überprüfen, ob der Benutzer bereits existiert
     const userExists = await checkUserExists(client, userAddress);
     
     if (!userExists) {
-      // Wenn der Benutzer nicht existiert, füge ihn in die users-Tabelle ein
       await client.query(
         `INSERT INTO users (user_name, login_time, last_saveGame) 
          VALUES ($1, $2, $3)
@@ -30,39 +30,19 @@ module.exports = async (req, res) => {
          DO UPDATE SET login_time = EXCLUDED.login_time`,
         [userAddress, new Date(), new Date()]
       );
-      console.log('New player added:', userAddress);
-    } else {
-      console.log('Existing player found:', userAddress);
     }
 
     const currentTime = new Date();
-    const updatedBuildings = buildings.map(building => {
-      if (building.isBuilding) {
-        building.buildStartTime = building.buildStartTime || currentTime.toISOString();
-        building.buildTimeRemaining = building.buildTimeRemaining || building.baseBuildTime;
-      }
-      return {
-        ...building,
-        currentLevel: typeof building.currentLevel === 'object' ? building.currentLevel.level : building.currentLevel || 0
-      };
-    });
-
-    console.log('Saving game for user:', userAddress);
-    console.log('Resources:', resources);
-    console.log('Buildings:', updatedBuildings);
-    console.log('Capacities:', capacities);
-    console.log('Economic points:', economic_points);
-    console.log('Military:', military);
-
     await saveResources(client, userAddress, resources, economic_points);
-    await saveBuildings(client, userAddress, updatedBuildings);
+    await saveBuildings(client, userAddress, buildings);
     await saveMilitary(client, userAddress, military);
+    
+    // Speichere Kapazitäten
+    await saveCapacities(client, userAddress, capacities);
 
-    // Speichere die Aktualisierungszeit in player_progress
     const updateQuery = `UPDATE player_progress SET updated_at = $1, economic_points = $2 WHERE user_name = $3`;
     await client.query(updateQuery, [currentTime, economic_points, userAddress]);
 
-    // Speichere last_saveGame in der users Tabelle
     const saveGameTimeQuery = `UPDATE users SET last_saveGame = $1 WHERE user_name = $2`;
     await client.query(saveGameTimeQuery, [currentTime, userAddress]);
 
