@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo} from 'react';
+import React, { useEffect, useMemo } from 'react';
 import './MainContent.css';
 import { useMilitary } from './MilitaryContext';
 import { useDefense } from './DefenseContext';
 import { useShipyard } from './ShipyardContext';
 import { useBuildings } from './BuildingsContext';
 
-const MainContent = ({ userAddress, capacityRates, economicPoints, military }) => {
-  const { productionRates } = useBuildings();
+const MainContent = ({ userAddress, economicPoints, military }) => {
+  const { productionRates, updatedCapacityRates } = useBuildings();
   const { units: militaryUnits, updateUnits } = useMilitary();
   const { structures: defenseStructures } = useDefense();
   const { ships } = useShipyard();
@@ -24,8 +24,10 @@ const MainContent = ({ userAddress, capacityRates, economicPoints, military }) =
   }), []);
 
   useEffect(() => {
+    //console.log('useEffect triggered');
     updateUnits(military);
-  }, [military, updateUnits]);
+    //console.log('Received capacityRates in MainContent:', updatedCapacityRates);
+  }, [military, updateUnits, updatedCapacityRates]);
 
   const totalAttack = militaryUnits.reduce((total, unit) => total + (unit.attack * (unit.count || 0)), 0)
     + ships.reduce((total, ship) => total + (ship.attack * (ship.count || 0)), 0);
@@ -53,7 +55,7 @@ const MainContent = ({ userAddress, capacityRates, economicPoints, military }) =
         <div className="box">
           <h2 className="title">Resource Capacities</h2>
           <ul className="production-list">
-            {Object.entries(capacityRates).map(([resource, capacity]) => (
+            {Object.entries(updatedCapacityRates).map(([resource, capacity]) => (
               <li key={resource} className="production-item">
                 <span className="resource-name">{resource}</span>: <span className="resource-rate">{capacity}</span>
               </li>

@@ -14,6 +14,7 @@ const useSaveGame = () => {
     }));
 
     try {
+      console.log('Resources before saving:', resources);
       console.log('Military data before saving:', military);
       console.log('Buildings data before saving:', buildingsWithBuildTimes);
       console.log('Capacities data before saving:', capacities);

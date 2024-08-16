@@ -1,4 +1,4 @@
-const { connectToDatabase } = require('./database');
+const { connectToDatabase } = require('./services/database');
 
 const loadBuildings = async (client, userName) => {
   const buildingsQuery = 'SELECT * FROM buildings_level WHERE user_name = $1';

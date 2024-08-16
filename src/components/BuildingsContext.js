@@ -42,7 +42,7 @@ const initialBuildingsData = [
     name: 'Warehouse',
     image: warehouseImage,
     baseCost: { wood: 60, stone: 150, population: 2 },
-    baseCapacity: { water: 500, food: 500, wood: 500, stone: 500, coal: 500, gold: 500 },
+    initialCapacity: { water: 500, food: 500, wood: 500, stone: 500, coal: 500, gold: 500 },
     baseBuildTime: 3,
     currentLevel: 0,
     description: 'A fortified storage facility to safeguard your resources. Protecting your supplies from the marauding Skarn Raiders is crucial for sustaining your realms growth and ensuring a steady flow of materials.'
@@ -170,14 +170,15 @@ const calculateProduction = (baseProduction, level, multiplier) => {
   return production;
 };
 
-const calculateCapacity = (baseCapacity, level, multiplier) => {
-  if (!baseCapacity) return {}; // Check for undefined or null baseCapacity
+const calculateCapacity = (initialCapacity, level, multiplier) => {
+  if (!initialCapacity) return {};
   const capacity = {};
-  Object.keys(baseCapacity).forEach(resource => {
-    capacity[resource] = Math.ceil(baseCapacity[resource] * Math.pow(multiplier, level));
+  Object.keys(initialCapacity).forEach(resource => {
+    capacity[resource] = Math.ceil(initialCapacity[resource] * Math.pow(multiplier, level));
   });
   return capacity;
 };
+
 
 const generateLevels = (building, maxLevel = 20) => {
   const levels = [];
@@ -199,6 +200,16 @@ const generateLevels = (building, maxLevel = 20) => {
   return levels;
 };
 
+const getUpdatedCapacityRates = (buildings) => {
+  const warehouse = buildings.find(b => b.name === 'Warehouse');
+  if (warehouse) {
+    const { currentLevel, initialCapacity } = warehouse;
+    //console.log('Warehouse Level:', currentLevel);
+    return calculateCapacity(initialCapacity, currentLevel, 1.4);
+  }
+  return {}; 
+};
+
 const BuildingsProvider = ({
   children,
   initialBuildings = initialBuildingsData,
@@ -218,16 +229,13 @@ const BuildingsProvider = ({
   );
 
   useEffect(() => {
-    if (initialBuildings) {
-      console.log('Loaded buildings data:', initialBuildings);
-      setBuildings(initialBuildings.map(building => ({
-        ...building,
-        levels: generateLevels(building),
-        currentLevel: typeof building.currentLevel === 'object' ? building.currentLevel.level : building.currentLevel || 0, // Ensure currentLevel is a number
-        buildStartTime: building.buildStartTime || null,
-        buildTimeRemaining: building.buildTimeRemaining || null,
-      })));
-    }
+    setBuildings(initialBuildings.map(building => ({
+      ...building,
+      levels: generateLevels(building),
+      currentLevel: typeof building.currentLevel === 'object' ? building.currentLevel.level : building.currentLevel || 0,
+      buildStartTime: building.buildStartTime || null,
+      buildTimeRemaining: building.buildTimeRemaining || null,
+    })));
   }, [initialBuildings]);
 
   const upgradeBuilding = (buildingId, spendResources, updateProductionRate, updateCapacityRates) => {
@@ -335,8 +343,10 @@ const BuildingsProvider = ({
     );
   };
 
+  const updatedCapacityRates = getUpdatedCapacityRates(buildings);
+
   return (
-    <BuildingsContext.Provider value={{ buildings, upgradeBuilding, demolishBuilding, productionRates: buildings.reduce((acc, building) => {
+    <BuildingsContext.Provider value={{ buildings, upgradeBuilding, updatedCapacityRates, demolishBuilding, productionRates: buildings.reduce((acc, building) => {
       const level = building.currentLevel;
       const production = building.levels[level].production;
       if (production) {

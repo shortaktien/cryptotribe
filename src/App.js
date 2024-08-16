@@ -16,6 +16,7 @@ import Footer from './components/Footer';
 import StartPage from './components/StartPage';
 import useResources from './components/SetResources';
 import UserSettings from './components/userSettings';
+
 import { useBuildings } from './components/BuildingsContext';
 import { BuildingsProvider, initialBuildingsData } from './components/BuildingsContext';
 import { ResearchProvider } from './components/ResearchContext';
@@ -24,24 +25,14 @@ import { DefenseProvider } from './components/DefenseContext';
 import { ShipyardProvider } from './components/ShipyardContext';
 import { getWeb3, sendTransaction } from './utils/web3';
 import Notification, { fetchNotificationData, calculateNotificationMessage } from './utils/Notification';
+import { initializeResources } from './utils/resourceManager';
+import { startResourceProduction } from './utils/resourceManager';
 import BuildingManagement from '../src/BuildingManagement.json';
 import TransactionPopup from '../src/utils/TransactionPopup';
+
 import './components/App.css';
 
-const mergeResources = (resources, gainedResources) => {
-  const updatedResources = { ...resources };
-
-  for (const resource in gainedResources) {
-    if (updatedResources[resource] !== undefined) {
-      updatedResources[resource] += gainedResources[resource];
-    } else {
-      updatedResources[resource] = gainedResources[resource];
-    }
-  }
-
-  return updatedResources;
-};
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
   const navigate = useNavigate();
 
@@ -71,13 +62,15 @@ function AppContent({
   capacityRates, getNetProductionRates, getProductionRates, 
   refundResources, setCapacityRates
 }) {
+  const { researchEffects } = useResources();
+  
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [nickname, setNickname] = useState('');
   const [web3, setWeb3] = useState(null);
   const [contract, setContract] = useState(null);
   const [contractError, setContractError] = useState('');
-  const [loadedBuildings, setLoadedBuildings] = useState(initialBuildingsData); // Default initialBuildingsData
+  const [loadedBuildings, setLoadedBuildings] = useState(initialBuildingsData);
   const [showNotificationState, setShowNotificationState] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
@@ -89,23 +82,50 @@ function AppContent({
   const buildingsContext = useBuildings();
   const { upgradeBuilding } = buildingsContext || {};
 
+  const defaultResources = {
+    water: 250,
+    food: 250,
+    wood: 300,
+    stone: 100,
+    knowledge: 0,
+    population: 15,
+    coal: 0,
+    gold: 0,
+    military: 0,
+  };
+
+  const [loadedResources, setLoadedResources] = useState(null);
+
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
-  const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapacities, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
-    const defaultResources = {
-      water: 250,
-      food: 250,
-      wood: 300,
-      stone: 100,
-      knowledge: 0,
-      population: 15,
-      coal: 0,
-      gold: 0,
-      military: 0,
-    };
+  useEffect(() => {
+    if (loadedResources) {
+      const gainedResources = initializeResources(loadedResources, defaultResources);
+      if (gainedResources) {
+        setResources(gainedResources);
+        console.log("Resources set:", gainedResources);
+      } else {
+        console.log("Failed to set resources:", loadedResources);
+      }
+    }
+    
+  }, [loadedResources, setResources]);
 
-    const gainedResources = mergeResources(defaultResources, loadedResources || {});
-    setResources(gainedResources);
+  useEffect(() => {
+    if (capacityRates) {
+      setCapacityRates(capacityRates);
+      console.log("Capacities set in useEffect:", capacityRates);
+    }
+  }, [capacityRates, setCapacityRates]);
+
+  useEffect(() => {
+    const interval = startResourceProduction(setResources, getProductionRates(), capacityRates, researchEffects, resources.population);
+
+    return () => clearInterval(interval);
+  }, [setResources, getProductionRates, capacityRates, researchEffects, resources.population]);
+
+  const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapacities, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
+    setLoadedResources(loadedResources || defaultResources);
 
     if (!loadedCapacities) {
       loadedCapacities = {
@@ -123,11 +143,9 @@ function AppContent({
     }
     setCapacityRates(loadedCapacities);
 
-    console.log('Loaded Buildings:', loadedBuildings);
     if (!loadedBuildings || Object.keys(loadedBuildings).length === 0) {
       loadedBuildings = initialBuildingsData;
     } else {
-      // Transform the loaded buildings into the format expected by the BuildingsContext
       loadedBuildings = initialBuildingsData.map(building => ({
         ...building,
         currentLevel: loadedBuildings[building.name.toLowerCase()] || 0
@@ -162,14 +180,11 @@ function AppContent({
   const handleConnect = async (address) => {
     try {
       setUserAddress(address);
-      console.log('Connecting with address:', address); // Log the address
 
       const response = await fetch(`/api/loadGame?user_name=${address}`);
       if (response.ok) {
         const data = await response.json();
-        console.log('Loaded data:', data); // Log the loaded data
 
-        const isExistingPlayer = data.resources || data.buildings || data.capacities;
         handleLogin(
           address,
           data.resources,
@@ -181,19 +196,19 @@ function AppContent({
           data.military
         );
 
-        if (!data.nickname && !isExistingPlayer) {
+        if (!data.nickname) {
           setShowNicknamePrompt(true);
         } else {
           setShowNicknamePrompt(false);
         }
       } else {
-        console.error('Failed to load game data:', response.statusText); // Log the error response
+        console.error('Failed to load game data:', response.statusText);
         handleLogin(address, null, null, null, '');
         setNickname('');
         setShowNicknamePrompt(true);
       }
     } catch (error) {
-      console.error('Error connecting to load game API:', error); // Log the error
+      console.error('Error connecting to load game API:', error);
     }
   };
 
@@ -215,135 +230,124 @@ function AppContent({
 
   const getContract = async (web3) => {
     let networkId = await web3.eth.net.getId();
-    
-    // Überprüfen, ob networkId ein BigInt ist, und in einen String umwandeln
+
     if (typeof networkId === 'bigint') {
-        networkId = networkId.toString();
+      networkId = networkId.toString();
     }
 
-    console.log('Current network ID:', networkId);
     const deployedNetwork = BuildingManagement.networks[networkId];
-    console.log('Deployed network details:', deployedNetwork);
 
     if (!deployedNetwork) {
-        console.error('Contract not deployed on this network:', networkId);
-        throw new Error('Contract not deployed on this network');
+      console.error('Contract not deployed on this network:', networkId);
+      throw new Error('Contract not deployed on this network');
     }
 
     const contract = new web3.eth.Contract(
-        BuildingManagement.abi,
-        deployedNetwork && deployedNetwork.address,
+      BuildingManagement.abi,
+      deployedNetwork && deployedNetwork.address,
     );
-    console.log('Contract initialized:', contract);
-    console.log('Available methods:', Object.keys(contract.methods));
+
     return contract;
-};
+  };
 
-const listenForEvents = (contract, userAddress) => {
-  if (contract && contract.events) {
-    console.log('Contract initialized and ready for events:', contract);
-    
-    contract.events.BuildingUpgraded({ filter: { owner: userAddress } })
-      .on('data', async (event) => {
-        const { buildingId, newLevel } = event.returnValues;
-        await updateBuildingInDatabase(buildingId, newLevel);
-      })
-      .on('error', console.error);
+  const listenForEvents = (contract, userAddress) => {
+    if (contract && contract.events) {
 
-    contract.events.BuildingCreated({ filter: { owner: userAddress } })
-      .on('data', async (event) => {
-        const { buildingId, level } = event.returnValues;
-        await updateBuildingInDatabase(buildingId, level);
-      })
-      .on('error', console.error);
-  } else {
-    console.error('Event listening is not supported. Attempting to retrieve past events.');
-    
-    // Fallback zu getPastEvents
-    contract.getPastEvents('BuildingUpgraded', {
-      filter: { owner: userAddress },
-      fromBlock: 'latest',
-    })
-    .then(async (events) => {
-      for (let event of events) {
-        const { buildingId, newLevel } = event.returnValues;
-        await updateBuildingInDatabase(buildingId, newLevel);
-      }
-    })
-    .catch(console.error);
-    
-    contract.getPastEvents('BuildingCreated', {
-      filter: { owner: userAddress },
-      fromBlock: 'latest',
-    })
-    .then(async (events) => {
-      for (let event of events) {
-        const { buildingId, level } = event.returnValues;
-        await updateBuildingInDatabase(buildingId, level);
-      }
-    })
-    .catch(console.error);
-  }
-};
+      contract.events.BuildingUpgraded({ filter: { owner: userAddress } })
+        .on('data', async (event) => {
+          const { buildingId, newLevel } = event.returnValues;
+          await updateBuildingInDatabase(buildingId, newLevel);
+        })
+        .on('error', console.error);
 
-const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts, selectedBuilding) => {
-  if (!contract || !userAddress) return;
-
-  const hasEnoughResources = resourceNames.every((resource, index) => {
-    return resources[resource] >= resourceCosts[index];
-  });
-
-  if (!hasEnoughResources) return;
-
-  try {
-    const level = selectedBuilding.currentLevel + 1;
-    const message = `Build ${selectedBuilding.name} to level ${level}`;
-
-    // Sende die Transaktion zum Smart Contract
-    const receipt = await sendTransaction(web3, userAddress, contract, 'buildOrUpgrade', [buildingId, message]);
-
-    if (receipt && receipt.status) { // Überprüfen, ob die Transaktion erfolgreich war
-      setTransactionHash(receipt.transactionHash);
-      setShowTransactionPopup(true);
-
-      // Hide the popup after a while
-      setTimeout(() => setShowTransactionPopup(false), 15000);
-
-      // Event-Listener aufrufen, um auf das Ereignis zu reagieren
-      listenForEvents(contract, userAddress);
-
-      // Upgrade des Gebäudes erst nach erfolgreicher Transaktion
-      upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
+      contract.events.BuildingCreated({ filter: { owner: userAddress } })
+        .on('data', async (event) => {
+          const { buildingId, level } = event.returnValues;
+          await updateBuildingInDatabase(buildingId, level);
+        })
+        .on('error', console.error);
     } else {
-      console.error('Transaction failed or was rejected');
-    }
-  } catch (error) {
-    console.error('Error in transaction: ', error);
-  }
-};
+      console.error('Event listening is not supported. Attempting to retrieve past events.');
 
-// Example function to update the building in your database
-const updateBuildingInDatabase = async (buildingId, newLevel) => {
-  try {
+      contract.getPastEvents('BuildingUpgraded', {
+        filter: { owner: userAddress },
+        fromBlock: 'latest',
+      })
+        .then(async (events) => {
+          for (let event of events) {
+            const { buildingId, newLevel } = event.returnValues;
+            await updateBuildingInDatabase(buildingId, newLevel);
+          }
+        })
+        .catch(console.error);
+
+      contract.getPastEvents('BuildingCreated', {
+        filter: { owner: userAddress },
+        fromBlock: 'latest',
+      })
+        .then(async (events) => {
+          for (let event of events) {
+            const { buildingId, level } = event.returnValues;
+            await updateBuildingInDatabase(buildingId, level);
+          }
+        })
+        .catch(console.error);
+    }
+  };
+
+  const handleUpgradeBuilding = async (buildingId, resourceNames, resourceCosts, selectedBuilding) => {
+    if (!contract || !userAddress) return;
+
+    const hasEnoughResources = resourceNames.every((resource, index) => {
+      return resources[resource] >= resourceCosts[index];
+    });
+
+    if (!hasEnoughResources) return;
+
+    try {
+      const level = selectedBuilding.currentLevel + 1;
+      const message = `Build ${selectedBuilding.name} to level ${level}`;
+
+      const receipt = await sendTransaction(web3, userAddress, contract, 'buildOrUpgrade', [buildingId, message]);
+
+      if (receipt && receipt.status) {
+        setTransactionHash(receipt.transactionHash);
+        setShowTransactionPopup(true);
+
+        setTimeout(() => setShowTransactionPopup(false), 15000);
+
+        listenForEvents(contract, userAddress);
+
+        upgradeBuilding(buildingId, spendResources, updateProductionRate, updateCapacityRates);
+      } else {
+        console.error('Transaction failed or was rejected');
+      }
+    } catch (error) {
+      console.error('Error in transaction: ', error);
+    }
+  };
+
+  const updateBuildingInDatabase = async (buildingId, newLevel) => {
+    try {
       const response = await fetch('/api/updateBuilding', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              user_name: userAddress,
-              buildingId,
-              newLevel,
-          }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_name: userAddress,
+          buildingId,
+          newLevel,
+        }),
       });
 
       if (!response.ok) {
-          throw new Error('Failed to update building in the database');
+        throw new Error('Failed to update building in the database');
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error updating building in database:', error);
-  }
-};
+    }
+  };
 
   const handleUpgradeResearch = async (researchId, cost) => {
     if (!contract) {
@@ -425,17 +429,17 @@ const updateBuildingInDatabase = async (buildingId, newLevel) => {
                   updateCapacityRates={updateCapacityRates}
                   refundResources={refundResources}
                 >
-                <TransactionPopup 
-        transactionHash={transactionHash}
-        message="Your transaction was successful!"
-        show={showTransactionPopup}
-      />
+                  <TransactionPopup
+                    transactionHash={transactionHash}
+                    message="Your transaction was successful!"
+                    show={showTransactionPopup}
+                  />
                   <Header
                     userAddress={userAddress}
-                    userName={nickname} 
+                    userName={nickname}
                     resources={resources}
                     capacityRates={capacityRates}
-                    military={military} 
+                    military={military}
                   />
                   <div className="content">
                     <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} military={military} />
@@ -521,7 +525,7 @@ const updateBuildingInDatabase = async (buildingId, newLevel) => {
                         <Route path="/world" element={<World />} />
                         <Route path="/alliance" element={<Alliance />} />
                         <Route path="/shop" element={<Shop />} />
-                        <Route path="/settings" element={<UserSettings userAddress={userAddress} />} /> 
+                        <Route path="/settings" element={<UserSettings userAddress={userAddress} />} />
                       </Routes>
                     )}
                   </div>
@@ -557,6 +561,7 @@ function App() {
         refundResources={refundResources}
         setCapacityRates={setCapacityRates}
         setLoadedProductionRates={setLoadedProductionRates}
+        loadedCapacities={capacityRates}
       />
     </Router>
   );

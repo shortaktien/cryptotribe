@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'User name is required' });
   }
 
-  let client; // Define the client variable here
+  let client; 
 
   try {
     client = await connectToDatabase();
@@ -90,8 +90,9 @@ module.exports = async (req, res) => {
 
     await saveProductionRates(client, user_name, productionRates);
 
+    // Return the loaded data
     res.status(200).json({
-      resources: resourcesResult.resources,
+      resources: resourcesResult.resources, // This is the key part
       buildings: buildingsResult.buildings,
       productionRates,
       updated_at: resourcesResult.updated_at,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ import militaryImage from "../assets/militaryRessourceImage.webp";
 
 import "./header.css";
 
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources, capacityRates, resourceChanges = {}, nickname }) => {
+const Header = ({ userAddress, userAvatar, userName, userBalance, resources = {}, updatedCapacityRates = {}, nickname }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [highlightedResources, setHighlightedResources] = useState({});
 
@@ -27,41 +27,41 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
     setDropdownVisible(false);
   };
 
-  const resourcesData = [
-    { name: 'Water', value: Math.floor(resources.water), capacity: capacityRates.water, image: waterImage },
-    { name: 'Food', value: Math.floor(resources.food), capacity: capacityRates.food, image: foodImage },
-    { name: 'Wood', value: Math.floor(resources.wood), capacity: capacityRates.wood, image: woodImage },
-    { name: 'Stone', value: Math.floor(resources.stone), capacity: capacityRates.stone, image: stoneImage },
-    { name: 'Coal', value: Math.floor(resources.coal), capacity: capacityRates.coal, image: coalImage },
-    { name: 'Gold', value: Math.floor(resources.gold), capacity: capacityRates.gold, image: goldImage },
-    { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: capacityRates.knowledge, image: knowledgeImage },
-    { name: 'Population', value: Math.floor(resources.population), capacity: capacityRates.population, image: populationImage },
-    { name: 'Military', value: Math.floor(resources.military), capacity: capacityRates.maxMilitaryCapacity, image: militaryImage }
-  ];
-  
-
   useEffect(() => {
+    console.log("Header Resources:", resources);
+    console.log("Header Capacities:", updatedCapacityRates);
+
     const interval = setInterval(() => {
       const newHighlightedResources = {};
-      Object.keys(resourceChanges).forEach(key => {
-        if (resourceChanges[key] !== undefined && resourceChanges[key] !== 0) {
-          newHighlightedResources[key] = resourceChanges[key] > 0 ? 'highlight-green' : 'highlight-red';
+      Object.keys(resources).forEach(key => {
+        if (resources[key] !== undefined && resources[key] !== 0) {
+          newHighlightedResources[key] = resources[key] > 0 ? 'highlight-green' : 'highlight-red';
         }
       });
   
       setHighlightedResources(newHighlightedResources);
   
       const timer = setTimeout(() => {
-        setHighlightedResources({});
+        setHighlightedResources(prev => ({ ...prev }));
       }, 1000);
-  
-      clearTimeout(timer); // Timer außerhalb des Intervalls löschen
+
+      clearTimeout(timer);
     }, 1000);
-  
-    return () => clearInterval(interval); // return sollte hier stehen, um das Intervall zu bereinigen
-    console.log("Resources updated in Header:", resources);
-  }, [resourceChanges, resources]); // resources zur Abhängigkeit hinzufügen
-  
+
+    return () => clearInterval(interval);
+  }, [resources]);
+
+  const resourcesData = resources && updatedCapacityRates ? [
+    { name: 'Water', value: Math.floor(resources.water), capacity: updatedCapacityRates.water, image: waterImage },
+    { name: 'Food', value: Math.floor(resources.food), capacity: updatedCapacityRates.food, image: foodImage },
+    { name: 'Wood', value: Math.floor(resources.wood), capacity: updatedCapacityRates.wood, image: woodImage },
+    { name: 'Stone', value: Math.floor(resources.stone), capacity: updatedCapacityRates.stone, image: stoneImage },
+    { name: 'Coal', value: Math.floor(resources.coal), capacity: updatedCapacityRates.coal, image: coalImage },
+    { name: 'Gold', value: Math.floor(resources.gold), capacity: updatedCapacityRates.gold, image: goldImage },
+    { name: 'Knowledge', value: Math.floor(resources.knowledge), capacity: updatedCapacityRates.knowledge, image: knowledgeImage },
+    { name: 'Population', value: Math.floor(resources.population), capacity: updatedCapacityRates.population, image: populationImage },
+    { name: 'Military', value: Math.floor(resources.military), capacity: updatedCapacityRates.maxMilitaryCapacity, image: militaryImage }
+  ] : []; // Fallback to an empty array if resources or capacityRates are undefined
 
   return (
     <div className="header">
@@ -75,7 +75,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
               <div className="resource-tooltip">{resource.name}</div>
             </div>
             <span className={`resource-amount ${resource.value >= resource.capacity ? 'full' : ''}`}>
-              {resource.value}
+              {resource.value} / {resource.capacity}
             </span>
           </div>
         ))}
@@ -90,7 +90,7 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
           <div className="dropdown" onClick={closeDropdown}>
             <p>Address: {userAddress}</p>
             <p>Balance: {userBalance}</p>
-            <p>Name: {nickname || userName}</p> {/* Display nickname if available */}
+            <p>Name: {nickname || userName}</p>
             <Link to="/settings">
               <button onClick={closeDropdown}>Settings</button>
             </Link>
@@ -102,3 +102,4 @@ const Header = ({ userAddress, userAvatar, userName, userBalance, resources, cap
 };
 
 export default Header;
+

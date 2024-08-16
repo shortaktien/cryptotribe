@@ -1,4 +1,4 @@
-const { connectToDatabase } = require('./database');
+const { connectToDatabase } = require('./services/database');
 
 const loadResources = async (client, userName) => {
   const resourcesQuery = 'SELECT water, food, wood, stone, knowledge, population, coal, gold, military, updated_at FROM resources WHERE user_name = $1';
