@@ -1,5 +1,3 @@
-// utils/resourceManager.js
-
 export const calculateNetProduction = (baseProduction, researchEffects = {}, population) => {
     const netProduction = { ...baseProduction };
 

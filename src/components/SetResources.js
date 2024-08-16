@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { calculateNetProduction, initializeResources, initializeProductionRates, updateResources, updateResearchEffects } from '../utils/resourceManager';
+import { calculateNetProduction, updateResources, updateResearchEffects } from '../utils/resourceManager'; // Korrekte Importe
 
-const useResources = (initialResources, initialProductionRates) => {
-    const [resources, setResources] = useState(() => initializeResources(initialResources, {
+const useResources = () => {
+    const [resources, setResources] = useState({
         water: 250,
         food: 250,
         wood: 300,
@@ -12,9 +12,9 @@ const useResources = (initialResources, initialProductionRates) => {
         coal: 0,
         gold: 0,
         military: 0,
-    }));
+    });
 
-    const [productionRates, setProductionRates] = useState(() => initializeProductionRates(initialProductionRates, {
+    const [productionRates, setProductionRates] = useState({
         water: 40 / 3600,
         food: 35 / 3600,
         wood: 33 / 3600,
@@ -23,7 +23,7 @@ const useResources = (initialResources, initialProductionRates) => {
         population: 1 / 3600,
         coal: 15 / 3600,
         gold: 0.01 / 3600,
-    }));
+    });
 
     const [capacityRates, setCapacityRates] = useState({
         water: 500,
@@ -41,8 +41,8 @@ const useResources = (initialResources, initialProductionRates) => {
     const [researchEffects, setResearchEffects] = useState({ food: 0 });
 
     const calculateAndUpdateResources = useCallback(() => {
-        const netProduction = calculateNetProduction(productionRates, researchEffects, resources.population);
-        const newResources = updateResources(resources, netProduction, capacityRates);
+        const netProduction = calculateNetProduction(productionRates, researchEffects, resources.population); // Verwendet importierte Funktion
+        const newResources = updateResources(resources, netProduction, capacityRates); // Verwendet importierte Funktion
         setResources(newResources);
     }, [productionRates, researchEffects, resources, capacityRates]);
 
@@ -92,7 +92,7 @@ const useResources = (initialResources, initialProductionRates) => {
         });
     };
 
-    const getNetProductionRates = () => calculateNetProduction(productionRates, researchEffects, resources.population);
+    const getNetProductionRates = () => calculateNetProduction(productionRates, researchEffects, resources.population); // Importierte Funktion verwenden
     const getProductionRates = () => productionRates;
 
     const setLoadedProductionRates = (loadedProductionRates) => {

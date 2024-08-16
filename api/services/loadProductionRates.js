@@ -1,4 +1,4 @@
-const { connectToDatabase } = require('./services/database');
+const { connectToDatabase } = require('./database');
 
 const loadProductionRates = async (client, userName) => {
   const productionRatesQuery = 'SELECT water_production, food_production, wood_production, stone_production, knowledge_production, population_production, coal_production, gold_production, military_production FROM production_rates_summary WHERE user_name = $1';

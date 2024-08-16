@@ -27,6 +27,7 @@ import { getWeb3, sendTransaction } from './utils/web3';
 import Notification, { fetchNotificationData, calculateNotificationMessage } from './utils/Notification';
 import { initializeResources } from './utils/resourceManager';
 import { startResourceProduction } from './utils/resourceManager';
+
 import BuildingManagement from '../src/BuildingManagement.json';
 import TransactionPopup from '../src/utils/TransactionPopup';
 
@@ -81,42 +82,42 @@ function AppContent({
   const [showTransactionPopup, setShowTransactionPopup] = useState(false);
   const buildingsContext = useBuildings();
   const { upgradeBuilding } = buildingsContext || {};
-
-  const defaultResources = {
-    water: 250,
-    food: 250,
-    wood: 300,
-    stone: 100,
-    knowledge: 0,
-    population: 15,
-    coal: 0,
-    gold: 0,
-    military: 0,
-  };
-
   const [loadedResources, setLoadedResources] = useState(null);
 
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
   useEffect(() => {
     if (loadedResources) {
-      const gainedResources = initializeResources(loadedResources, defaultResources);
-      if (gainedResources) {
-        setResources(gainedResources);
-        console.log("Resources set:", gainedResources);
-      } else {
-        console.log("Failed to set resources:", loadedResources);
-      }
+        const gainedResources = initializeResources(loadedResources, {
+            water: 250,
+            food: 250,
+            wood: 300,
+            stone: 100,
+            knowledge: 0,
+            population: 15,
+            coal: 0,
+            gold: 0,
+            military: 0,
+        });
+        
+        if (gainedResources) {
+            setResources(gainedResources);
+            console.log("Resources set:", gainedResources);
+        } else {
+            console.log("Failed to set resources:", loadedResources);
+        }
     }
-    
-  }, [loadedResources, setResources]);
+}, [loadedResources, setResources]);
+
+
 
   useEffect(() => {
-    if (capacityRates) {
+    if (isConnected && capacityRates) {  // Prüfe, ob der Benutzer eingeloggt ist
       setCapacityRates(capacityRates);
       console.log("Capacities set in useEffect:", capacityRates);
     }
-  }, [capacityRates, setCapacityRates]);
+  }, [isConnected, capacityRates, setCapacityRates]); 
+  
 
   useEffect(() => {
     const interval = startResourceProduction(setResources, getProductionRates(), capacityRates, researchEffects, resources.population);
@@ -125,23 +126,13 @@ function AppContent({
   }, [setResources, getProductionRates, capacityRates, researchEffects, resources.population]);
 
   const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapacities, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
-    setLoadedResources(loadedResources || defaultResources);
-
-    if (!loadedCapacities) {
-      loadedCapacities = {
-        water: 500,
-        food: 500,
-        wood: 500,
-        stone: 500,
-        knowledge: 100,
-        population: 15,
-        coal: 500,
-        gold: 500,
-        military: 0,
-        maxMilitaryCapacity: 0,
-      };
+    // Setze direkt die geladenen Ressourcen (die Standardwerte werden in useResources bereits verwaltet)
+    setLoadedResources(loadedResources);
+  
+    // Falls Kapazitäten geladen wurden, setze sie. Ansonsten verwendet useResources seine Standardwerte.
+    if (loadedCapacities) {
+      setCapacityRates(loadedCapacities);
     }
-    setCapacityRates(loadedCapacities);
 
     if (!loadedBuildings || Object.keys(loadedBuildings).length === 0) {
       loadedBuildings = initialBuildingsData;
