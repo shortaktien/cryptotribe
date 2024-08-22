@@ -231,14 +231,38 @@ const BuildingsProvider = ({
   );
 
   useEffect(() => {
-    setBuildings(initialBuildings.map(building => ({
+    // Neue Gebäude basierend auf initialen Daten setzen
+    const updatedBuildings = initialBuildings.map(building => ({
       ...building,
       levels: generateLevels(building),
       currentLevel: typeof building.currentLevel === 'object' ? building.currentLevel.level : building.currentLevel || 0,
       buildStartTime: building.buildStartTime || null,
       buildTimeRemaining: building.buildTimeRemaining || null,
-    })));
-  }, [initialBuildings]);
+    }));
+
+    // Setze die aktualisierten Gebäude
+    setBuildings(updatedBuildings);
+
+    // Debugging: Ausgabe der aktualisierten Gebäude
+    //console.log("Updated Buildings: ", updatedBuildings);
+
+    // Berechne die Kapazitäten basierend auf dem Lagerhaus-Level
+    const warehouse = updatedBuildings.find(b => b.name === 'Warehouse');
+    
+    if (warehouse) {
+      const capacities = calculateWarehouseCapacities(warehouse.currentLevel);
+      
+      // Debugging: Ausgabe der berechneten Kapazitäten
+      //console.log("Calculated Capacities from Warehouse Level: ", capacities);
+      
+      // Setze die neuen Kapazitäten
+      updateCapacityRates(capacities);
+    } else {
+      console.log("No warehouse found, using default capacities.");
+    }
+
+  }, [initialBuildings, setBuildings, updateCapacityRates]);
+
 
   const upgradeBuilding = (buildingId, spendResources, updateProductionRate, updateCapacityRates) => {
     setBuildings(prevBuildings =>

@@ -1,19 +1,18 @@
 const { connectToDatabase } = require('./services/database');
-const calculateWarehouseCapacities = require('../src/utils/calculateWarehouseCapacities'); // Annahme: Funktion zur Berechnung der Kapazitäten basierend auf dem Warehouse-Level
+const calculateWarehouseCapacities = require('../src/utils/calculateWarehouseCapacities'); // Pfad überprüfen
 
-// Funktion zur Abfrage des aktuellen Lagerhaus-Levels des Benutzers
 async function getCurrentWarehouseLevel(client, user_name) {
-  const query = `SELECT current_level FROM buildings WHERE user_name = $1 AND building_name = 'Warehouse'`;
+  // Tabelle `buildings_level` verwenden
+  const query = `SELECT warehouse_level FROM buildings_level WHERE user_name = $1`;
   const result = await client.query(query, [user_name]);
 
   if (result.rows.length === 0) {
-    throw new Error('Warehouse not found for the user');
+    throw new Error('Warehouse level not found for the user');
   }
 
-  return result.rows[0].current_level;
+  return result.rows[0].warehouse_level;
 }
 
-// Hauptfunktion zum Laden und Vergleichen der Kapazitäten
 module.exports = async function loadCapacities(client, user_name) {
   console.log("loadCapacities function called");
   const query = `SELECT * FROM capacities_summary WHERE user_name = $1`;
@@ -27,7 +26,14 @@ module.exports = async function loadCapacities(client, user_name) {
   console.log("Loaded Capacities from DB:", loadedCapacities);
 
   // Abfrage des aktuellen Warehouse-Levels und Berechnung der Kapazitäten
-  const currentWarehouseLevel = await getCurrentWarehouseLevel(client, user_name);
+  let currentWarehouseLevel;
+  try {
+    currentWarehouseLevel = await getCurrentWarehouseLevel(client, user_name);
+  } catch (error) {
+    console.error('Error fetching warehouse level:', error.message);
+    throw error;
+  }
+
   const calculatedCapacities = calculateWarehouseCapacities(currentWarehouseLevel);
   console.log("Warehouse Level:", currentWarehouseLevel);
   console.log("Calculated Capacities:", calculatedCapacities);

@@ -9,21 +9,12 @@ const loadResources = async (client, userName) => {
     throw new Error('User not found in resources');
   }
 
+  const { water, food, wood, stone, knowledge, population, coal, gold, military, updated_at } = resourcesResult.rows[0];
+
   return {
-    resources: {
-      water: resourcesResult.rows[0].water,
-      food: resourcesResult.rows[0].food,
-      wood: resourcesResult.rows[0].wood,
-      stone: resourcesResult.rows[0].stone,
-      knowledge: resourcesResult.rows[0].knowledge,
-      population: resourcesResult.rows[0].population,
-      coal: resourcesResult.rows[0].coal,
-      gold: resourcesResult.rows[0].gold,
-      military: resourcesResult.rows[0].military
-    },
-    updated_at: resourcesResult.rows[0].updated_at,
-    
+    water, food, wood, stone, knowledge, population, coal, gold, military, updated_at,
   };
 };
 
 module.exports = loadResources;
+

@@ -1,125 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { calculateNetProduction, updateResources } from '../utils/resourceManager';
+import { calculateGainedResources } from '../utils/calculateResources'; 
 
-import foodImage from '../assets/foodImage.webp';
-import populationImage from '../assets/populationImage.webp';
-import stoneImage from '../assets/stoneImage.webp';
-import waterImage from '../assets/waterImage.webp';
-import woodImage from '../assets/woodImage.webp';
-import cryptotribeImage from "../assets/cryptotribeImage.webp";
-import knowledgeImage from "../assets/knowledgeImage.webp";
-import coalImage from '../assets/coalRessourceImage.webp';
-import goldImage from '../assets/goldRessourceImage.webp';
-import militaryImage from "../assets/militaryRessourceImage.webp"; 
-
-import "./header.css";
-
-const Header = ({ userAddress, userAvatar, userName, userBalance, resources = {}, capacities = {}, nickname }) => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [highlightedResources, setHighlightedResources] = useState({});
-  const [previousResources, setPreviousResources] = useState(resources);
-
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
-  };
-
-  const closeDropdown = () => {
-    setDropdownVisible(false);
-  };
-
-  useEffect(() => {
-    const newHighlightedResources = {};
-  
-    // Iteriere über alle Ressourcen
-    Object.keys(resources).forEach(key => {
-      // Kurzzeitiges Grün-Aufleuchten, wenn die Ressource zugenommen hat
-      if (resources[key] > (previousResources[key] || 0)) {
-        newHighlightedResources[key] = 'highlight-green';
-      }
-      // Wenn die Ressource die Kapazität erreicht oder überschreitet, bleibt sie rot
-      else if (capacities[key] && resources[key] >= capacities[key]) {
-        newHighlightedResources[key] = 'highlight-red';
-      }
-      // Weiß für alle anderen Fälle
-      else {
-        newHighlightedResources[key] = '';
-      }
+const useResources = () => {
+    const [resources, setResources] = useState({
+        water: 250,
+        food: 250,
+        wood: 300,
+        stone: 100,
+        knowledge: 0,
+        population: 15,
+        coal: 0,
+        gold: 0,
+        military: 0,
     });
-  
-    setHighlightedResources(newHighlightedResources);
-    setPreviousResources(resources);
-  
-    // Timer zum Entfernen des Grün-Aufleuchtens nach 1 Sekunde, es bleibt rot, wenn Kapazität erreicht
-    const timer = setTimeout(() => {
-      const resetHighlights = { ...newHighlightedResources };
-      Object.keys(resetHighlights).forEach(key => {
-        if (resetHighlights[key] === 'highlight-green') {
-          // Nur auf Weiß zurücksetzen, wenn nicht gleichzeitig die Kapazität erreicht ist
-          if (capacities[key] && resources[key] >= capacities[key]) {
-            resetHighlights[key] = 'highlight-red'; // Behalte Rot bei, wenn Kapazität erreicht
-          } else {
-            resetHighlights[key] = ''; // Zurücksetzen auf Weiß
-          }
+
+    const [productionRates, setProductionRates] = useState({
+        water: 40 / 3600,
+        food: 35 / 3600,
+        wood: 33 / 3600,
+        stone: 29 / 3600,
+        knowledge: 1 / 3600,
+        population: 1 / 3600,
+        coal: 15 / 3600,
+        gold: 0.01 / 3600,
+    });
+
+    const [capacityRates, setCapacityRates] = useState({
+        water: 500,
+        food: 500,
+        wood: 500,
+        stone: 500,
+        knowledge: 100,
+        population: 15,
+        coal: 500,
+        gold: 500,
+        military: 0,
+        maxMilitaryCapacity: 0,
+    });
+
+    const [lastUpdatedAt, setLastUpdatedAt] = useState(null); // Zeitpunkt der letzten Aktualisierung
+
+    // Berechnung und Aktualisierung der Ressourcen
+    const calculateAndUpdateResources = useCallback(() => {
+        const netProduction = calculateNetProduction(productionRates, {}, resources.population);
+        const newResources = updateResources(resources, netProduction, capacityRates);
+        setResources(newResources);
+    }, [productionRates, resources, capacityRates]);
+
+    // Funktion zum Laden der Ressourcen aus der API und hinzufügen der offline Ressourcen
+    const loadAndAddOfflineResources = useCallback(async (userName) => {
+        try {
+            const response = await fetch(`/api/loadGame?user_name=${userName}`); // API-Endpunkt verwenden
+            const result = await response.json();
+            const { resources: loadedResources, updated_at } = result;
+
+            const currentTime = new Date().toISOString();
+            const timeDifferenceInSeconds = (new Date(currentTime) - new Date(updated_at)) / 1000;
+
+            const gainedResources = calculateGainedResources(productionRates, timeDifferenceInSeconds);
+
+            // Addiere offline-Ressourcen zu den geladenen Ressourcen und setze die Werte
+            setResources(prevResources => {
+                const updatedResources = { ...loadedResources };
+                Object.keys(gainedResources).forEach(resource => {
+                    updatedResources[resource] = Math.min(
+                        (loadedResources[resource] || 0) + gainedResources[resource],
+                        capacityRates[resource] || 0
+                    );
+                });
+                return updatedResources;
+            });
+
+            // Setze die letzte Aktualisierung
+            setLastUpdatedAt(currentTime);
+        } catch (error) {
+            console.error('Error loading and adding offline resources:', error);
         }
-      });
-      setHighlightedResources(resetHighlights);
-    }, 1000);
-  
-    return () => clearTimeout(timer);
-  }, [resources, capacities, previousResources]);
-  
+    }, [capacityRates, productionRates]);
 
-  // Nur die aktuellen Ressourcen anzeigen, ohne Kapazitäten in der Anzeige
-  const resourcesData = resources ? [
-    { name: 'Water', value: Math.floor(resources.water), image: waterImage },
-    { name: 'Food', value: Math.floor(resources.food), image: foodImage },
-    { name: 'Wood', value: Math.floor(resources.wood), image: woodImage },
-    { name: 'Stone', value: Math.floor(resources.stone), image: stoneImage },
-    { name: 'Coal', value: Math.floor(resources.coal), image: coalImage },
-    { name: 'Gold', value: Math.floor(resources.gold), image: goldImage },
-    { name: 'Knowledge', value: Math.floor(resources.knowledge), image: knowledgeImage },
-    { name: 'Population', value: Math.floor(resources.population), image: populationImage },
-    { name: 'Military', value: Math.floor(resources.military), image: militaryImage }
-  ] : [];
+    // Initiale Ressourcen laden und offline Ressourcen hinzufügen
+    useEffect(() => {
+        const userName = "someUser"; // Beispiel: Benutzername laden
+        loadAndAddOfflineResources(userName);
+    }, [loadAndAddOfflineResources]);
 
-  
-  return (
-    <div className="header">
-      <div className="logo"></div>
-      <img src={cryptotribeImage} alt="Cryptotribe Logo" className="logo-icon" />
-      <div className="resources">
-        {resourcesData.map((resource, index) => (
-          <div key={index} className={`resource ${highlightedResources[resource.name.toLowerCase()] || ''}`}>
-            <div className="resource-container">
-              <img src={resource.image} alt={resource.name} className="resource-icon" />
-              <div className="resource-tooltip">{resource.name}</div>
-            </div>
-            <span className={`resource-amount ${highlightedResources[resource.name.toLowerCase()]}`}>
-              {resource.value}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className="profile">
-        {userAvatar ? (
-          <img src={userAvatar} alt="Profile" className="profile-icon" onClick={toggleDropdown} />
-        ) : (
-          <FaUserCircle size={40} onClick={toggleDropdown} />
-        )}
-        {dropdownVisible && (
-          <div className="dropdown" onClick={closeDropdown}>
-            <p>Address: {userAddress}</p>
-            <p>Balance: {userBalance}</p>
-            <p>Name: {nickname || userName}</p>
-            <Link to="/settings">
-              <button onClick={closeDropdown}>Settings</button>
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    // Fortlaufende Erhöhung der Ressourcen alle Sekunde
+    useEffect(() => {
+        const interval = setInterval(calculateAndUpdateResources, 1000);
+        return () => clearInterval(interval);
+    }, [calculateAndUpdateResources]);
+
+    return {
+        resources,
+        setResources,
+        loadAndAddOfflineResources, // Funktion zum erneuten Laden und Addieren der Ressourcen
+        // Weitere Funktionen
+    };
 };
 
-export default Header;
+export default useResources;

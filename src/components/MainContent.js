@@ -22,12 +22,12 @@ const MainContent = ({ userAddress, economicPoints, military }) => {
     gold_production: 'Gold',
     military_production: 'Military',
   }), []);
-
+/*
   useEffect(() => {
     //console.log('useEffect triggered');
     updateUnits(military);
     //console.log('Received capacityRates in MainContent:', updatedCapacityRates);
-  }, [military, updateUnits, updatedCapacityRates]);
+  }, [military, updateUnits, updatedCapacityRates]);*/
 
 
   

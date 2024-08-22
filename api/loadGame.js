@@ -5,6 +5,7 @@ const saveResources = require('../api/services/saveResources');
 const saveBuildings = require('../api/services/saveBuildings');
 const saveProductionRates = require('../api/services/saveProductionRates');
 const { calculateProduction } = require('../api/services/calculateProduction');
+const loadCapacities = require('../api/loadCapacities'); // Überprüfe den Pfad
 
 const baseProductions = {
   lumberjack: { wood: 0.009166666666666667 },
@@ -36,13 +37,17 @@ module.exports = async (req, res) => {
 
     let resourcesResult;
     let buildingsResult;
+    let capacities; // Definiere die Variable hier
 
     try {
       resourcesResult = await loadResources(client, user_name);
       buildingsResult = await loadBuildings(client, user_name);
+
+      // Lade Kapazitäten
+      capacities = await loadCapacities(client, user_name); // Füge diesen Aufruf hinzu
+
     } catch (error) {
       if (error.message.includes('User not found')) {
-        // Initial values for a new user
         resourcesResult = {
           resources: {
             water: 250,
@@ -76,24 +81,36 @@ module.exports = async (req, res) => {
           }
         };
 
-        // Save default values to the database
         await saveResources(client, user_name, resourcesResult.resources, 0);
         await saveBuildings(client, user_name, buildingsResult.buildings);
+
+        // Initialisiere Kapazitäten für neue Benutzer
+        capacities = {
+          water_capacity: 0,
+          food_capacity: 0,
+          wood_capacity: 0,
+          stone_capacity: 0,
+          knowledge_capacity: 0,
+          population_capacity: 0,
+          coal_capacity: 0,
+          gold_capacity: 0,
+          military_capacity: 0,
+          max_military_capacity: 0,
+        };
       } else {
         throw error;
       }
     }
 
-    // Calculate production rates
     const productionRates = calculateProduction(buildingsResult.buildings, baseProductions, 1.8);
 
     await saveProductionRates(client, user_name, productionRates);
 
-    // Return the loaded data
     res.status(200).json({
-      resources: resourcesResult.resources, // This is the key part
+      resources: resourcesResult.resources,
       buildings: buildingsResult.buildings,
       productionRates,
+      capacities, // Gib die Kapazitäten hier zurück
       updated_at: resourcesResult.updated_at,
     });
   } catch (error) {

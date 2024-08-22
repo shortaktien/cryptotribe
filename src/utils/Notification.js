@@ -1,6 +1,8 @@
 import React from 'react';
-import { calculateGainedResources } from './calculateResources'; // Import the new function
+import { calculateGainedResources } from './calculateResources'; // Importiere die Berechnungsfunktion
 import '../components/App.css';
+
+let offlineResources = null; // Definiere offlineResources außerhalb der Funktion
 
 const Notification = ({ message, show }) => {
   if (!show) return null;
@@ -20,10 +22,8 @@ export const calculateNotificationMessage = (lastSaveTime, currentTime, producti
 
   if (lastSaveTime && currentTime) {
     const timeDifferenceInSeconds = (new Date(currentTime) - new Date(lastSaveTime)) / 1000;
-    //console.log('Time difference in seconds:', timeDifferenceInSeconds); // Debugging log
-
+    
     const gainedResources = calculateGainedResources(productionRates, timeDifferenceInSeconds);
-    //console.log('Gained resources:', gainedResources); // Log the gained resources
 
     const formatTimeDifference = (seconds) => {
       if (seconds < 60) return `${seconds} seconds`;
@@ -37,11 +37,24 @@ export const calculateNotificationMessage = (lastSaveTime, currentTime, producti
       .map(([resource, amount]) => `${Math.ceil(amount)} ${resource}`)
       .join(', ');
 
-    console.log(`User was away for ${formattedTime} and produced ${formattedResources}`); // Log the formatted time and resources
+    console.log(`User was away for ${formattedTime} and produced ${formattedResources}`);
+
+    // Aktualisiere offlineResources statt sie zu exportieren
+    offlineResources = {
+      timeAway: formattedTime,
+      resources: gainedResources
+    };
+
+    console.log('Offline resources:', offlineResources);
 
     return `You were away for ${formattedTime} and produced ${formattedResources}.`;
   }
   return null;
+};
+
+// Funktion, um auf offlineResources zuzugreifen
+export const getOfflineResources = () => {
+  return offlineResources;
 };
 
 export const fetchNotificationData = async (userAddress) => {
@@ -50,6 +63,12 @@ export const fetchNotificationData = async (userAddress) => {
     if (response.ok) {
       const data = await response.json();
       console.log('Fetched notification data:', data);
+
+      // Mappe 'last_savegame' auf 'lastSaveTime', wenn es in der API-Antwort enthalten ist
+      if (data.last_savegame) {
+        data.lastSaveTime = data.last_savegame;
+      }
+
       return data;
     } else {
       console.error('Failed to load notification data:', response.statusText);
@@ -60,5 +79,6 @@ export const fetchNotificationData = async (userAddress) => {
     return null;
   }
 };
+
 
 export default Notification;

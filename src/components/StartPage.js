@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import './StartPage.css';
 
+import { calculateNotificationMessage } from '../utils/Notification';
+
+import { getOfflineResources } from '../utils/Notification';
+
 const StartPage = ({ onConnect }) => {
   const [loading, setLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -26,29 +30,43 @@ const StartPage = ({ onConnect }) => {
 
         const loadResponse = await fetch(`/api/loadGame?user_name=${address}`);
         if (loadResponse.ok) {
-          const data = await loadResponse.json();
-          const { resources, buildings, productionRates } = data;
-          console.log('Game progress loaded:', data);
-          onConnect(address, resources, buildings, productionRates); // Pass buildings and productionRates to the onConnect function
-          setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
-          setUserStatus('User found');
-          setUserData({ resources, buildings, productionRates });
-        } else {
-          console.log('User not found, starting new game');
-          onConnect(address, null); // Start with new game
-          setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
-          setUserStatus('New user loading default');
-          setUserData(null);
+        const data = await loadResponse.json();
+        const { resources, buildings, productionRates, updated_at } = data; // Verwende updated_at als lastSaveTime
+        console.log('Game progress loaded:', data);
+
+        // Hole die bereits berechneten Offline-Ressourcen aus Notification.js
+        const offlineResources = getOfflineResources();
+        console.log('Offline resources:', offlineResources);
+
+        // Addiere die Offline-Ressourcen zu den bestehenden Ressourcen
+        const updatedResources = { ...resources };
+        if (offlineResources && offlineResources.resources) {
+          Object.keys(offlineResources.resources).forEach(resource => {
+            updatedResources[resource] = (updatedResources[resource] || 0) + offlineResources.resources[resource];
+          });
         }
-      } catch (error) {
-        console.error('Error connecting to MetaMask:', error);
-      } finally {
-        setLoading(false); // Ladeanzeige ausblenden
+
+        // Übergib die aktualisierten Ressourcen
+        onConnect(address, updatedResources, buildings, productionRates);
+        setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
+        setUserStatus('User found');
+        setUserData({ resources: updatedResources, buildings, productionRates });
+      } else {
+        console.log('User not found, starting new game');
+        onConnect(address, null); // Starte ein neues Spiel
+        setIsConnected(true); // Setze den Verbindungsstatus auf erfolgreich
+        setUserStatus('New user loading default');
+        setUserData(null);
       }
-    } else {
-      alert('MetaMask is not installed. Please install it to use this app.');
+    } catch (error) {
+      console.error('Error connecting to MetaMask:', error);
+    } finally {
+      setLoading(false); // Ladeanzeige ausblenden
     }
-  };
+  } else {
+    alert('MetaMask is not installed. Please install it to use this app.');
+  }
+};
 
   const handleGitHubClick = () => {
     window.open('https://github.com/shortaktien/cryptotribe', '_blank');

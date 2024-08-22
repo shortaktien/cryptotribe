@@ -57,13 +57,14 @@ function useCheckAddressChange(userAddress, setIsConnected, setUserAddress) {
   }, [userAddress, navigate, setIsConnected, setUserAddress]);
 }
 
-function AppContent({
-  resources, setResources, updateProductionRate, spendResources,
-  updateCapacityRates, updatePopulation, updateResearchEffects, 
-  capacityRates, getNetProductionRates, getProductionRates, 
-  refundResources, setCapacityRates
-}) {
-  const { researchEffects } = useResources();
+function App() {
+  const {
+    water, setWater, food, setFood, wood, setWood, stone, setStone,
+    knowledge, setKnowledge, population, setPopulation, coal, setCoal, gold, setGold, 
+    military: militaryUnits, setMilitary, 
+    updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects,
+    capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates
+  } = useResources();
   
   const [isConnected, setIsConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
@@ -76,7 +77,7 @@ function AppContent({
   const [notificationMessage, setNotificationMessage] = useState('');
   const [showNicknamePrompt, setShowNicknamePrompt] = useState(false);
   const [economicPoints, setEconomicPoints] = useState(0);
-  const [military, setMilitary] = useState({});
+  //const [military, setMilitary] = useState({});
   const { setLoadedProductionRates } = useResources();
   const [transactionHash, setTransactionHash] = useState(null);
   const [showTransactionPopup, setShowTransactionPopup] = useState(false);
@@ -84,7 +85,29 @@ function AppContent({
   const { upgradeBuilding } = buildingsContext || {};
   const [loadedResources, setLoadedResources] = useState(null);
   const updatedCapacityRates = buildingsContext?.updatedCapacityRates || {};
-  
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const interval = setInterval(() => {
+        console.log("Aktuelle Ressourcen:", { water, food, wood, stone, knowledge, coal, gold });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoggedIn, water, food, wood, stone, knowledge, coal, gold]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const interval = startResourceProduction(
+        { setWater, setFood, setWood, setStone, setKnowledge, setCoal, setGold }, 
+        getProductionRates(), 
+        capacityRates, 
+        researchEffects, 
+        population
+      );
+      return () => clearInterval(interval);
+    }
+  }, [isLoggedIn, getProductionRates, capacityRates, researchEffects, population]);
+
 
   useCheckAddressChange(userAddress, setIsConnected, setUserAddress);
 
@@ -103,13 +126,40 @@ function AppContent({
         });
         
         if (gainedResources) {
-            setResources(gainedResources);
-            //console.log("Resources set:", gainedResources);
+          setWater(gainedResources.water);
+          setFood(gainedResources.food);
+          setWood(gainedResources.wood);
+          setStone(gainedResources.stone);
+          setKnowledge(gainedResources.knowledge);
+          setCoal(gainedResources.coal);
+          setGold(gainedResources.gold);
+          setPopulation(gainedResources.population);
+          setMilitary(gainedResources.military);
         } else {
-            console.log("Failed to set resources:", loadedResources);
+          console.log("Failed to set resources:", loadedResources);
         }
-    }
-}, [loadedResources, setResources]);
+      }
+    }, [loadedResources]);
+
+    const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapacities, nickname = '', economic_points = 0, productionRates = {}, military = {}) => {
+      setWater(loadedResources.water);
+      setFood(loadedResources.food);
+      setWood(loadedResources.wood);
+      setStone(loadedResources.stone);
+      setKnowledge(loadedResources.knowledge);
+      setCoal(loadedResources.coal);
+      setGold(loadedResources.gold);
+      setPopulation(loadedResources.population);
+      setMilitary(loadedResources.military);
+  
+      setLoadedProductionRates(productionRates);
+      setCapacityRates(loadedCapacities);
+      setIsLoggedIn(true);
+  
+      setNickname(nickname);
+      setEconomicPoints(economic_points);
+      setLoadedBuildings(loadedBuildings);
+    };
 
 useEffect(() => {
   // Starte ein Intervall, um die Ressourcen jede Sekunde in der UI zu aktualisieren
@@ -204,9 +254,6 @@ const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapa
         }
       } else {
         console.error('Failed to load game data:', response.statusText);
-        handleLogin(address, null, null, null, '');
-        setNickname('');
-        setShowNicknamePrompt(true);
       }
     } catch (error) {
       console.error('Error connecting to load game API:', error);
@@ -432,12 +479,12 @@ const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapa
                   <Header
                     userAddress={userAddress}
                     userName={nickname}
-                    resources={resources}
+                    resources={{ water, food, wood, stone, knowledge, coal, gold }}
                     capacities={updatedCapacityRates} // Konsistente Verwendung von capacityRates
                     military={military}
                   />
                   <div className="content">
-                    <Sidebar userAddress={userAddress} resources={resources} economicPoints={economicPoints} military={military} />
+                  <Sidebar userAddress={userAddress} resources={{ water, food, wood, stone, knowledge, coal, gold }} military={military} />
                     <Notification message={notificationMessage} show={showNotificationState} />
                     {showNicknamePrompt && (
                       <div className="notification">
@@ -563,31 +610,29 @@ const handleLogin = async (address, loadedResources, loadedBuildings, loadedCapa
       )}
     </div>
   );
-  
 }
 
-function App() {
-  const { resources, setResources, updateProductionRate, spendResources, updateCapacityRates, updatePopulation, updateResearchEffects, capacityRates, getNetProductionRates, getProductionRates, refundResources, setCapacityRates, setLoadedProductionRates } = useResources();
+const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  return (
-    <Router>
+return (
+  <Router>
+    {isLoggedIn ? (
       <AppContent
-        resources={resources}
-        setResources={setResources}
-        updateProductionRate={updateProductionRate}
-        spendResources={spendResources}
-        updateCapacityRates={updateCapacityRates}
-        updatePopulation={updatePopulation}
-        updateResearchEffects={updateResearchEffects}
-        capacityRates={capacityRates}
-        getNetProductionRates={getNetProductionRates}
-        getProductionRates={getProductionRates}
-        refundResources={refundResources}
-        setCapacityRates={setCapacityRates}
-        setLoadedProductionRates={setLoadedProductionRates}
+        water={water} setWater={setWater} food={food} setFood={setFood}
+        wood={wood} setWood={setWood} stone={stone} setStone={setStone}
+        knowledge={knowledge} setKnowledge={setKnowledge} population={population} setPopulation={setPopulation}
+        coal={coal} setCoal={setCoal} gold={gold} setGold={setGold} military={militaryUnits} setMilitary={setMilitary}
+        updateProductionRate={updateProductionRate} spendResources={spendResources}
+        updateCapacityRates={updateCapacityRates} updateResearchEffects={updateResearchEffects}
+        getNetProductionRates={getNetProductionRates} getProductionRates={getProductionRates}
+        refundResources={refundResources} setCapacityRates={setCapacityRates}
+        isLoggedIn={isLoggedIn}
       />
-    </Router>
-  );
+    ) : (
+      <StartPage onConnect={handleConnect} />
+    )}
+  </Router>
+);
 }
 
 export default App;

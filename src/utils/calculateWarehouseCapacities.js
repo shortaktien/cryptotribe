@@ -1,20 +1,18 @@
-// In ../utils/calculateWarehouseCapacities.js
 function calculateWarehouseCapacities(warehouseLevel) {
-  const baseCapacity = 500;
-  const multiplier = warehouseLevel * 1.5;
-
+  // Beispiel für eine einfache Berechnung der Kapazitäten basierend auf dem Level
+  const baseCapacity = 1000; // Basiswert für Kapazität pro Level
   return {
-    water: baseCapacity * multiplier,
-    food: baseCapacity * multiplier,
-    wood: baseCapacity * multiplier,
-    stone: baseCapacity * multiplier,
-    knowledge: baseCapacity * 0.2 * multiplier,
-    population: baseCapacity * 0.03 * multiplier,
-    coal: baseCapacity * multiplier,
-    gold: baseCapacity * multiplier,
-    military: 0,
-    maxMilitaryCapacity: baseCapacity * 0.1 * multiplier,
+    water: baseCapacity * warehouseLevel,
+    food: baseCapacity * warehouseLevel,
+    wood: baseCapacity * warehouseLevel,
+    stone: baseCapacity * warehouseLevel,
+    knowledge: baseCapacity * (warehouseLevel / 2), // Beispiel: Wissen halb so stark wie andere Kapazitäten
+    population: baseCapacity * (warehouseLevel / 10), // Beispiel: Bevölkerung weniger stark
+    coal: baseCapacity * warehouseLevel,
+    gold: baseCapacity * (warehouseLevel / 20), // Beispiel: Gold viel weniger
+    military: 0, // Beispiel: keine militärische Kapazität
+    maxMilitaryCapacity: baseCapacity * warehouseLevel * 0.1 // Beispiel: Militärische Kapazität
   };
 }
 
-export default calculateWarehouseCapacities;
+module.exports = calculateWarehouseCapacities;
